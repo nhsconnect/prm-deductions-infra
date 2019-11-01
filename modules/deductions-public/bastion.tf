@@ -1,5 +1,5 @@
 resource "aws_instance" "bastion_az1" {
-    count  = var.create_bastion == true ? 1 : 0
+    count  = tobool(data.aws_ssm_parameter.deductions_private_bastion.value) == true ? 1 : 0
 
     ami                             = "ami-00a1270ce1e007c27"
     instance_type                   = "t2.micro"
@@ -14,7 +14,7 @@ resource "aws_instance" "bastion_az1" {
 }
 
 resource "aws_security_group" "bastion_az1_sg" {
-    count  = var.create_bastion == true ? 1 : 0
+    count  = tobool(data.aws_ssm_parameter.deductions_private_bastion.value) == true ? 1 : 0
 
     vpc_id    = "${aws_vpc.main-vpc.id}"
     name      = "${var.environment}-${var.component_name}-bastion-az1-sg"
