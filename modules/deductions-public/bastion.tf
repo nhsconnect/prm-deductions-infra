@@ -21,10 +21,17 @@ resource "aws_security_group" "bastion_az1_sg" {
 
     ingress {
         protocol    = "tcp"
-        from_port   = 80
-        to_port     = 80
+        from_port   = 22
+        to_port     = 22
         cidr_blocks = split(",", "${data.aws_ssm_parameter.inbound_ips.value}")
     }
+
+    ingress {
+        protocol    = "tcp"
+        from_port   = 8080
+        to_port     = 8080
+        cidr_blocks = split(",", "${data.aws_ssm_parameter.inbound_ips.value}")
+    }    
 
     egress {
         from_port = 0
