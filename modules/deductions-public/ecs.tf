@@ -24,7 +24,11 @@ resource "aws_ecs_task_definition" "task" {
         "containerPort": 3000,
         "hostPort": 3000
       }
-    ]
+    ],
+   "secrets": [{
+      "name": "GP_PORTAL_IDENTITY_URL",
+      "valueFrom": "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/gp_portal/identity_url"
+    }]
   }
 ]
 DEFINITION
