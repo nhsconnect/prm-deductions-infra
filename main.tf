@@ -25,3 +25,8 @@ module "deductions-public" {
 
     create_bastion      = "${var.deductions_public_create_bastion}"
 }
+
+module "mhs" {
+    source              = "./modules/mhs/"
+    environment         = "${var.environment}"
+}
