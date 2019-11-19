@@ -28,6 +28,6 @@ output "deductions_private_private_subnets" {
   value       = "${module.deductions-private.deductions_private_private_subnets}"
 }
 
-output "deductions_private_alb_tg_arn" {
-  value       = "${module.deductions-private.deductions_private_alb_tg_arn}"
-}
+# output "deductions_private_alb_tg_arn" {
+#   value       = "${module.deductions-private.deductions_private_alb_tg_arn}"
+# }
