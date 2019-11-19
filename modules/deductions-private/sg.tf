@@ -27,3 +27,12 @@ resource "aws_security_group" "mq_sg" {
       Name = "deductor-mq-b-sg"
   }    
 }
+
+resource "aws_security_group" "ecs-tasks-sg" {
+    name        = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+    vpc_id      = "${module.vpc.vpc_id}"
+
+    tags = {
+        Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+    }    
+}
