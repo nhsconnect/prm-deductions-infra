@@ -10,6 +10,6 @@ output "deductions_private_private_subnets" {
   value       = "${module.vpc.private_subnets}"
 }
 
-# output "deductions_private_alb_tg_arn" {
-#   value       = "${aws_alb_target_group.alg-tg.arn}"
-# }
+output "deductions_private_pds_a_alb_tg_arn" {
+  value       = "${aws_alb_target_group.alb-tg.arn}"
+}
