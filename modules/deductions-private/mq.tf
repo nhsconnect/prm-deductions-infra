@@ -59,3 +59,25 @@ resource "random_string" "mq_admin_password" {
   special = false
   number  = true
 }
+
+resource "aws_ssm_parameter" "amqp-endpoint-0" {
+  name        = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/amqp-endpoint/0"
+  description = "AMQP endpoint to MQ broker. Index: 0"
+  type        = "String"
+  value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.1
+
+  tags = {
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_ssm_parameter" "amqp-endpoint-1" {
+  name        = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/amqp-endpoint/1"
+  description = "AMQP endpoint to MQ broker. Index: 1"
+  type        = "String"
+  value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.1
+
+  tags = {
+    Environment = "${var.environment}"
+  }
+}
