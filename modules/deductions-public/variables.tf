@@ -1,30 +1,30 @@
 variable "region" {
-  type = "string"
+  type = string
   default = "eu-west-2"
 }
 
 variable "environment" {
-  type = "string"
+  type = string
 }
 
 variable "component_name" {
-  type = "string"
+  type = string
 }
 
 variable "cidr" {
-  type = "string"
+  type = string
 }
 
 variable "public_subnets" {
-  type = "list"
+  type = list
 }
 
 variable "private_subnets" {
-  type = "list"
+  type = list
 }
 
 variable "azs" {
-  type = "list"
+  type = list
 }
 
 variable "create_bastion" {

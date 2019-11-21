@@ -1,29 +1,29 @@
 resource "aws_mq_broker" "deductor_mq_broker" {
-  broker_name                = "${var.broker_name}"
-  deployment_mode            = "${var.deployment_mode}"
-  engine_type                = "${var.engine_type}"
-  engine_version             = "${var.engine_version}"
-  host_instance_type         = "${var.host_instance_type}"
-  auto_minor_version_upgrade = "${var.auto_minor_version_upgrade}"
-  apply_immediately          = "${var.apply_immediately}"
+  broker_name                = var.broker_name
+  deployment_mode            = var.deployment_mode
+  engine_type                = var.engine_type
+  engine_version             = var.engine_version
+  host_instance_type         = var.host_instance_type
+  auto_minor_version_upgrade = var.auto_minor_version_upgrade
+  apply_immediately          = var.apply_immediately
   publicly_accessible        = "false"
-  security_groups            = ["${aws_security_group.mq_sg.id}"]
-  subnet_ids                 = "${module.vpc.private_subnets}"
+  security_groups            = [aws_security_group.mq_sg.id]
+  subnet_ids                 = module.vpc.private_subnets
 
   logs {
-    general = "${var.general_log}"
-    audit   = "${var.audit_log}"
+    general = var.general_log
+    audit   = var.audit_log
   }
 
   maintenance_window_start_time {
-    day_of_week = "${var.maintenance_day_of_week}"
-    time_of_day = "${var.maintenance_time_of_day}"
-    time_zone   = "${var.maintenance_time_zone}"
+    day_of_week = var.maintenance_day_of_week
+    time_of_day = var.maintenance_time_of_day
+    time_zone   = var.maintenance_time_zone
   }
 
   user {
-    username = "${random_string.mq_admin_user.result}"
-    password = "${random_string.mq_admin_password.result}"
+    username = random_string.mq_admin_user.result
+    password = random_string.mq_admin_password.result
     console_access = true
   }
 }
@@ -34,8 +34,8 @@ resource "aws_secretsmanager_secret" "mq_admin_username" {
 }
 
 resource "aws_secretsmanager_secret_version" "mq_admin_user_value" {
-  secret_id     = "${aws_secretsmanager_secret.mq_admin_username.id}"
-  secret_string = "${random_string.mq_admin_user.result}"
+  secret_id     = aws_secretsmanager_secret.mq_admin_username.id
+  secret_string = random_string.mq_admin_user.result
 }
 
 resource "aws_secretsmanager_secret" "mq_admin_password" {
@@ -44,8 +44,8 @@ resource "aws_secretsmanager_secret" "mq_admin_password" {
 }
 
 resource "aws_secretsmanager_secret_version" "mq_admin_password_value" {
-  secret_id     = "${aws_secretsmanager_secret.mq_admin_password.id}"
-  secret_string = "${random_string.mq_admin_password.result}"
+  secret_id     = aws_secretsmanager_secret.mq_admin_password.id
+  secret_string = random_string.mq_admin_password.result
 }
 
 resource "random_string" "mq_admin_user" {
@@ -67,7 +67,7 @@ resource "aws_ssm_parameter" "amqp-endpoint-0" {
   value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.1
 
   tags = {
-    Environment = "${var.environment}"
+    Environment = var.environment
   }
 }
 
@@ -78,6 +78,6 @@ resource "aws_ssm_parameter" "amqp-endpoint-1" {
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.1
 
   tags = {
-    Environment = "${var.environment}"
+    Environment = var.environment
   }
 }
