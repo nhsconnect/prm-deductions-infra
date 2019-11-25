@@ -19,7 +19,27 @@ resource "aws_alb_listener" "alb-listener" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.alb-tg.arn
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Error"
+      status_code  = "501"
+    }
+  }
+}
+
+resource "aws_alb_listener_rule" "pds-adaptor-alb-listener-rule" {
+  listener_arn = aws_alb_listener.alb-listener.arn
+  priority     = 100
+
+  action {
     type             = "forward"
+    target_group_arn = aws_alb_target_group.alb-tg.arn
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["dev.pds-adaptor.patient-dedutions.nhs.uk"]
   }
 }
