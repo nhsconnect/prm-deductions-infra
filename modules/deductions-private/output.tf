@@ -13,3 +13,7 @@ output "deductions_private_private_subnets" {
 output "deductions_private_pds_a_alb_tg_arn" {
   value = aws_alb_target_group.alb-tg.arn
 }
+
+output "deductions_private_alb_dns" {
+  value = aws_alb.alb.dns_name
+}
