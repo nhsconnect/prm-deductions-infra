@@ -4,10 +4,10 @@ resource "aws_security_group" "mq_sg" {
 
     ingress {
         protocol                 = "tcp"
-        from_port                = "8162"
-        to_port                  = "8162"
-        cidr_blocks              = ["10.20.101.0/24", "10.20.102.0/24"]      
-    } 
+        from_port                = "61617"
+        to_port                  = "61617"
+        cidr_blocks              = ["10.20.101.0/24", "10.20.102.0/24", "10.20.1.0/24", "10.20.2.0/24"]
+    }
 
     ingress {
         protocol                 = "tcp"
