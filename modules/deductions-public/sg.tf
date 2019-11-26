@@ -10,6 +10,13 @@ resource "aws_security_group" "lb-sg" {
         cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
     }
 
+    ingress {
+        protocol    = "tcp"
+        from_port   = 443
+        to_port     = 443
+        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
+    }        
+
     egress {
         from_port = 0
         to_port   = 0

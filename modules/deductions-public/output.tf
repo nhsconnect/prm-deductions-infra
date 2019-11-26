@@ -11,7 +11,7 @@ output "deductions_public_private_subnets" {
 }
 
 output "deductions_public_alb_tg_arn" {
-  value       = aws_alb_target_group.alg-tg.arn
+  value       = aws_alb_target_group.alb-tg.arn
 }
 
 output "deductions_public_alb_dns" {

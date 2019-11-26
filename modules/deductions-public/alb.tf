@@ -6,22 +6,40 @@ resource "aws_alb" "alb" {
   security_groups = [aws_security_group.lb-sg.id]
 }
 
-resource "aws_alb_target_group" "alg-tg" {
-  name        = "${var.environment}-${var.component_name}-alg-tg"
+resource "aws_alb_target_group" "alb-tg" {
+  name        = "${var.environment}-${var.component_name}-alb-tg"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main-vpc.id
   target_type = "ip"
 }
 
-# Redirect all traffic from the ALB to the target group
-resource "aws_alb_listener" "alg-listener" {
+resource "aws_alb_listener" "alb-listener-http" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.alg-tg.arn
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_alb_listener" "alb-listener-https" {
+  load_balancer_arn = aws_alb.alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = data.aws_acm_certificate.portal_acm_certificate.arn
+
+  default_action {
+    target_group_arn = aws_alb_target_group.alb-tg.arn
     type             = "forward"
   }
 }
