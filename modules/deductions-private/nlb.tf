@@ -12,7 +12,7 @@ resource "aws_lb" "deductor_mq_console_nlb" {
 
 resource "aws_lb_listener" "deductor_mq_console_nlb_listener" {
   load_balancer_arn = aws_lb.deductor_mq_console_nlb[count.index].arn
-  port              = "80"
+  port              = "443"
   protocol          = "TCP"
 
   default_action {

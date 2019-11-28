@@ -3,24 +3,27 @@ resource "aws_security_group" "mq_sg" {
     name   = "deductor-mq-sg"
 
     ingress {
-        protocol                 = "tcp"
-        from_port                = "61617"
-        to_port                  = "61617"
-        cidr_blocks              = ["10.20.101.0/24", "10.20.102.0/24", "10.20.1.0/24", "10.20.2.0/24"]
+        description         = "Access to Deductions Private ECS Tasks"
+        protocol            = "tcp"
+        from_port           = "61614"
+        to_port             = "61614"
+        security_groups     = [aws_security_group.ecs-tasks-sg.id]
     }
 
     ingress {
-        protocol                 = "tcp"
-        from_port                = "8162"
-        to_port                  = "8162"
-        cidr_blocks              = ["0.0.0.0/0"]      
+        description         = "Access to MQ Admin Console NLB"
+        protocol            = "tcp"
+        from_port           = "8162"
+        to_port             = "8162"
+        cidr_blocks         = ["10.20.101.113/32", "10.20.102.41/32"]      
     } 
 
     egress {
-        protocol                 = "tcp"
-        from_port                = "0"
-        to_port                  = "0"
-        cidr_blocks              = ["0.0.0.0/0"]      
+        description         = "Allow All Outbound"
+        protocol            = "tcp" 
+        from_port           = "0"
+        to_port             = "0"
+        cidr_blocks         = ["0.0.0.0/0"]      
     }         
 
   tags = {
@@ -33,6 +36,7 @@ resource "aws_security_group" "ecs-tasks-sg" {
     vpc_id      = module.vpc.vpc_id
 
     egress {
+        description = "Allow All Outbound"
         protocol    = "-1"
         from_port   = 0
         to_port     = 0
@@ -50,6 +54,7 @@ resource "aws_security_group" "pds-adaptor-lb-sg" {
     vpc_id      = module.vpc.vpc_id
 
     ingress {
+        description = "Allow Whitelisted Traffic to access PDS Adaptor ALB"
         protocol    = "tcp"
         from_port   = 80
         to_port     = 80
@@ -57,9 +62,10 @@ resource "aws_security_group" "pds-adaptor-lb-sg" {
     }
 
     egress {
-        from_port = 0
-        to_port   = 0
-        protocol  = "-1"
+        description = "Allow All Outbound"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
         cidr_blocks = ["0.0.0.0/0"]
     }
 
