@@ -36,6 +36,11 @@ output "deductions_private_pds_a_alb_tg_arn" {
   value       = module.deductions-private.deductions_private_pds_a_alb_tg_arn
 }
 
+output "deductions_private_gp2gp_a_alb_tg_arn" {
+  value       = module.deductions-private.deductions_private_gp2gp_a_alb_tg_arn
+}
+
+
 output "deductions_private_alb_dns" {
   value       = module.deductions-private.deductions_private_alb_dns
 }

@@ -12,6 +12,14 @@ resource "aws_alb_target_group" "alb-tg" {
   target_type = "ip"
 }
 
+resource "aws_alb_target_group" "gp2gp-alb-tg" {
+  name        = "${var.environment}-${var.component_name}-gp2gp-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = module.vpc.vpc_id
+  target_type = "ip"
+}
+
 # Redirect all traffic from the ALB to the target group
 resource "aws_alb_listener" "alb-listener" {
   load_balancer_arn = aws_alb.alb.arn
@@ -48,14 +56,9 @@ resource "aws_alb_listener_rule" "gp2gp-alb-listener-rule" {
   listener_arn = aws_alb_listener.alb-listener.arn
   priority     = 101
 
-  action{
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "GP2GP Success"
-      status_code  = "200"
-    }
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.gp2gp-alb-tg.arn
   }
 
   condition {

@@ -22,42 +22,16 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   }
 
   user {
-    username = random_string.mq_admin_user.result
-    password = random_string.mq_admin_password.result
+    username = data.aws_secretsmanager_secret_version.mq-admin-username.secret_string
+    password = data.aws_secretsmanager_secret_version.mq-admin-password.secret_string
     console_access = true
   }
-}
 
-resource "aws_secretsmanager_secret" "mq_admin_username" {
-  name = "/nhs/dev/mq2/username"
-  description = "Amazon MQ Admin Username"
-}
-
-resource "aws_secretsmanager_secret_version" "mq_admin_user_value" {
-  secret_id     = aws_secretsmanager_secret.mq_admin_username.id
-  secret_string = random_string.mq_admin_user.result
-}
-
-resource "aws_secretsmanager_secret" "mq_admin_password" {
-  name = "/nhs/dev/mq2/password"
-  description = "Amazon MQ Admin Password"
-}
-
-resource "aws_secretsmanager_secret_version" "mq_admin_password_value" {
-  secret_id     = aws_secretsmanager_secret.mq_admin_password.id
-  secret_string = random_string.mq_admin_password.result
-}
-
-resource "random_string" "mq_admin_user" {
-  length  = 8
-  special = false
-  number  = false
-}
-
-resource "random_string" "mq_admin_password" {
-  length  = 15
-  special = false
-  number  = true
+  user {
+    username = data.aws_secretsmanager_secret_version.mq-app-username.secret_string
+    password = data.aws_secretsmanager_secret_version.mq-app-password.secret_string
+    console_access = false
+  }
 }
 
 resource "aws_ssm_parameter" "amqp-endpoint-0" {
