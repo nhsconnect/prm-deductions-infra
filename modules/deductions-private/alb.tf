@@ -1,5 +1,5 @@
 resource "aws_alb" "alb" {
-  name            = "${var.environment}-${var.component_name}-pds-a-alb"
+  name            = "${var.environment}-${var.component_name}-alb"
   subnets         = module.vpc.public_subnets 
   security_groups = [aws_security_group.pds-adaptor-lb-sg.id]
 }
@@ -63,6 +63,6 @@ resource "aws_alb_listener_rule" "gp2gp-alb-listener-rule" {
 
   condition {
     field  = "host-header"
-    values = ["dev.gp2gp.patient-deductions.nhs.uk"]
+    values = ["dev.gp2gp-adaptor.patient-deductions.nhs.uk"]
   }
 }
