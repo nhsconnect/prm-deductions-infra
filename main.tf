@@ -45,3 +45,9 @@ module "deductions-private" {
     maintenance_time_zone               = var.maintenance_time_zone
     mq_allow_public_console_access      = var.mq_allow_public_console_access
 }
+
+module "deductions-core" {
+    source              = "./modules/deductions-core/"
+    environment         = var.environment
+    component_name      = var.deductions_core_component_name
+}

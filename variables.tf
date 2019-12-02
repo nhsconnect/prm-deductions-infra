@@ -15,6 +15,10 @@ variable "deductions_private_component_name" {
   type = string
 }
 
+variable "deductions_core_component_name" {
+  type = string
+}
+
 variable "deductions_public_cidr" {
   type = string
 }
