@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "db-cluster" {
     cluster_identifier      = "ehr-db-cluster"
     engine                  = "aurora-postgresql"
-    availability_zones      = ["eu-west-2a", "eu-west-2b"]
+    availability_zones      = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
     database_name           = "ehrdb"
     master_username         = data.aws_secretsmanager_secret_version.db-username.secret_string
     master_password         = data.aws_secretsmanager_secret_version.db-password.secret_string
