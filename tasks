@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -Eeo pipefail
+
+AWS_REGION=eu-west-2
+
+function tf_plan {
+  operation=$1
+
+  terraform init
+  terraform get # modules
+  if [[ "${operation}" == "create" ]]; then
+    terraform plan -var-file=terraform.tfvars -out="nhs_deployment.tfplan"
+  elif [[ "${operation}" == "destroy" ]]; then
+    terraform plan -var-file=terraform.tfvars -out="nhs_deployment.tfplan" -destroy
+  else
+    echo "Unknown operation (should be create or destroy), got: ${operation}"
+    exit 1
+  fi
+}
+
+function tf_apply {
+  terraform init
+  terraform get # modules
+  terraform apply nhs_deployment.tfplan
+  terraform output -json > tf-out.json
+}
+
+command="$1"
+case "${command}" in
+  tf)
+      dojo "bash"
+      ;;
+  _tf_plan)
+      tf_plan "$2"
+      ;;
+  tf_plan)
+      dojo "./tasks _tf_plan $2"
+      ;;
+  _tf_apply)
+      tf_apply
+      ;;
+  tf_apply)
+      dojo "./tasks _tf_apply"
+      ;;
+  *)
+      echo "Invalid command: '${command}'"
+      exit 1
+      ;;
+esac
+set +e

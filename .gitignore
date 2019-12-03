@@ -311,4 +311,5 @@ latest.zip
 
 *.pfx
 *.pem
-
+/nhs_deployment.tfplan
+/tf-out.json

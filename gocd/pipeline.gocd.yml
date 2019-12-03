@@ -1,0 +1,29 @@
+format_version: 4
+pipelines:
+  "prm-deductions-infra":
+    group: deductions
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+    stages:
+      - deploy:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: tf-out.json
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan create
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_apply
