@@ -21,3 +21,15 @@ module "vpc" {
         Environment = "dev"
     }
 }
+
+resource "aws_ssm_parameter" "private_rtb" {
+    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/tf/deductions_private/private_rtb"
+    type = "String"
+    value = module.vpc.private_route_table_ids[0]
+}
+
+resource "aws_ssm_parameter" "public_rtb" {
+    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/tf/deductions_private/public_rtb"
+    type = "String"
+    value = module.vpc.public_route_table_ids[0]
+}
