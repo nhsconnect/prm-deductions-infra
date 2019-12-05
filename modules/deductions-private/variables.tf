@@ -13,6 +13,14 @@ variable "component_name" {
   default     = "deductions-private"
 }
 
+variable "pds_deregistration_delay" {
+  default = 15
+}
+
+variable "gp2gp_deregistration_delay" {
+  default = 15
+}
+
 # deductions-public mq variables
 variable "broker_name" {
   type = string
