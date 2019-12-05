@@ -7,15 +7,15 @@ resource "aws_security_group" "lb-sg" {
         protocol    = "tcp"
         from_port   = 80
         to_port     = 80
-        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
+        cidr_blocks = concat(["10.0.0.0/8"], split(",", data.aws_ssm_parameter.inbound_ips.value))
     }
 
     ingress {
         protocol    = "tcp"
         from_port   = 443
         to_port     = 443
-        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
-    }        
+        cidr_blocks = concat(["10.0.0.0/8"], split(",", data.aws_ssm_parameter.inbound_ips.value))
+    }
 
     egress {
         from_port = 0
@@ -51,5 +51,5 @@ resource "aws_security_group" "ecs-tasks-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-    }    
+    }
 }
