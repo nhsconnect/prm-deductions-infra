@@ -13,6 +13,12 @@ resource "aws_rds_cluster" "db-cluster" {
     skip_final_snapshot = true
 }
 
+resource "aws_ssm_parameter" "rds_endpoint" {
+    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/core/rds_endpoint"
+    type = "String"
+    value = aws_rds_cluster.db-cluster.endpoint
+}
+
 resource "aws_db_subnet_group" "db-cluster-subnet-group" {
   name       = "ehr-db-subnet-group"
   subnet_ids = module.vpc.database_subnets
