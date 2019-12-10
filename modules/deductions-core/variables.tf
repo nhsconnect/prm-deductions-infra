@@ -12,3 +12,7 @@ variable "component_name" {
   type        = string
   default     = "deductions-core"
 }
+
+variable "ehr_deregistration_delay" {
+  default = 30
+}
