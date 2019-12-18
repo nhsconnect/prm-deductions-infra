@@ -7,11 +7,12 @@ resource "aws_alb" "alb" {
 }
 
 resource "aws_alb_target_group" "alb-tg" {
-  name        = "${var.environment}-${var.component_name}-alb-tg"
-  port        = 3000
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main-vpc.id
-  target_type = "ip"
+  name                  = "${var.environment}-${var.component_name}-alb-tg"
+  port                  = 3000
+  protocol              = "HTTP"
+  vpc_id                = aws_vpc.main-vpc.id
+  target_type           = "ip"
+  deregistration_delay  = 20
 }
 
 resource "aws_alb_listener" "alb-listener-http" {
