@@ -11,8 +11,8 @@ output "deductions_public_private_subnets" {
   value       = module.deductions-public.deductions_public_private_subnets
 }
 
-output "deductions_public_alb_tg_arn" {
-  value       = module.deductions-public.deductions_public_alb_tg_arn
+output "deductions_public_vpc_id" {
+  value       = module.deductions-public.deductions_public_vpc_id
 }
 
 output "deductions_public_alb_dns" {
