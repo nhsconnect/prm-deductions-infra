@@ -19,8 +19,8 @@ output "deductions_public_alb_dns" {
   value       = module.deductions-public.deductions_public_alb_dns
 }
 
-output "deductions_public_alb_urn" {
-  value       = module.deductions-public.deductions_public_alb_urn
+output "deductions_public_alb_arn" {
+  value       = module.deductions-public.deductions_public_alb_arn
 }
 
 # Deductions Private Outputs
