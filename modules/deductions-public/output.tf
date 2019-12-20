@@ -18,3 +18,8 @@ output "deductions_public_vpc_id" {
   value       = aws_vpc.main-vpc.id
   description = "VPC Id of the deductions public VPC"
 }
+
+output "deductions_public_alb_urn" {
+  value       = aws_alb.alb.urn
+  description = "urn of the deductions public alb"
+}
