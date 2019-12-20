@@ -10,10 +10,11 @@ output "deductions_public_private_subnets" {
   value       = aws_subnet.private-subnets.*.id
 }
 
-output "deductions_public_alb_tg_arn" {
-  value       = aws_alb_target_group.alb-tg.arn
-}
-
 output "deductions_public_alb_dns" {
   value = aws_alb.alb.dns_name
+}
+
+output "deductions_public_vpc_id" {
+  value       = aws_vpc.main-vpc.id
+  description = "VPC Id of the deductions public VPC"
 }
