@@ -3,11 +3,20 @@
 set -Eeo pipefail
 
 AWS_REGION=eu-west-2
+NHS_SERVICE=deductions-infra
+
+function check_env {
+  if [[ -z "${NHS_ENVIRONMENT}" ]]; then
+    echo "Must set NHS_ENVIRONMENT"
+    exit 1
+  fi
+}
 
 function tf_plan {
+  check_env
   operation=$1
 
-  terraform init
+  terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
     terraform plan -var-file=terraform.tfvars -out="nhs_deployment.tfplan"
@@ -35,12 +44,14 @@ case "${command}" in
       tf_plan "$2"
       ;;
   tf_plan)
+      check_env
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_apply)
       tf_apply
       ;;
   tf_apply)
+      check_env
       dojo "./tasks _tf_apply"
       ;;
   *)

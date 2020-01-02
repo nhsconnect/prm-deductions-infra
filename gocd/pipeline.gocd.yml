@@ -7,8 +7,10 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - deploy:
+      - deploy_dev:
           clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: dev
           jobs:
             apply:
               resources:
