@@ -1,4 +1,28 @@
 format_version: 4
+common:
+  apply_job: &apply_job
+    resources:
+      - docker
+    artifacts:
+      - build:
+          source: tf-out.json
+    tasks:
+      - exec:
+          command: /bin/bash
+          arguments:
+            - -c
+            - ./tasks create_secrets
+      - exec:
+          command: /bin/bash
+          arguments:
+            - -c
+            - ./tasks tf_plan create
+      - exec:
+          command: /bin/bash
+          arguments:
+            - -c
+            - ./tasks tf_apply
+
 pipelines:
   "prm-deductions-infra":
     group: deductions
@@ -12,20 +36,11 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: dev
           jobs:
-            apply:
-              resources:
-                - docker
-              artifacts:
-                - build:
-                    source: tf-out.json
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks tf_plan create
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks tf_apply
+            apply: *apply_job
+
+      - deploy_test:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: test
+          jobs:
+            apply: *apply_job

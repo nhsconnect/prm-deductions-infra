@@ -22,14 +22,14 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   }
 
   user {
-    username = data.aws_secretsmanager_secret_version.mq-admin-username.secret_string
-    password = data.aws_secretsmanager_secret_version.mq-admin-password.secret_string
+    username = data.aws_ssm_parameter.mq-admin-username.value
+    password = data.aws_ssm_parameter.mq-admin-password.value
     console_access = true
   }
 
   user {
-    username = data.aws_secretsmanager_secret_version.mq-app-username.secret_string
-    password = data.aws_secretsmanager_secret_version.mq-app-password.secret_string
+    username = data.aws_ssm_parameter.mq-app-username.value
+    password = data.aws_ssm_parameter.mq-app-password.value
     console_access = false
   }
 }

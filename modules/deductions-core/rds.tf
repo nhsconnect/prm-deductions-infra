@@ -3,8 +3,8 @@ resource "aws_rds_cluster" "db-cluster" {
     engine                  = "aurora-postgresql"
     availability_zones      = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
     database_name           = "ehrdb"
-    master_username         = data.aws_secretsmanager_secret_version.db-username.secret_string
-    master_password         = data.aws_secretsmanager_secret_version.db-password.secret_string
+    master_username         = data.aws_ssm_parameter.db-username.value
+    master_password         = data.aws_ssm_parameter.db-password.value
     backup_retention_period = 5
     preferred_backup_window = "07:00-09:00"
     vpc_security_group_ids  = [aws_security_group.db-sg.id]
