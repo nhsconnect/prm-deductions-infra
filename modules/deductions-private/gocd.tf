@@ -57,7 +57,7 @@ data "aws_ssm_parameter" "route_table_id" {
 # Add a route to the deductions-private VPC in the gocd VPC route table
 resource "aws_route" "gocd_to_deductions_private_route" {
   route_table_id = data.aws_ssm_parameter.route_table_id.value
-  destination_cidr_block = "10.20.0.0/16"
+  destination_cidr_block = var.cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.gocd_peering_connection.id
 }
 

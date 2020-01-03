@@ -39,6 +39,44 @@ variable "deductions_public_create_bastion" {
   type = bool
 }
 
+variable "deductions_private_cidr" {
+  type = string
+}
+
+variable "deductions_private_public_subnets" {
+  type = list
+}
+
+variable "deductions_private_private_subnets" {
+  type = list
+}
+
+variable "deductions_private_azs" {
+  type = list
+}
+
+variable "deductions_core_cidr" {
+  type = string
+}
+
+variable "deductions_core_public_subnets" {
+  type = list
+}
+
+variable "deductions_core_private_subnets" {
+  type = list
+}
+
+variable "deductions_core_database_subnets" {
+  type = list
+}
+
+variable "deductions_core_azs" {
+  type = list
+}
+
+variable "mhs_cidr" {}
+
 # deductions-public mq variables
 variable "broker_name" {
   type = string

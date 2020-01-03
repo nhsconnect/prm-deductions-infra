@@ -49,6 +49,6 @@ resource "aws_alb_listener_rule" "ehr-repo-listener-rule" {
 
   condition {
     field  = "host-header"
-    values = ["dev.ehr-repo.patient-deductions.nhs.uk"]
+    values = ["${var.environment}.ehr-repo.patient-deductions.nhs.uk"]
   }
 }

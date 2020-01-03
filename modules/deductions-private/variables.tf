@@ -13,6 +13,22 @@ variable "component_name" {
   default     = "deductions-private"
 }
 
+variable "cidr" {}
+
+variable "mhs_cidr" {}
+
+variable "public_subnets" {
+  type = list
+}
+
+variable "private_subnets" {
+  type = list
+}
+
+variable "azs" {
+  type = list
+}
+
 variable "pds_deregistration_delay" {
   default = 15
 }

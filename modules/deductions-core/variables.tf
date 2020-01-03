@@ -16,3 +16,21 @@ variable "component_name" {
 variable "ehr_deregistration_delay" {
   default = 30
 }
+
+variable "cidr" {}
+
+variable "public_subnets" {
+  type = list
+}
+
+variable "private_subnets" {
+  type = list
+}
+
+variable "database_subnets" {
+  type = list
+}
+
+variable "azs" {
+  type = list
+}

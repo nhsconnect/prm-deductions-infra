@@ -2,11 +2,11 @@ module "vpc" {
     source                  = "terraform-aws-modules/vpc/aws"
 
     name                    = "${var.environment}-${var.component_name}-vpc"
-    cidr                    = "10.20.0.0/16"
+    cidr                    = var.cidr
 
-    azs                     = ["eu-west-2a", "eu-west-2b"]
-    private_subnets         = ["10.20.1.0/24", "10.20.2.0/24"]
-    public_subnets          = ["10.20.101.0/24", "10.20.102.0/24"]
+    azs                     = var.azs
+    private_subnets         = var.private_subnets
+    public_subnets          = var.public_subnets
 
     enable_vpn_gateway      = false
 
@@ -18,7 +18,7 @@ module "vpc" {
 
     tags = {
         Terraform = "true"
-        Environment = "dev"
+        Environment = var.environment
     }
 }
 

@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "ingress_console_nlb" {
   protocol            = "tcp"
   from_port           = "8162"
   to_port             = "8162"
-  cidr_blocks         = ["10.20.101.113/32", "10.20.102.41/32"]
+  cidr_blocks         = module.vpc.public_subnets_cidr_blocks
 }
 
 resource "aws_security_group_rule" "ingress_mhs" {
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "ingress_mhs" {
   protocol            = "tcp"
   from_port           = "5671"
   to_port             = "5671"
-  cidr_blocks         = ["10.33.0.0/16"]
+  cidr_blocks         = [var.mhs_cidr]
 }
 
 resource "aws_security_group_rule" "egress_all" {

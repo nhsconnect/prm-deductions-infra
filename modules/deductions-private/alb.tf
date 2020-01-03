@@ -50,7 +50,7 @@ resource "aws_alb_listener_rule" "pds-adaptor-alb-listener-rule" {
 
   condition {
     field  = "host-header"
-    values = ["dev.pds-adaptor.patient-deductions.nhs.uk"]
+    values = ["${var.environment}.pds-adaptor.patient-deductions.nhs.uk"]
   }
 }
 
@@ -65,6 +65,6 @@ resource "aws_alb_listener_rule" "gp2gp-alb-listener-rule" {
 
   condition {
     field  = "host-header"
-    values = ["dev.gp2gp-adaptor.patient-deductions.nhs.uk"]
+    values = ["${var.environment}.gp2gp-adaptor.patient-deductions.nhs.uk"]
   }
 }

@@ -31,6 +31,12 @@ module "deductions-private" {
     environment         = var.environment
     component_name      = var.deductions_private_component_name
 
+    cidr                = var.deductions_private_cidr
+    mhs_cidr            = var.mhs_cidr
+    public_subnets      = var.deductions_private_public_subnets
+    private_subnets     = var.deductions_private_private_subnets
+    azs                 = var.deductions_private_azs
+
     broker_name                         = var.broker_name
     deployment_mode                     = var.deployment_mode
     engine_type                         = var.engine_type
@@ -50,4 +56,10 @@ module "deductions-core" {
     source              = "./modules/deductions-core/"
     environment         = var.environment
     component_name      = var.deductions_core_component_name
+
+    cidr                = var.deductions_core_cidr
+    public_subnets      = var.deductions_core_public_subnets
+    private_subnets     = var.deductions_core_private_subnets
+    database_subnets    = var.deductions_core_database_subnets
+    azs                 = var.deductions_core_azs
 }

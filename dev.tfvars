@@ -6,10 +6,23 @@ deductions_public_component_name    = "deductions-public"
 deductions_private_component_name   = "deductions-private"
 deductions_core_component_name      = "deductions-core"
 
+mhs_cidr                            = "10.33.0.0/16"
+
 deductions_public_cidr              = "10.40.0.0/16"
 deductions_public_public_subnets    = ["10.40.1.0/24", "10.40.2.0/24"]
 deductions_public_private_subnets   = ["10.40.101.0/24", "10.40.102.0/24"]
 deductions_public_azs               = ["eu-west-2a", "eu-west-2b"]
+
+deductions_private_cidr              = "10.20.0.0/16"
+deductions_private_public_subnets    = ["10.20.101.0/24", "10.20.102.0/24"]
+deductions_private_private_subnets   = ["10.20.1.0/24", "10.20.2.0/24"]
+deductions_private_azs               = ["eu-west-2a", "eu-west-2b"]
+
+deductions_core_cidr              = "10.25.0.0/16"
+deductions_core_public_subnets    = ["10.25.101.0/24", "10.25.102.0/24"]
+deductions_core_private_subnets   = ["10.25.1.0/24", "10.25.2.0/24"]
+deductions_core_database_subnets  = ["10.25.111.0/24", "10.25.112.0/24"]
+deductions_core_azs               = ["eu-west-2a", "eu-west-2b"]
 
 deductions_public_create_bastion    = false
 
@@ -26,6 +39,3 @@ maintenance_day_of_week             = "SUNDAY"
 maintenance_time_of_day             = "03:00"
 maintenance_time_zone               = "GMT"
 mq_allow_public_console_access      = true
-
-
-
