@@ -41,3 +41,9 @@ resource "aws_ssm_parameter" "deductions_public_private_subnets" {
   type = "String"
   value = join(",", aws_subnet.private-subnets.*.id)
 }
+
+resource "aws_ssm_parameter" "deductions_public_alb_dns" {
+  name = "/nhs/${var.environment}/deductions_public_alb_dns"
+  type = "String"
+  value = aws_alb.alb.dns_name
+}

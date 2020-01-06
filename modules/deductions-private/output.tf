@@ -57,3 +57,9 @@ resource "aws_ssm_parameter" "deductions_private_pds_a_alb_tg_arn" {
   type = "String"
   value = aws_alb_target_group.alb-tg.arn
 }
+
+resource "aws_ssm_parameter" "deductions_private_alb_dns" {
+  name = "/nhs/${var.environment}/deductions_private_alb_dns"
+  type = "String"
+  value = aws_alb.alb.dns_name
+}
