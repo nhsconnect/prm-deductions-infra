@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "db-cluster" {
-    cluster_identifier      = "ehr-db-cluster"
+    cluster_identifier      = "${var.environment}-ehr-db-cluster"
     engine                  = "aurora-postgresql"
-    availability_zones      = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
+    availability_zones      = var.azs
     database_name           = "ehrdb"
     master_username         = data.aws_ssm_parameter.db-username.value
     master_password         = data.aws_ssm_parameter.db-password.value
@@ -20,17 +20,17 @@ resource "aws_ssm_parameter" "rds_endpoint" {
 }
 
 resource "aws_db_subnet_group" "db-cluster-subnet-group" {
-  name       = "ehr-db-subnet-group"
+  name       = "${var.environment}-ehr-db-subnet-group"
   subnet_ids = module.vpc.database_subnets
 
   tags = {
-    Name = "ehr-db-subnet-group"
+    Name = "${var.environment}-ehr-db-subnet-group"
   }
 }
 
 resource "aws_rds_cluster_instance" "ehr-db-instances" {
   count                 = 1
-  identifier            = "ehr-db-instance-${count.index}"
+  identifier            = "${var.environment}-ehr-db-instance-${count.index}"
   cluster_identifier    = aws_rds_cluster.db-cluster.id
   instance_class        = "db.t3.medium"
   engine                = "aurora-postgresql"

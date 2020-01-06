@@ -4,7 +4,7 @@ module "gocd" {
     source = "git::https://github.com/nhsconnect/prm-gocd-infra.git//remote-agents-module"
     environment = "prod"
     region = "${var.region}"
-    az = "eu-west-2a"
+    az = var.azs[0]
     vpc_id = module.vpc.vpc_id
     subnet_id = module.vpc.public_subnets[0]
     agent_resources = "${var.environment},deductions-private"

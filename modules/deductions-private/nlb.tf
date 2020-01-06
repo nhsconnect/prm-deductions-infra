@@ -1,5 +1,5 @@
 resource "aws_lb" "deductor_mq_console_nlb" {
-  name               = "deductor-mq-console-nlb"
+  name               = "${var.environment}-deductor-mq-console-nlb"
   internal           = false
   load_balancer_type = "network"
   subnets            = module.vpc.public_subnets

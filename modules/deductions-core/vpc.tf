@@ -19,6 +19,6 @@ module "vpc" {
 
     tags = {
         Terraform = "true"
-        Environment = "dev"
+        Environment = var.environment
     }
 }
