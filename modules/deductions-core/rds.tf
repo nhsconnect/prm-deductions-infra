@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "db-cluster" {
     cluster_identifier      = "${var.environment}-ehr-db-cluster"
     engine                  = "aurora-postgresql"
-    availability_zones      = var.azs
+    availability_zones      = concat(var.azs, ["eu-west-2c"])
     database_name           = "ehrdb"
     master_username         = data.aws_ssm_parameter.db-username.value
     master_password         = data.aws_ssm_parameter.db-password.value
