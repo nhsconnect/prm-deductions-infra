@@ -1,3 +1,10 @@
+locals {
+  agent_cidrs = [
+    for ip in split(",", data.aws_ssm_parameter.agent_ips.value):
+      "${ip}/32"
+  ]
+}
+
 resource "aws_security_group" "lb-sg" {
     name        = "${var.environment}-${var.component_name}-lb-sg"
     description = "controls access to the ALB"
@@ -7,14 +14,18 @@ resource "aws_security_group" "lb-sg" {
         protocol    = "tcp"
         from_port   = 80
         to_port     = 80
-        cidr_blocks = concat(["10.0.0.0/8"], split(",", data.aws_ssm_parameter.inbound_ips.value))
+        cidr_blocks = concat(["10.0.0.0/8"],
+          split(",", data.aws_ssm_parameter.inbound_ips.value),
+          local.agent_cidrs)
     }
 
     ingress {
         protocol    = "tcp"
         from_port   = 443
         to_port     = 443
-        cidr_blocks = concat(["10.0.0.0/8"], split(",", data.aws_ssm_parameter.inbound_ips.value))
+        cidr_blocks = concat(["10.0.0.0/8"],
+          split(",", data.aws_ssm_parameter.inbound_ips.value),
+          local.agent_cidrs)
     }
 
     egress {
