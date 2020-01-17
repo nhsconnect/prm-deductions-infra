@@ -64,6 +64,7 @@ module "deductions-core" {
     azs                 = var.deductions_core_azs
 
     allowed_cidr        = var.deductions_private_cidr
+    private_zone_id     = aws_route53_zone.private.zone_id
 }
 
 locals {

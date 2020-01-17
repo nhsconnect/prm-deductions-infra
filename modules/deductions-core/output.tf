@@ -59,6 +59,12 @@ resource "aws_ssm_parameter" "deductions_core_ehr_repo_alb_tg_arn" {
   value = aws_alb_target_group.ehr-repo-alb-tg.arn
 }
 
+resource "aws_ssm_parameter" "deductions_core_ehr_repo_internal_alb_tg_arn" {
+  name = "/nhs/${var.environment}/deductions_core_ehr_repo_internal_alb_tg_arn"
+  type = "String"
+  value = aws_alb_target_group.ehr-repo-alb-internal-tg.arn
+}
+
 resource "aws_ssm_parameter" "deductions_core_alb_dns" {
   name = "/nhs/${var.environment}/deductions_core_alb_dns"
   type = "String"
