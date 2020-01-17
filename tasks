@@ -109,10 +109,11 @@ case "${command}" in
       dojo "./tasks _create_secrets"
       ;;
   sanity_check)
-      ./tasks check_core_alb_available
+      dojo "./tasks _sanity_check"
       ;;
-  check_core_alb_available)
+  _sanity_check)
       check_env
+      nslookup ${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk
       curl -i --fail "http://${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk"
       ;;
   *)
