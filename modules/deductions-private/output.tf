@@ -23,6 +23,14 @@ output "deductions_private_gp2gp_a_alb_tg_arn" {
   value = aws_alb_target_group.gp2gp-alb-tg.arn
 }
 
+output "vpc_id" {
+  value = module.vpc.vpc_id
+}
+
+output "private_subnets_route_table_id" {
+  # All private nets share a route table
+  value = module.vpc.private_route_table_ids[0]
+}
 
 output "deductions_private_alb_dns" {
   value = aws_alb.alb.dns_name
