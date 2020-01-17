@@ -20,7 +20,7 @@ resource "aws_security_group" "ecs-tasks-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-    }    
+    }
 }
 
 resource "aws_security_group" "db-sg" {
@@ -37,7 +37,7 @@ resource "aws_security_group" "db-sg" {
 
     tags = {
         Name = "db-sg"
-    }    
+    }
 }
 
 resource "aws_security_group" "core-alb-sg" {
@@ -51,6 +51,14 @@ resource "aws_security_group" "core-alb-sg" {
         from_port   = 80
         to_port     = 80
         cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
+    }
+
+    ingress {
+        description = "Allow deductions private subnet to access Core ALB"
+        protocol    = "tcp"
+        from_port   = 80
+        to_port     = 80
+        cidr_blocks = [var.allowed_cidr]
     }
 
     egress {

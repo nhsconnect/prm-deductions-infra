@@ -19,6 +19,8 @@ variable "ehr_deregistration_delay" {
 
 variable "cidr" {}
 
+variable "allowed_cidr" {}
+
 variable "public_subnets" {
   type = list
 }

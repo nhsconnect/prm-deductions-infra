@@ -108,6 +108,13 @@ case "${command}" in
       check_env
       dojo "./tasks _create_secrets"
       ;;
+  sanity_check)
+      ./tasks check_core_alb_available
+      ;;
+  check_core_alb_available)
+      check_env
+      curl -i --fail "http://${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk"
+      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1

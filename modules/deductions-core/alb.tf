@@ -52,3 +52,23 @@ resource "aws_alb_listener_rule" "ehr-repo-listener-rule" {
     values = ["${var.environment}.ehr-repo.patient-deductions.nhs.uk"]
   }
 }
+
+resource "aws_alb_listener_rule" "alb-check-listener-rule" {
+  listener_arn = aws_alb_listener.alb-listener.arn
+  priority     = 200
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "ALB Alive and reachable"
+      status_code  = "200"
+    }
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["${var.environment}.alb.patient-deductions.nhs.uk"]
+  }
+}

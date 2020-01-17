@@ -37,6 +37,21 @@ pipelines:
             NHS_ENVIRONMENT: dev
           jobs:
             apply: *apply_job
+      - check_dev:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: dev
+          jobs:
+            test:
+              resources:
+                - dev
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks sanity_check
 
       - deploy_test:
           clean_workspace: true
@@ -44,3 +59,18 @@ pipelines:
             NHS_ENVIRONMENT: test
           jobs:
             apply: *apply_job
+      - check_test:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: test
+          jobs:
+            test:
+              resources:
+                - test
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks sanity_check

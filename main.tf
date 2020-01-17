@@ -62,4 +62,6 @@ module "deductions-core" {
     private_subnets     = var.deductions_core_private_subnets
     database_subnets    = var.deductions_core_database_subnets
     azs                 = var.deductions_core_azs
+
+    allowed_cidr        = var.deductions_private_cidr
 }
