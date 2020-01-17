@@ -75,3 +75,9 @@ resource "aws_ssm_parameter" "deductions_core_alb_dns" {
   type = "String"
   value = aws_alb.alb.dns_name
 }
+
+resource "aws_ssm_parameter" "deductions_core_internal_alb_dns" {
+  name = "/nhs/${var.environment}/deductions_core_internal_alb_dns"
+  type = "String"
+  value = aws_alb.alb-internal.dns_name
+}
