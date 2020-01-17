@@ -73,4 +73,5 @@ locals {
 
   deductions_core_private_subnets_route_table_id = module.deductions-core.private_subnets_route_table_id
   deductions_private_private_subnets_route_table_id = module.deductions-private.private_subnets_route_table_id
+  deductions_private_public_subnets_route_table_id = module.deductions-private.public_subnets_route_table_id
 }

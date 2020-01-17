@@ -35,6 +35,11 @@ output "private_subnets_route_table_id" {
   value = module.vpc.private_route_table_ids[0]
 }
 
+output "public_subnets_route_table_id" {
+  # All private nets share a route table
+  value = module.vpc.public_route_table_ids[0]
+}
+
 resource "aws_ssm_parameter" "deductions_core_ecs_cluster_id" {
   name = "/nhs/${var.environment}/deductions_core_ecs_cluster_id"
   type = "String"

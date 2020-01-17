@@ -32,6 +32,10 @@ output "private_subnets_route_table_id" {
   value = module.vpc.private_route_table_ids[0]
 }
 
+output "public_subnets_route_table_id" {
+  value = module.vpc.public_route_table_ids[0]
+}
+
 output "deductions_private_alb_dns" {
   value = aws_alb.alb.dns_name
 }
