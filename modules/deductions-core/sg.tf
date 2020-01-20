@@ -3,11 +3,14 @@ resource "aws_security_group" "ecs-tasks-sg" {
     vpc_id      = module.vpc.vpc_id
 
     ingress {
-        description     = "Allow traffic from ALB to PDS Adaptor"
+        description     = "Allow traffic from public and internal ALB to ehr-repo service"
         protocol        = "tcp"
         from_port       = "3000"
         to_port         = "3000"
-        security_groups = [aws_security_group.core-alb-sg.id]
+        security_groups = [
+          aws_security_group.core-alb-sg.id,
+          aws_security_group.core-alb-internal-sg.id
+        ]
     }
 
     egress {
@@ -28,7 +31,7 @@ resource "aws_security_group" "db-sg" {
     vpc_id      = module.vpc.vpc_id
 
     ingress {
-        description     = "Allow traffic from ALB to GP2GP Adaptor"
+        description     = "Allow traffic from ehr-repo to the db"
         protocol        = "tcp"
         from_port       = "5432"
         to_port         = "5432"
