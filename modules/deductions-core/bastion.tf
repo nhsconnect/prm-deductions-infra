@@ -60,6 +60,6 @@ output "public_ip" {
 }
 
 resource "aws_key_pair" "ssh_key" {
-  key_name   = "nhs-deductions-${var.prefix}-bastion"
+  key_name   = "${var.environment}-nhs-deductions-${var.prefix}-bastion"
   public_key = local.ssh_key
 }
