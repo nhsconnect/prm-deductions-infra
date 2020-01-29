@@ -90,7 +90,7 @@ resource "aws_security_group" "pds-adaptor-lb-sg" {
         protocol    = "tcp"
         from_port   = 80
         to_port     = 80
-        cidr_blocks = concat(["10.0.0.0/8"], split(",", data.aws_ssm_parameter.inbound_ips.value))
+        cidr_blocks = var.allowed_public_ips
     }
 
     egress {

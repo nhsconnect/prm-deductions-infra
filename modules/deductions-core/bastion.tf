@@ -41,8 +41,7 @@ resource "aws_security_group" "bastion_az1_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
-          ["10.0.0.0/8"])
+        cidr_blocks = var.allowed_public_ips
     }
     egress {
         from_port = 0

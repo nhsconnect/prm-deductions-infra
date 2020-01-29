@@ -11,6 +11,8 @@ variable "component_name" {
   type = string
 }
 
+variable "allowed_public_ips" {}
+
 variable "cidr" {
   type = string
 }
@@ -30,6 +32,3 @@ variable "azs" {
 variable "create_bastion" {
   type = bool
 }
-
-
-

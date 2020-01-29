@@ -17,6 +17,8 @@ variable "cidr" {}
 
 variable "mhs_cidr" {}
 
+variable "allowed_public_ips" {}
+
 variable "public_subnets" {
   type = list
 }

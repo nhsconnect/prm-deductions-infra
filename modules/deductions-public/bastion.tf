@@ -7,7 +7,7 @@ resource "aws_instance" "bastion_az1" {
     associate_public_ip_address     = true
     subnet_id                       = aws_subnet.public-subnets[0].id
     key_name                        = "deductions-web-bastion"
-    
+
     tags = {
         Name = "${var.environment}-${var.component_name}-bastion-az1"
     }
@@ -23,15 +23,15 @@ resource "aws_security_group" "bastion_az1_sg" {
         protocol    = "tcp"
         from_port   = 22
         to_port     = 22
-        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
+        cidr_blocks = var.allowed_public_ips
     }
 
     ingress {
         protocol    = "tcp"
         from_port   = 8080
         to_port     = 8080
-        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
-    }    
+        cidr_blocks = var.allowed_public_ips
+    }
 
     egress {
         from_port = 0

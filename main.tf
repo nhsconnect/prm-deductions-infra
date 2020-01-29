@@ -24,6 +24,8 @@ module "deductions-public" {
     azs                 = var.deductions_public_azs
 
     create_bastion      = var.deductions_public_create_bastion
+
+    allowed_public_ips  = local.allowed_public_ips
 }
 
 module "deductions-private" {
@@ -36,6 +38,8 @@ module "deductions-private" {
     public_subnets      = var.deductions_private_public_subnets
     private_subnets     = var.deductions_private_private_subnets
     azs                 = var.deductions_private_azs
+
+    allowed_public_ips  = local.allowed_public_ips
 
     broker_name                         = var.broker_name
     deployment_mode                     = var.deployment_mode
@@ -65,6 +69,7 @@ module "deductions-core" {
 
     allowed_cidr        = var.deductions_private_cidr
     private_zone_id     = aws_route53_zone.private.zone_id
+    allowed_public_ips  = local.allowed_public_ips
 }
 
 locals {

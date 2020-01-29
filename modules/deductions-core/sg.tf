@@ -54,7 +54,7 @@ resource "aws_security_group" "core-alb-sg" {
         protocol    = "tcp"
         from_port   = 80
         to_port     = 80
-        cidr_blocks = split(",", data.aws_ssm_parameter.inbound_ips.value)
+        cidr_blocks = var.allowed_public_ips
     }
 
     egress {
