@@ -74,6 +74,16 @@ function create_value {
   fi
 }
 
+function get_aws_value {
+  secret_id=$1
+  json=$(aws ssm get-parameter --region $AWS_REGION --name $secret_id)
+  if [ $? != 0 ]; then
+    >&2 echo "Failed to obtain SSM value: $secret_id"
+    exit 5
+  fi
+  echo $json | jq -r ".Parameter.Value"
+}
+
 command="$1"
 case "${command}" in
   tf)
@@ -115,6 +125,32 @@ case "${command}" in
       check_env
       nslookup ${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk
       curl -i --fail "http://${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk"
+      ;;
+  _detect_active_mq)
+      account_id=$(aws sts get-caller-identity | jq -r .Account)
+      MQ_ENDPOINT_1=$(get_aws_value "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/0")
+      MQ_ENDPOINT_2=$(get_aws_value "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/1")
+      MQ_HOST_1=$(echo $MQ_ENDPOINT_1 | sed 's#amqp+ssl://##' | sed 's#:5671##')
+      MQ_HOST_2=$(echo $MQ_ENDPOINT_2 | sed 's#amqp+ssl://##' | sed 's#:5671##')
+      if nc -zvw3 $MQ_HOST_1 5671; then
+        MQ_ENDPOINT_ACTIVE=$MQ_ENDPOINT_1
+      elif nc -zvw3 $MQ_HOST_2 5671; then
+        MQ_ENDPOINT_ACTIVE=$MQ_ENDPOINT_2
+      else
+        echo 'No MQ endpoint is reachable'
+        exit 3;
+      fi
+      aws ssm put-parameter \
+       --region "${AWS_REGION}" \
+       --name "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/active" \
+       --type String \
+       --overwrite \
+       --value "$MQ_ENDPOINT_ACTIVE"
+      echo "Stored active MQ endpoint at /NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/active"
+      ;;
+  detect_active_mq)
+      check_env
+      dojo "./tasks _detect_active_mq"
       ;;
   *)
       echo "Invalid command: '${command}'"
