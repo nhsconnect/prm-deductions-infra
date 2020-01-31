@@ -6,7 +6,7 @@ deductions_public_component_name    = "deductions-public"
 deductions_private_component_name   = "deductions-private"
 deductions_core_component_name      = "deductions-core"
 
-mhs_cidr                            = "10.34.0.0/16"
+mhs_cidr                            = "10.239.68.128/25"
 
 deductions_public_cidr              = "10.41.0.0/16"
 deductions_public_public_subnets    = ["10.41.101.0/24", "10.41.102.0/24"]
