@@ -11,6 +11,15 @@ resource "aws_alb_target_group" "alb-tg" {
   vpc_id      = module.vpc.vpc_id
   target_type = "ip"
   deregistration_delay = var.pds_deregistration_delay
+
+  health_check {
+    healthy_threshold   = 3
+    unhealthy_threshold = 5
+    timeout             = 5
+    interval            = 10
+    path                = "/health"
+    port                = 3000
+  }
 }
 
 resource "aws_alb_target_group" "gp2gp-alb-tg" {
