@@ -75,3 +75,15 @@ resource "aws_ssm_parameter" "deductions_private_alb_dns" {
   type = "String"
   value = aws_alb.alb.dns_name
 }
+
+resource "aws_ssm_parameter" "deductions_private_vpc_id" {
+  name = "/nhs/${var.environment}/deductions_private_vpc_id"
+  type = "String"
+  value = module.vpc.vpc_id
+}
+
+resource "aws_ssm_parameter" "deductions_private_alb_arn" {
+  name = "/nhs/${var.environment}/deductions_private_alb_arn"
+  type = "String"
+  value = aws_alb.alb.arn
+}
