@@ -1,7 +1,7 @@
 resource "aws_alb" "alb" {
   name            = "${var.environment}-${var.component_name}-alb"
   subnets         = module.vpc.public_subnets
-  security_groups = [aws_security_group.pds-adaptor-lb-sg.id]
+  security_groups = [aws_security_group.deductions-private-alb-sg.id]
 }
 
 resource "aws_alb_target_group" "alb-tg" {
