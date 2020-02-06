@@ -135,6 +135,6 @@ resource "aws_security_group" "deductions-private-alb-sg" {
     }
 
     tags = {
-        Name = "${var.environment}-pds-adaptor-${var.component_name}-lb-sg"
+        Name = "${var.environment}-deductions-private-alb-sg"
     }
 }
