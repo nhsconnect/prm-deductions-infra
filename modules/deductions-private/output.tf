@@ -52,6 +52,12 @@ resource "aws_ssm_parameter" "deductions_private_ecs_tasks_sg_id" {
   value = aws_security_group.ecs-tasks-sg.id
 }
 
+resource "aws_ssm_parameter" "deductions_private_gen_comp_sg_id" {
+  name = "/nhs/${var.environment}/deductions_private_gen_comp_sg_id"
+  type = "String"
+  value = aws_security_group.generic-comp-ecs-task-sg.id
+}
+
 resource "aws_ssm_parameter" "deductions_private_private_subnets" {
   name = "/nhs/${var.environment}/deductions_private_private_subnets"
   type = "String"
