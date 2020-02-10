@@ -160,6 +160,13 @@ resource "aws_security_group" "deductions-private-alb-sg" {
         cidr_blocks = var.allowed_public_ips
     }
 
+    ingress {
+        protocol    = "tcp"
+        from_port   = 443
+        to_port     = 443
+        cidr_blocks = var.allowed_public_ips
+    }
+    
     egress {
         description = "Allow All Outbound"
         from_port   = 0
