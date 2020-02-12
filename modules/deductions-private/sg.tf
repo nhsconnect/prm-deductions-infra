@@ -113,6 +113,40 @@ resource "aws_security_group" "generic-comp-ecs-task-sg" {
     }
 }
 
+resource "aws_security_group" "administration-portal-ecs-task-sg" {
+    name        = "${var.environment}-administration-portal-ecs-task-sg"
+    vpc_id      = module.vpc.vpc_id
+
+    ingress {
+        description     = "Allow traffic from ALB to Administration Portal Task"
+        protocol        = "tcp"
+        from_port       = "3000"
+        to_port         = "3000"
+        security_groups = [aws_security_group.deductions-private-alb-sg.id]
+    }
+
+    ingress {
+        description     = "Allow traffic from ALB to to Administration Portal Task"
+        protocol        = "tcp"
+        from_port       = "80"
+        to_port         = "80"
+        security_groups = [aws_security_group.deductions-private-alb-sg.id]
+    }
+
+    egress {
+        description = "Allow All Outbound"
+        protocol    = "-1"
+        from_port   = 0
+        to_port     = 0
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "${var.environment}-administration-portal-ecs-task-sg"
+    }
+}
+
+
 resource "aws_security_group" "deductions-private-alb-sg" {
     name        = "${var.environment}-${var.component_name}-alb-sg"
     description = "controls access to the ALB"
@@ -126,6 +160,13 @@ resource "aws_security_group" "deductions-private-alb-sg" {
         cidr_blocks = var.allowed_public_ips
     }
 
+    ingress {
+        protocol    = "tcp"
+        from_port   = 443
+        to_port     = 443
+        cidr_blocks = var.allowed_public_ips
+    }
+    
     egress {
         description = "Allow All Outbound"
         from_port   = 0
