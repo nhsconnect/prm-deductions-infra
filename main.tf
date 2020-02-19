@@ -24,6 +24,8 @@ module "deductions-public" {
     azs                 = var.deductions_public_azs
 
     allowed_public_ips  = local.allowed_public_ips
+
+    private_zone_id     = aws_route53_zone.private.zone_id
 }
 
 module "deductions-private" {

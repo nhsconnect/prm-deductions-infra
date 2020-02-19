@@ -28,3 +28,5 @@ variable "private_subnets" {
 variable "azs" {
   type = list
 }
+
+variable "private_zone_id"{}
