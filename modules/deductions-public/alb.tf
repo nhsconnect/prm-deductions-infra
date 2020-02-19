@@ -1,6 +1,6 @@
 resource "aws_alb" "alb" {
   name            = "${var.environment}-${var.component_name}-alb"
-  subnets         = [module.vpc.public_subnets]
+  subnets         = module.vpc.public_subnets
 
-  security_groups = [aws_security_group.lb-sg.id]
+  security_groups = [aws_security_group.alb-sg.id]
 }

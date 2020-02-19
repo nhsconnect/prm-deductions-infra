@@ -26,7 +26,7 @@ resource "aws_security_group" "alb-sg" {
     }
 
     tags = {
-        Name = "${var.environment}-${var.component_name}-lb-sg"
+        Name = "${var.environment}-${var.component_name}-alb-sg"
     }
 }
 
@@ -41,7 +41,7 @@ resource "aws_security_group" "ecs-tasks-sg" {
         protocol        = "tcp"
         from_port       = "3000"
         to_port         = "3000"
-        security_groups = [aws_security_group.lb-sg.id]
+        security_groups = [aws_security_group.alb-sg.id]
     }
 
     egress {
