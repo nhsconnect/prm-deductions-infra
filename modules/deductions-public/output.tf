@@ -4,10 +4,10 @@ resource "aws_ssm_parameter" "deductions_public_ecs_cluster_id" {
   value = aws_ecs_cluster.ecs-cluster.id
 }
 
-resource "aws_ssm_parameter" "deductions_public_ecs_tasks_sg_id" {
-  name = "/nhs/${var.environment}/deductions_public_ecs_tasks_sg_id"
+resource "aws_ssm_parameter" "deductions_public_gp_portal_sg_id" {
+  name = "/nhs/${var.environment}/deductions_public_gp_portal_sg_id"
   type = "String"
-  value = aws_security_group.ecs-tasks-sg.id
+  value = aws_security_group.gp-portal-ecs-task-sg.id
 }
 
 resource "aws_ssm_parameter" "deductions_public_private_subnets" {

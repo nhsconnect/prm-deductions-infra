@@ -1,6 +1,6 @@
 resource "aws_security_group" "alb-sg" {
     name        = "${var.environment}-${var.component_name}-alb-sg"
-    description = "controls access to the ALB"
+    description = "Deductions Private ALB Security Group"
     vpc_id      = module.vpc.vpc_id
     
 
@@ -31,9 +31,9 @@ resource "aws_security_group" "alb-sg" {
 }
 
 # Traffic to the ECS Cluster should only come from the ALB
-resource "aws_security_group" "ecs-tasks-sg" {
-    name        = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-    description = "allow inbound access from the ALB only"
+resource "aws_security_group" "gp-portal-ecs-task-sg" {
+    name        = "${var.environment}-gp-portal-ecs-task-sg"
+    description = "GP Practice Portal ECS Task Security Group"
     vpc_id      = module.vpc.vpc_id
 
 
@@ -42,6 +42,7 @@ resource "aws_security_group" "ecs-tasks-sg" {
         from_port       = "3000"
         to_port         = "3000"
         security_groups = [aws_security_group.alb-sg.id]
+
     }
 
     egress {
