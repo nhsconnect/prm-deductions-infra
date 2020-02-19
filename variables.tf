@@ -35,10 +35,6 @@ variable "deductions_public_azs" {
   type = list
 }
 
-variable "deductions_public_create_bastion" {
-  type = bool
-}
-
 variable "deductions_private_cidr" {
   type = string
 }

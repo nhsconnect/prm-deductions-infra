@@ -5,17 +5,17 @@ variable "region" {
 
 variable "environment" {
   type = string
+  default     = "dev"
 }
 
 variable "component_name" {
-  type = string
+  type    = string
+  default = "deductions-public"
 }
+
+variable "cidr" {}
 
 variable "allowed_public_ips" {}
-
-variable "cidr" {
-  type = string
-}
 
 variable "public_subnets" {
   type = list
@@ -27,8 +27,4 @@ variable "private_subnets" {
 
 variable "azs" {
   type = list
-}
-
-variable "create_bastion" {
-  type = bool
 }

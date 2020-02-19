@@ -24,8 +24,6 @@ deductions_core_private_subnets   = ["10.26.1.0/24", "10.26.2.0/24"]
 deductions_core_database_subnets  = ["10.26.111.0/24", "10.26.112.0/24"]
 deductions_core_azs               = ["eu-west-2b", "eu-west-2a"]
 
-deductions_public_create_bastion    = false
-
 broker_name                         = "deductor-amq-broker-test"
 deployment_mode                     = "ACTIVE_STANDBY_MULTI_AZ"
 engine_type                         = "ActiveMQ"

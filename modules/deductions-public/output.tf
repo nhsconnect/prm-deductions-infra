@@ -1,29 +1,3 @@
-output "deductions_public_ecs_cluster_id" {
-  value       = aws_ecs_cluster.ecs-cluster.id
-}
-
-output "deductions_public_ecs_tasks_sg_id" {
-  value       = aws_security_group.ecs-tasks-sg.id
-}
-
-output "deductions_public_private_subnets" {
-  value       = aws_subnet.private-subnets.*.id
-}
-
-output "deductions_public_alb_dns" {
-  value = aws_alb.alb.dns_name
-}
-
-output "deductions_public_vpc_id" {
-  value       = aws_vpc.main-vpc.id
-  description = "VPC Id of the deductions public VPC"
-}
-
-output "deductions_public_alb_arn" {
-  value       = aws_alb.alb.arn
-  description = "urn of the deductions public alb"
-}
-
 resource "aws_ssm_parameter" "deductions_public_ecs_cluster_id" {
   name = "/nhs/${var.environment}/deductions_public_ecs_cluster_id"
   type = "String"
@@ -39,7 +13,7 @@ resource "aws_ssm_parameter" "deductions_public_ecs_tasks_sg_id" {
 resource "aws_ssm_parameter" "deductions_public_private_subnets" {
   name = "/nhs/${var.environment}/deductions_public_private_subnets"
   type = "String"
-  value = join(",", aws_subnet.private-subnets.*.id)
+  value = join(",", module.vpc.private_subnets)
 }
 
 resource "aws_ssm_parameter" "deductions_public_alb_dns" {
@@ -51,7 +25,7 @@ resource "aws_ssm_parameter" "deductions_public_alb_dns" {
 resource "aws_ssm_parameter" "deductions_public_vpc_id" {
   name = "/nhs/${var.environment}/deductions_public_vpc_id"
   type = "String"
-  value = aws_vpc.main-vpc.id
+  value = module.vpc.vpc_id
 }
 
 resource "aws_ssm_parameter" "deductions_public_alb_arn" {
