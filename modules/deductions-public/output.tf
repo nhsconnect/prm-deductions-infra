@@ -22,6 +22,12 @@ resource "aws_ssm_parameter" "deductions_public_alb_dns" {
   value = aws_alb.alb.dns_name
 }
 
+resource "aws_ssm_parameter" "deductions_public_alb_httpl_arn" {
+  name = "/nhs/${var.environment}/deductions_public_alb_httpl_arn"
+  type = "String"
+  value = aws_alb_listener.alb-listener.arn
+}
+
 resource "aws_ssm_parameter" "deductions_public_vpc_id" {
   name = "/nhs/${var.environment}/deductions_public_vpc_id"
   type = "String"

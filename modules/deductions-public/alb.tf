@@ -5,18 +5,18 @@ resource "aws_alb" "alb" {
   security_groups = [aws_security_group.alb-sg.id]
 }
 
-resource "aws_alb_listener" "alb-listener-http" {
+resource "aws_alb_listener" "alb-listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
+    type = "fixed-response"
 
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Error"
+      status_code  = "501"
     }
   }
 }
