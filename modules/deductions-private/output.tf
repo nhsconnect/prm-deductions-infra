@@ -18,11 +18,6 @@ output "deductions_private_pds_a_alb_tg_arn" {
   value = aws_alb_target_group.alb-tg.arn
 }
 
-output "deductions_private_gp2gp_a_alb_tg_arn" {
-  # OBSOLETE, please use SSM
-  value = aws_alb_target_group.gp2gp-alb-tg.arn
-}
-
 output "vpc_id" {
   value = module.vpc.vpc_id
 }
@@ -64,16 +59,16 @@ resource "aws_ssm_parameter" "deductions_private_administration_portal_sg_id" {
   value = aws_security_group.administration-portal-ecs-task-sg.id
 }
 
+resource "aws_ssm_parameter" "deductions_private_gp2gp_adaptor_sg_id" {
+  name = "/nhs/${var.environment}/deductions_private_gp2gp_adaptor_sg_id"
+  type = "String"
+  value = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
+}
+
 resource "aws_ssm_parameter" "deductions_private_private_subnets" {
   name = "/nhs/${var.environment}/deductions_private_private_subnets"
   type = "String"
   value = join(",", module.vpc.private_subnets)
-}
-
-resource "aws_ssm_parameter" "deductions_private_gp2gp_a_alb_tg_arn" {
-  name = "/nhs/${var.environment}/deductions_private_gp2gp_a_alb_tg_arn"
-  type = "String"
-  value = aws_alb_target_group.gp2gp-alb-tg.arn
 }
 
 resource "aws_ssm_parameter" "deductions_private_pds_a_alb_tg_arn" {
