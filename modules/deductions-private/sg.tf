@@ -14,7 +14,7 @@ resource "aws_security_group_rule" "ingress_ecs_tasks" {
   protocol            = "tcp"
   from_port           = "61614"
   to_port             = "61614"
-  source_security_group_id     = aws_security_group.ecs-tasks-sg.id
+  source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
 resource "aws_security_group_rule" "ingress_console_nlb" {
