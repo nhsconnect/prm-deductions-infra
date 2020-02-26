@@ -86,8 +86,13 @@ function get_aws_value {
 
 command="$1"
 case "${command}" in
+  _tf)
+      check_env
+      terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
+      bash
+      ;;
   tf)
-      dojo "bash"
+      dojo "./tasks _tf"
       ;;
   _tf_plan)
       tf_plan "$2"
