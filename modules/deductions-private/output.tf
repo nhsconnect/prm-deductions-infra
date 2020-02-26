@@ -13,11 +13,6 @@ output "deductions_private_private_subnets" {
   value = module.vpc.private_subnets
 }
 
-output "deductions_private_pds_a_alb_tg_arn" {
-  # OBSOLETE, please use SSM
-  value = aws_alb_target_group.alb-tg.arn
-}
-
 output "vpc_id" {
   value = module.vpc.vpc_id
 }
@@ -71,12 +66,6 @@ resource "aws_ssm_parameter" "deductions_private_private_subnets" {
   value = join(",", module.vpc.private_subnets)
 }
 
-resource "aws_ssm_parameter" "deductions_private_pds_a_alb_tg_arn" {
-  name = "/nhs/${var.environment}/deductions_private_pds_a_alb_tg_arn"
-  type = "String"
-  value = aws_alb_target_group.alb-tg.arn
-}
-
 resource "aws_ssm_parameter" "deductions_private_alb_dns" {
   name = "/nhs/${var.environment}/deductions_private_alb_dns"
   type = "String"
@@ -105,4 +94,9 @@ resource "aws_ssm_parameter" "deductions_private_alb_httpsl_arn" {
   name = "/nhs/${var.environment}/deductions_private_alb_httpsl_arn"
   type = "String"
   value = aws_alb_listener.alb-listener-https.arn
+}
+
+output "domain_valid_options" {
+  value       = aws_acm_certificate.certificate.domain_validation_options
+  description = ""
 }

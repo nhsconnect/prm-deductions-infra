@@ -11,10 +11,6 @@ output "deductions_private_private_subnets" {
   value       = module.deductions-private.deductions_private_private_subnets
 }
 
-output "deductions_private_pds_a_alb_tg_arn" {
-  value       = module.deductions-private.deductions_private_pds_a_alb_tg_arn
-}
-
 output "deductions_private_alb_dns" {
   value       = module.deductions-private.deductions_private_alb_dns
 }
@@ -43,3 +39,8 @@ output "deductions_core_ehr_repo_alb_tg_arn" {
 output "deductions_core_alb_dns" {
   value       = module.deductions-core.deductions_core_alb_dns
 }
+
+output "domain_valid_options" {
+  value       = module.deductions-private.domain_valid_options
+}
+
