@@ -40,7 +40,4 @@ output "deductions_core_alb_dns" {
   value       = module.deductions-core.deductions_core_alb_dns
 }
 
-output "domain_valid_options" {
-  value       = module.deductions-private.domain_valid_options
-}
 

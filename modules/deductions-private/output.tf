@@ -95,8 +95,3 @@ resource "aws_ssm_parameter" "deductions_private_alb_httpsl_arn" {
   type = "String"
   value = aws_alb_listener.alb-listener-https.arn
 }
-
-output "domain_valid_options" {
-  value       = aws_acm_certificate.certificate.domain_validation_options
-  description = ""
-}

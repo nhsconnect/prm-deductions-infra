@@ -1,43 +1,45 @@
-resource "aws_acm_certificate" "certificate" {
+resource "aws_acm_certificate" "admin-portal-cert" {
   domain_name       = "${var.environment}.admin.patient-deductions.nhs.uk"
-
-  # subject_alternative_names = [
-  #   "${var.environment}.admin.patient-deductions.nhs.uk"]
 
   validation_method = "DNS"
   
 }
 
-resource "aws_route53_record" "cert_validation" {
-  name    = "${aws_acm_certificate.certificate.domain_validation_options.0.resource_record_name}"
-  type    = "${aws_acm_certificate.certificate.domain_validation_options.0.resource_record_type}"
+resource "aws_acm_certificate" "gp2gp-cert" {
+  domain_name       = "${var.environment}.gp2gp-adaptor.patient-deductions.nhs.uk"
+
+  validation_method = "DNS"
+  
+}
+
+resource "aws_route53_record" "admin-cert-validation" {
+  name    = aws_acm_certificate.admin-portal-cert.domain_validation_options.0.resource_record_name
+  type    = aws_acm_certificate.admin-portal-cert.domain_validation_options.0.resource_record_type
   zone_id = data.aws_ssm_parameter.root_zone_id.value
-  records = ["${aws_acm_certificate.certificate.domain_validation_options.0.resource_record_value}"]
+  records = [aws_acm_certificate.admin-portal-cert.domain_validation_options.0.resource_record_value]
   ttl     = 60
 }
 
-# resource "aws_route53_record" "cert_validation_alt1" {
-#   name    = "${aws_acm_certificate.certificate.domain_validation_options.1.resource_record_name}"
-#   type    = "${aws_acm_certificate.certificate.domain_validation_options.1.resource_record_type}"
-#   zone_id = data.aws_ssm_parameter.root_zone_id.value
-#   records = ["${aws_acm_certificate.certificate.domain_validation_options.1.resource_record_value}"]
-#   ttl     = 60
-# }
+resource "aws_route53_record" "gp2gp-cert-validation" {
+  name    = aws_acm_certificate.gp2gp-cert.domain_validation_options.0.resource_record_name
+  type    = aws_acm_certificate.gp2gp-cert.domain_validation_options.0.resource_record_type
+  zone_id = data.aws_ssm_parameter.root_zone_id.value
+  records = [aws_acm_certificate.gp2gp-cert.domain_validation_options.0.resource_record_value]
+  ttl     = 60
+}
 
-# resource "aws_route53_record" "cert_validation_alt2" {
-#   name    = "${aws_acm_certificate.certificate.domain_validation_options.2.resource_record_name}"
-#   type    = "${aws_acm_certificate.certificate.domain_validation_options.2.resource_record_type}"
-#   zone_id = data.aws_ssm_parameter.root_zone_id.value
-#   records = ["${aws_acm_certificate.certificate.domain_validation_options.2.resource_record_value}"]
-#   ttl     = 60
-# }
-
-resource "aws_acm_certificate_validation" "default" {
-  certificate_arn = "${aws_acm_certificate.certificate.arn}"
+resource "aws_acm_certificate_validation" "admin-cert-validation" {
+  certificate_arn = aws_acm_certificate.admin-portal-cert.arn
 
   validation_record_fqdns = [
-    "${aws_route53_record.cert_validation.fqdn}"
-    # "${aws_route53_record.cert_validation_alt1.fqdn}",
-    # "${aws_route53_record.cert_validation_alt2.fqdn}",
+    aws_route53_record.admin-cert-validation.fqdn
+  ]
+}
+
+resource "aws_acm_certificate_validation" "gp2gp-cert-validation" {
+  certificate_arn = aws_acm_certificate.gp2gp-cert.arn
+
+  validation_record_fqdns = [
+    aws_route53_record.gp2gp-cert-validation.fqdn
   ]
 }
