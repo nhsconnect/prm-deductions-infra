@@ -43,3 +43,9 @@ resource "aws_lb_listener_certificate" "example" {
   certificate_arn = aws_acm_certificate_validation.gp2gp-cert-validation.certificate_arn
 }
 
+resource "aws_lb_listener_certificate" "gp-to-repo-listener-cert" {
+  listener_arn    = aws_alb_listener.alb-listener-https.arn
+  certificate_arn = aws_acm_certificate_validation.gp-to-repo-cert-validation.certificate_arn
+}
+
+
