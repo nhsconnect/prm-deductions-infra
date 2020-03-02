@@ -245,3 +245,36 @@ resource "aws_security_group" "gp-to-repo-ecs-task-sg" {
         Name = "${var.environment}-gp-to-repo-ecs-task-sg"
     }
 }
+
+resource "aws_security_group" "private-alb-internal-sg" {
+    name        = "${var.environment}-${var.component_name}-alb-internal-sg"
+    description = "Internal ALB for deductions-private VPC"
+    vpc_id      = module.vpc.vpc_id
+
+    ingress {
+        description = "Allow traffic from deductions-private VPC"
+        protocol    = "tcp"
+        from_port   = 80
+        to_port     = 80
+        cidr_blocks = [var.cidr]
+    }
+
+    ingress {
+        protocol    = "tcp"
+        from_port   = 443
+        to_port     = 443
+        cidr_blocks = [var.cidr]
+    }
+    
+    egress {
+        description = "Allow All Outbound"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "${var.environment}-deductions-private-alb-internal-sg"
+    }
+}
