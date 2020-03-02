@@ -1,0 +1,59 @@
+- name: Enable docker repo apt
+  template:
+    src: docker_apt_repo.j2
+    dest: /etc/apt/sources.list.d/docker.list
+  become: True
+
+- name: Install docker apt gpg key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: True
+
+- name: Install pip
+  package: name=python-pip state=present
+  become: True
+
+- name: Install docker apt package
+  package: name=docker-ce state=present
+  become: True
+
+- name: Install docker SDK for python
+  pip:
+    name: docker
+    state: present
+    version: 3.1.1
+  become: True
+  retries: 2
+
+- name: create docker config directory
+  file:
+    path: /etc/docker
+    state: directory
+    mode: 0755
+
+- name: configure docker daemon.json
+  template:
+    src: "daemon.json.j2"
+    dest: "/etc/docker/daemon.json"
+  notify:
+    - restart docker
+
+- name: create systemd drop-in directory
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: 0755
+
+- name: ensure MountFlags=shared
+  template:
+    src: docker_shared_mountflags.j2
+    dest: /etc/systemd/system/docker.service.d/shared.conf
+  notify:
+    - restart docker
+
+- name: Add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    append: true
+    group: docker

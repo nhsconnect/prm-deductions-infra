@@ -1,0 +1,69 @@
+- name: Install docker SDK for python
+  pip:
+    name: docker
+    state: present
+    version: 3.1.1
+  become: True
+  retries: 2
+
+- name: Set IP forwarding
+  sysctl: name=net.ipv4.ip_forward value=1 sysctl_set=yes
+
+- name: Install packages to keep iptables persistent
+  apt: name={{ item }}
+  with_items:
+    - netfilter-persistent
+    - iptables-persistent
+
+- name: Configure iptables
+  template:
+    src: iptables_rules.j2
+    dest: /etc/iptables/rules.v4
+  notify: restart netfilter-persistent
+
+- name: Apply iptable rules
+  command: iptables-restore /etc/iptables/rules.v4
+
+- name: enable and start netfilter-persistent service
+  systemd:
+    enabled: true
+    state: started
+    daemon_reload: yes
+    name: netfilter-persistent
+
+- file:
+    path: /var/nhs/openvpn
+    state: directory
+
+- name: Create ovpn_env.sh
+  template:
+    src: ovpn_env.sh.j2
+    dest: /var/nhs/openvpn/ovpn_env.sh
+
+- name: Create openvpn.conf
+  template:
+    src: openvpn.conf.j2
+    dest: /var/nhs/openvpn/openvpn.conf
+
+- name: Check if PKI was generated
+  stat: path=/var/nhs/openvpn/pki
+  register: pki_file
+
+- fail:
+    msg: "Please generate PKI now with 'docker run -v /var/nhs/openvpn:/etc/openvpn --rm -ti kylemanna/openvpn ovpn_initpki'"
+  when: not pki_file.stat.exists
+
+- name: create openvpn container
+  docker_container:
+    name: "openvpn"
+    image: "kylemanna/openvpn"
+    restart_policy: always
+    security_opts:
+      - apparmor:unconfined
+    capabilities:
+      - NET_ADMIN
+    network_mode: host
+    ports:
+      - 1194:1194/{{ openvpn_protocol }}
+    volumes:
+      - "/var/nhs/openvpn:/etc/openvpn"

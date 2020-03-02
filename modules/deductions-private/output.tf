@@ -17,6 +17,14 @@ output "vpc_id" {
   value = module.vpc.vpc_id
 }
 
+output "public_subnet_id" {
+  value = module.vpc.public_subnets[0]
+}
+
+output "dns_server_1" {
+  value = cidrhost(var.cidr, 2) # AWS DNS - second IP in the subnet
+}
+
 output "private_subnets_route_table_id" {
   # All private nets share a route table
   value = module.vpc.private_route_table_ids[0]

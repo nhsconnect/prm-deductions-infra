@@ -7,6 +7,10 @@ variable "environment" {
   type = string
 }
 
+variable "my_ip" {
+  default = "127.0.0.1"
+}
+
 variable "deductions_public_component_name" {
   type = string
 }

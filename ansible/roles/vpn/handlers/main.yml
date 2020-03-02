@@ -1,0 +1,12 @@
+- name: restart docker
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker
+    
+- name: restart netfilter-persistent
+  systemd:
+    enabled: true
+    state: restarted
+    daemon_reload: yes
+    name: netfilter-persistent

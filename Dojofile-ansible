@@ -1,0 +1,2 @@
+#TODO: use nhsdev image
+DOJO_DOCKER_IMAGE="kudulab/ansible-dojo:1.1.0"

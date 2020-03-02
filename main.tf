@@ -57,6 +57,16 @@ module "deductions-private" {
     mq_allow_public_console_access = var.mq_allow_public_console_access
 }
 
+module "vpn" {
+    source              = "./modules/vpn/"
+    region              = var.region
+    vpc_id              = module.deductions-private.vpc_id
+    availability_zone   = var.deductions_private_azs[0]
+    public_subnet_id    = module.deductions-private.public_subnet_id
+    environment         = var.environment
+    my_ip               = var.my_ip
+}
+
 module "deductions-core" {
     source              = "./modules/deductions-core/"
     environment         = var.environment

@@ -19,7 +19,7 @@ function tf_plan {
   terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan"
+    terraform plan -var my_ip=`curl icanhazip.com` -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
     terraform plan -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
   else
@@ -84,8 +84,41 @@ function get_aws_value {
   echo $json | jq -r ".Parameter.Value"
 }
 
+function generate_ssh_key {
+  secret_id="/NHS/deductions/ssh/id_rsa"
+  ssh_directory=modules/ssh
+  mkdir -p ${ssh_directory}/
+  if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
+    #TODO check aws authentication
+    set +e
+    id_rsa=$(aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id | jq -r ".Parameter.Value")
+    if [[ $? == 0 ]]; then
+      echo "$id_rsa" > ${ssh_directory}/id_rsa
+    else
+      set -e
+      ssh-keygen -f "${ssh_directory}/id_rsa" -q -N ""
+    fi
+    set -e
+  fi
+  chmod 0600 ${ssh_directory}/id_rsa
+  ssh-keygen -y -f "${ssh_directory}/id_rsa" > "${ssh_directory}/id_rsa.pub"
+  aws ssm put-parameter \
+   --region $AWS_REGION \
+   --name $secret_id \
+   --type SecureString \
+   --overwrite \
+   --value "`cat ${ssh_directory}/id_rsa`"
+}
+
 command="$1"
 case "${command}" in
+  _ssh_key)
+      check_env
+      generate_ssh_key
+      ;;
+  ssh_key)
+      dojo "./tasks _ssh_key"
+      ;;
   _tf)
       check_env
       terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
@@ -95,6 +128,7 @@ case "${command}" in
       dojo "./tasks _tf"
       ;;
   _tf_plan)
+      ./tasks _ssh_key
       tf_plan "$2"
       ;;
   tf_plan)
@@ -102,6 +136,7 @@ case "${command}" in
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_apply)
+      ./tasks _ssh_key
       tf_apply
       ;;
   tf_apply)
@@ -156,6 +191,45 @@ case "${command}" in
   detect_active_mq)
       check_env
       dojo "./tasks _detect_active_mq"
+      ;;
+  _generate_ansible_vars)
+      dns1=$(cat tf-out.json | jq -r ".dns_server_1.value")
+      if [ "${NHS_ENVIRONMENT}" == "dev" ]; then
+        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
+# This file is generated
+env: ${NHS_ENVIRONMENT}
+dns1: ${dns1}
+vpn_clients_subnet: 10.233.235.0/24
+vpn_clients_subnet_short: 10.233.235.0
+mhs_route: 10.33.0.0 255.255.0.0
+deductions_private_route: 10.20.0.0 255.255.0.0
+deductions_core_route: 10.25.0.0 255.255.0.0
+vpc_subnet: 10.33.0.0/16
+EOF
+      elif [ "${NHS_ENVIRONMENT}" == "test" ]; then
+        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
+# This file is generated
+env: ${NHS_ENVIRONMENT}
+dns1: ${dns1}
+vpn_clients_subnet: 10.233.236.0/24
+vpn_clients_subnet_short: 10.233.236.0
+mhs_route: 10.239.68.128 255.255.255.128
+deductions_private_route: 10.21.0.0 255.255.0.0
+deductions_core_route: 10.26.0.0 255.255.0.0
+vpc_subnet: 10.239.68.128/25
+EOF
+      fi
+      ;;
+  generate_ansible_vars)
+      dojo "./tasks _generate_ansible_vars"
+      ;;
+  _provision)
+      ansible-playbook -i ansible/inventory/$NHS_ENVIRONMENT.ini ansible/site.yml
+      ;;
+  provision)
+      check_env
+      ./tasks generate_ansible_vars
+      dojo -c Dojofile-ansible "./tasks _provision"
       ;;
   *)
       echo "Invalid command: '${command}'"
