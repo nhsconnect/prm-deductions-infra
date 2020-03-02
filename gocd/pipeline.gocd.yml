@@ -22,6 +22,11 @@ common:
           arguments:
             - -c
             - ./tasks tf_apply
+      - exec:
+          command: /bin/bash
+          arguments:
+            - -c
+            - ./tasks provision
 
 pipelines:
   "prm-deductions-infra":
