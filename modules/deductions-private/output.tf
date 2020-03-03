@@ -110,6 +110,18 @@ resource "aws_ssm_parameter" "deductions_private_alb_httpsl_arn" {
   value = aws_alb_listener.alb-listener-https.arn
 }
 
+resource "aws_ssm_parameter" "deductions_private_int_alb_httpl_arn" {
+  name = "/nhs/${var.environment}/deductions_private_int_alb_httpl_arn"
+  type = "String"
+  value = aws_alb_listener.int-alb-listener.arn
+}
+
+resource "aws_ssm_parameter" "deductions_private_int_alb_httpsl_arn" {
+  name = "/nhs/${var.environment}/deductions_private_int_alb_httpsl_arn"
+  type = "String"
+  value = aws_alb_listener.int-alb-listener-https.arn
+}
+
 resource "aws_ssm_parameter" "deductions_private_alb_internal_dns" {
   name = "/nhs/${var.environment}/deductions_private_alb_internal_dns"
   type = "String"
