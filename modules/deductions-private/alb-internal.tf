@@ -39,3 +39,8 @@ resource "aws_alb_listener" "int-alb-listener-https" {
     }
   }
 }
+
+resource "aws_lb_listener_certificate" "gp2gp-adaptor-listener-cert" {
+  listener_arn    = aws_alb_listener.int-alb-listener-https.arn
+  certificate_arn = aws_acm_certificate_validation.gp2gp-cert-validation.certificate_arn
+}
