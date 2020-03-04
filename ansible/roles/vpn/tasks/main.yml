@@ -62,8 +62,7 @@
       - apparmor:unconfined
     capabilities:
       - NET_ADMIN
-    network_mode: host
     ports:
-      - 1194:1194/{{ openvpn_protocol }}
+      - 443:1194/{{ openvpn_protocol }}
     volumes:
       - "/var/nhs/openvpn:/etc/openvpn"

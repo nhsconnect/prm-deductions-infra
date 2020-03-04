@@ -15,3 +15,8 @@ Then get archive of certificates
 ```
 docker run -v /var/nhs/openvpn:/etc/openvpn --rm -ti kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
 ```
+
+Getting all client keys at once:
+```
+docker run --rm -it -v /var/nhs/openvpn/:/etc/openvpn --volume /tmp/openvpn_clients:/etc/openvpn/clients kylemanna/openvpn ovpn_getclient_all
+```
