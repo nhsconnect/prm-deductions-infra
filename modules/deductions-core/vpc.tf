@@ -20,5 +20,6 @@ module "vpc" {
     tags = {
         Terraform = "true"
         Environment = var.environment
+        Deductions-VPC = var.component_name
     }
 }

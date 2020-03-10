@@ -3,11 +3,6 @@ output "deductions_private_ecs_cluster_id" {
   value = aws_ecs_cluster.ecs-cluster.id
 }
 
-output "deductions_private_ecs_tasks_sg_id" {
-  # OBSOLETE, please use SSM
-  value = aws_security_group.ecs-tasks-sg.id
-}
-
 output "deductions_private_private_subnets" {
   # OBSOLETE, please use SSM
   value = module.vpc.private_subnets
@@ -42,12 +37,6 @@ resource "aws_ssm_parameter" "deductions_private_ecs_cluster_id" {
   name = "/nhs/${var.environment}/deductions_private_ecs_cluster_id"
   type = "String"
   value = aws_ecs_cluster.ecs-cluster.id
-}
-
-resource "aws_ssm_parameter" "deductions_private_ecs_tasks_sg_id" {
-  name = "/nhs/${var.environment}/deductions_private_ecs_tasks_sg_id"
-  type = "String"
-  value = aws_security_group.ecs-tasks-sg.id
 }
 
 resource "aws_ssm_parameter" "deductions_private_gen_comp_sg_id" {

@@ -47,38 +47,38 @@ resource "aws_security_group_rule" "egress_all" {
   cidr_blocks         = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group" "ecs-tasks-sg" {
-    name        = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-    vpc_id      = module.vpc.vpc_id
+# resource "aws_security_group" "ecs-tasks-sg" {
+#     name        = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+#     vpc_id      = module.vpc.vpc_id
 
-    ingress {
-        description     = "Allow traffic from ALB to PDS Adaptor"
-        protocol        = "tcp"
-        from_port       = "3000"
-        to_port         = "3000"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
+#     ingress {
+#         description     = "Allow traffic from ALB to PDS Adaptor"
+#         protocol        = "tcp"
+#         from_port       = "3000"
+#         to_port         = "3000"
+#         security_groups = [aws_security_group.deductions-private-alb-sg.id]
+#     }
 
-    ingress {
-        description     = "Allow traffic from ALB to GP2GP Adaptor"
-        protocol        = "tcp"
-        from_port       = "80"
-        to_port         = "80"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
+#     ingress {
+#         description     = "Allow traffic from ALB to GP2GP Adaptor"
+#         protocol        = "tcp"
+#         from_port       = "80"
+#         to_port         = "80"
+#         security_groups = [aws_security_group.deductions-private-alb-sg.id]
+#     }
 
-    egress {
-        description = "Allow All Outbound"
-        protocol    = "-1"
-        from_port   = 0
-        to_port     = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
+#     egress {
+#         description = "Allow All Outbound"
+#         protocol    = "-1"
+#         from_port   = 0
+#         to_port     = 0
+#         cidr_blocks = ["0.0.0.0/0"]
+#     }
 
-    tags = {
-        Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-    }
-}
+#     tags = {
+#         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+#     }
+# }
 
 resource "aws_security_group" "generic-comp-ecs-task-sg" {
     name        = "${var.environment}-generic-comp-ecs-task-sg"

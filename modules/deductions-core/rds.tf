@@ -10,6 +10,12 @@ resource "aws_rds_cluster" "db-cluster" {
     apply_immediately       = true
     db_subnet_group_name    = aws_db_subnet_group.db-cluster-subnet-group.name
     skip_final_snapshot = true
+
+    tags = {
+      Terraform = "true"
+      Environment = var.environment
+      Deductions-VPC = var.component_name
+    }
 }
 
 resource "aws_ssm_parameter" "rds_endpoint" {

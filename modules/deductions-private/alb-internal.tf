@@ -3,6 +3,12 @@ resource "aws_alb" "alb-internal" {
   subnets         = module.vpc.private_subnets
   security_groups = [aws_security_group.private-alb-internal-sg.id]
   internal        = true
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
 }
 
 resource "aws_alb_listener" "int-alb-listener" {

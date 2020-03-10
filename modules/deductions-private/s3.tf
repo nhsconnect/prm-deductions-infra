@@ -6,4 +6,10 @@ resource "aws_s3_bucket" "gp2gp-bucket" {
   versioning {
     enabled = false
   }
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
 }

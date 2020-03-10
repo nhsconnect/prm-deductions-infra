@@ -3,10 +3,6 @@ output "deductions_private_ecs_cluster_id" {
   value       = module.deductions-private.deductions_private_ecs_cluster_id
 }
 
-output "deductions_private_ecs_tasks_sg_id" {
-  value       = module.deductions-private.deductions_private_ecs_tasks_sg_id
-}
-
 output "deductions_private_private_subnets" {
   value       = module.deductions-private.deductions_private_private_subnets
 }

@@ -8,6 +8,11 @@ resource "aws_lb" "deductor_mq_console_nlb" {
 
   count = var.mq_allow_public_console_access == true ? 1 : 0
 
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
 }
 
 resource "aws_lb_listener" "deductor_mq_console_nlb_listener" {

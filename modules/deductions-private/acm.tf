@@ -2,6 +2,12 @@ resource "aws_acm_certificate" "admin-portal-cert" {
   domain_name       = "${var.environment}.admin.patient-deductions.nhs.uk"
 
   validation_method = "DNS"
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
   
 }
 
@@ -9,6 +15,12 @@ resource "aws_acm_certificate" "gp2gp-cert" {
   domain_name       = "${var.environment}.gp2gp-adaptor.patient-deductions.nhs.uk"
 
   validation_method = "DNS"
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
   
 }
 
@@ -16,6 +28,12 @@ resource "aws_acm_certificate" "gp-to-repo-cert" {
   domain_name       = "${var.environment}.gp-to-repo.patient-deductions.nhs.uk"
 
   validation_method = "DNS"
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
   
 }
 

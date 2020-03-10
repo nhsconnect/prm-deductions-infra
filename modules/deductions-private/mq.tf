@@ -32,6 +32,12 @@ resource "aws_mq_broker" "deductor_mq_broker" {
     password = data.aws_ssm_parameter.mq-app-password.value
     console_access = false
   }
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
 }
 
 resource "aws_ssm_parameter" "amqp-endpoint-0" {

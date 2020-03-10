@@ -6,4 +6,10 @@ resource "aws_s3_bucket" "ehr-repo-bucket" {
   versioning {
     enabled = false
   }
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
+  }
 }
