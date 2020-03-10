@@ -13,20 +13,20 @@ terraform{
     }
 }
 
-module "deductions-public" {
-    source              = "./modules/deductions-public/"
-    environment         = var.environment
-    cidr                = var.deductions_public_cidr
-    component_name      = var.deductions_public_component_name
+# module "deductions-public" {
+#     source              = "./modules/deductions-public/"
+#     environment         = var.environment
+#     cidr                = var.deductions_public_cidr
+#     component_name      = var.deductions_public_component_name
 
-    public_subnets      = var.deductions_public_public_subnets
-    private_subnets     = var.deductions_public_private_subnets
-    azs                 = var.deductions_public_azs
+#     public_subnets      = var.deductions_public_public_subnets
+#     private_subnets     = var.deductions_public_private_subnets
+#     azs                 = var.deductions_public_azs
 
-    allowed_public_ips  = local.allowed_public_ips
+#     allowed_public_ips  = local.allowed_public_ips
 
-    private_zone_id     = aws_route53_zone.private.zone_id
-}
+#     private_zone_id     = aws_route53_zone.private.zone_id
+# }
 
 module "deductions-private" {
     source              = "./modules/deductions-private/"

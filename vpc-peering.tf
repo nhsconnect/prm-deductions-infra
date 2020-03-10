@@ -29,8 +29,8 @@ resource "aws_route" "private_private_to_core" {
   vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
 }
 
-resource "aws_route" "private_public_to_core" {
-  route_table_id            = local.deductions_private_public_subnets_route_table_id
-  destination_cidr_block    = var.deductions_core_cidr
-  vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
-}
+# resource "aws_route" "private_public_to_core" {
+#   route_table_id            = local.deductions_private_public_subnets_route_table_id
+#   destination_cidr_block    = var.deductions_core_cidr
+#   vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
+# }
