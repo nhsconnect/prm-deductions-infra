@@ -7,3 +7,6 @@ variable "my_ip" {
   default = "127.0.0.1"
   description = "Additional IP to whitelist for provisioning"
 }
+variable "vpn_port" {
+  default = 443
+}

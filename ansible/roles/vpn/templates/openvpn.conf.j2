@@ -10,7 +10,7 @@ keepalive 10 60
 persist-key
 persist-tun
 
-proto udp
+proto {{ openvpn_protocol }}
 # Rely on Docker to do port mapping, internally always 1194
 port 1194
 dev tun0

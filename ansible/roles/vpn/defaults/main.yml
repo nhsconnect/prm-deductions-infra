@@ -1,5 +1,8 @@
-openvpn_protocol: udp
+openvpn_protocol: tcp
 vpn_domain_name: "{{ env }}.vpn.patient-deductions.nhs.uk"
+vm_port: 1194
+stunnel_enabled: yes
+stunnel_external_port: 443
 
 # Need to be provided on CLI:
 # dns1: 10.239.68.149

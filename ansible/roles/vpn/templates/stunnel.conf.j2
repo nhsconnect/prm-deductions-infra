@@ -1,0 +1,10 @@
+chroot = /var/lib/stunnel4
+pid = /stunnel4.pid
+setuid = stunnel4
+setgid = stunnel4
+socket = l:TCP_NODELAY=1
+
+[openvpn]
+accept = {{ stunnel_external_port }}
+connect = localhost:1194
+cert = /etc/stunnel/{{ env }}-stunnel.pem

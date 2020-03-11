@@ -62,7 +62,10 @@
       - apparmor:unconfined
     capabilities:
       - NET_ADMIN
-    ports:
-      - 443:1194/{{ openvpn_protocol }}
+    network_mode: host
     volumes:
       - "/var/nhs/openvpn:/etc/openvpn"
+
+- name: Setup stunnel
+  include: stunnel.yml
+  when: stunnel_enabled | bool

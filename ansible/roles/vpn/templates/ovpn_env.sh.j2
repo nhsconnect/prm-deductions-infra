@@ -1,7 +1,6 @@
 declare -x OVPN_AUTH=
 declare -x OVPN_CIPHER=
 declare -x OVPN_CLIENT_TO_CLIENT=
-declare -x OVPN_CN={{ vpn_domain_name }}
 declare -x OVPN_COMP_LZO=0
 declare -x OVPN_DEFROUTE=0
 declare -x OVPN_DEVICE=tun
@@ -16,10 +15,17 @@ declare -x OVPN_FRAGMENT=
 declare -x OVPN_KEEPALIVE='10 60'
 declare -x OVPN_MTU=
 declare -x OVPN_NAT=1
-declare -x OVPN_PORT=443
-declare -x OVPN_PROTO=udp
+declare -x OVPN_PROTO={{ openvpn_protocol }}
 declare -x OVPN_PUSH=()
 declare -x OVPN_ROUTES=([0]="{{ vpc_subnet }}")
 declare -x OVPN_SERVER={{ vpn_clients_subnet }}
-declare -x OVPN_SERVER_URL=udp://{{ vpn_domain_name }}
+{% if stunnel_enabled | bool %}
+declare -x OVPN_CN=localhost
+declare -x OVPN_PORT={{ stunnel_client_port }}
+declare -x OVPN_SERVER_URL={{ openvpn_protocol }}://localhost
+{% else %}
+declare -x OVPN_CN={{ vpn_domain_name }}
+declare -x OVPN_PORT={{ vm_port }}
+declare -x OVPN_SERVER_URL={{ openvpn_protocol }}://{{ vpn_domain_name }}
+{% endif %}
 declare -x OVPN_TLS_CIPHER=

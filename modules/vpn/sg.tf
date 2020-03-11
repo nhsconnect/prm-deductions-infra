@@ -15,16 +15,16 @@ resource "aws_security_group" "vpn_sg" {
 
   # VPN from whitelisted IP
   ingress {
-    from_port = 443
-    to_port   = 443
+    from_port = var.vpn_port
+    to_port   = var.vpn_port
     protocol  = "tcp"
     cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
       ["10.0.0.0/8", "${var.my_ip}/32"])
   }
 
   ingress {
-    from_port = 443
-    to_port   = 443
+    from_port = var.vpn_port
+    to_port   = var.vpn_port
     protocol  = "udp"
     cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
       ["10.0.0.0/8", "${var.my_ip}/32"])
