@@ -55,4 +55,9 @@ resource "aws_lb_listener_certificate" "gp-to-repo-listener-cert" {
   certificate_arn = aws_acm_certificate_validation.gp-to-repo-cert-validation.certificate_arn
 }
 
+resource "aws_lb_listener_certificate" "generic-component-listener-cert" {
+  listener_arn    = aws_alb_listener.alb-listener-https.arn
+  certificate_arn = aws_acm_certificate_validation.generic-component-cert-validation.certificate_arn
+}
+
 
