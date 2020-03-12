@@ -18,5 +18,12 @@ docker run -v /var/nhs/openvpn:/etc/openvpn --rm -ti kylemanna/openvpn ovpn_getc
 
 Getting all client keys at once:
 ```
-docker run --rm -it -v /var/nhs/openvpn/:/etc/openvpn --volume /tmp/openvpn_clients:/etc/openvpn/clients kylemanna/openvpn ovpn_getclient_all
+docker run --rm -it -v /var/nhs/openvpn/:/etc/openvpn --volume /home/ubuntu/openvpn_clients:/etc/openvpn/clients kylemanna/openvpn ovpn_getclient_all
 ```
+
+Add stunnel key to the collection:
+```
+sudo cp /etc/stunnel/*-stunnel.pem /home/ubuntu/openvpn_clients
+```
+
+Then distribute `/home/ubuntu/openvpn_clients` to all clients.
