@@ -14,7 +14,8 @@ resource "aws_lambda_function" "stop-ecs-services-lambda" {
 
   environment {
     variables = {
-      DESIRED_COUNT = 0
+      DESIRED_COUNT_DEV  = 0
+      DESIRED_COUNT_TEST = 0
     }
   }
 
@@ -37,7 +38,8 @@ resource "aws_lambda_function" "start-ecs-services-lambda" {
 
   environment {
     variables = {
-      DESIRED_COUNT = 2
+      DESIRED_COUNT_DEV  = 1
+      DESIRED_COUNT_TEST = 2
     }
   }
 

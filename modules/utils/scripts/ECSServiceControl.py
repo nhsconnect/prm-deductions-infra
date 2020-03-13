@@ -2,19 +2,30 @@ import boto3
 import os
 import json
 
-def toggleServices(desiredCount, services, cluster, client):        
+def toggleServices(services, cluster, client):        
     for service in services:
-        try:
+        if "tags" in service:
+            desiredCount = getDesiredCount(service["tags"])
+
             for tag in service["tags"]:
                 if (tag["key"]=="TurnOffAtNight" and tag["value"] == "True"):
                     print("Setting [" + service["serviceName"] + "] to desiredCount [" + str(desiredCount) + "] from [" + str(service["desiredCount"]) + "]")
+
                     response = client.update_service(
                         cluster=cluster,
                         service=service["serviceName"],
                         desiredCount=desiredCount
                         )
-        except:
-            a = []   
+
+
+def getDesiredCount(tags):
+    for tag in tags:
+        if (tag["key"]=="Environment" and tag["value"] == "dev"): 
+            return int(os.environ['DESIRED_COUNT_DEV'])
+        elif (tag["key"]=="Environment" and tag["value"] == "test"): 
+            return int(os.environ['DESIRED_COUNT_TEST'])
+        else:
+            pass
 
 def getClusterArns(client):
     print("Retrieving list of clusters")
@@ -44,7 +55,7 @@ def lambda_handler(event, context):
     for cluster in clusters:
         serviceArns = getServiceArns(cluster, client)
         services = describeServices(serviceArns, cluster, client)
-        toggleServices(os.environ['DESIRED_COUNT'], services, cluster, client)
+        toggleServices(services, cluster, client)
 
     return {
         'statusCode': 200,
