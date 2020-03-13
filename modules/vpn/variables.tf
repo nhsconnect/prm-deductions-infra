@@ -10,3 +10,6 @@ variable "my_ip" {
 variable "vpn_port" {
   default = 443
 }
+variable "vpn_ami_id" {
+  default = "ami-04cc79dd5df3bffca"
+}

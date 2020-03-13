@@ -1,5 +1,5 @@
 resource "aws_instance" "vpn" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = var.vpn_ami_id
   instance_type = "t2.micro"
   key_name      = aws_key_pair.vpn_ssh_key.key_name
 
