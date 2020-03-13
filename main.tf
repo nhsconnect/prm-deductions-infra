@@ -83,6 +83,12 @@ module "deductions-core" {
     allowed_public_ips  = local.allowed_public_ips
 }
 
+module "utils" {
+  source      = "./modules/utils"
+  region      = var.region
+  environment = var.environment
+}
+
 locals {
   deductions_core_vpc_id = module.deductions-core.vpc_id
   deductions_private_vpc_id = module.deductions-private.vpc_id
