@@ -126,11 +126,27 @@ resource "aws_security_group" "administration-portal-ecs-task-sg" {
     }
 
     ingress {
-        description     = "Allow traffic from ALB to to Administration Portal Task"
+        description     = "Allow traffic from ALB to Administration Portal Task"
         protocol        = "tcp"
         from_port       = "80"
         to_port         = "80"
         security_groups = [aws_security_group.deductions-private-alb-sg.id]
+    }
+
+    ingress {
+        description     = "Allow traffic from Internal ALB to Administration Portal Task"
+        protocol        = "tcp"
+        from_port       = "3000"
+        to_port         = "3000"
+        security_groups = [aws_security_group.private-alb-internal-sg.id]
+    }
+
+    ingress {
+        description     = "Allow traffic from Internal ALB to Administration Portal Task"
+        protocol        = "tcp"
+        from_port       = "80"
+        to_port         = "80"
+        security_groups = [aws_security_group.private-alb-internal-sg.id]
     }
 
     egress {
