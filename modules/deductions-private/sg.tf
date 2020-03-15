@@ -330,7 +330,7 @@ resource "aws_security_group" "private-alb-internal-sg" {
 
 resource "aws_security_group" "ecr-endpoint-sg" {
   name        = "${var.environment}-${var.component_name}-ecr-endpoint-sg"
-  description = "The security group used to control traffic for the ECR VPC endpoint."
+  description = "Taffic for the ECR VPC endpoint."
   vpc_id      = module.vpc.vpc_id
 
   ingress {
@@ -344,13 +344,36 @@ resource "aws_security_group" "ecr-endpoint-sg" {
       aws_security_group.administration-portal-ecs-task-sg.id,
       aws_security_group.generic-comp-ecs-task-sg.id
     ]
-    
-    description = "Allow inbound HTTPS requests from Deductions tasks"
   }
 
   tags = {
-    Name = "${var.environment}-ecr-endpoint-sg"
-    Environment = var.environment
-    Deductions-VPC = var.component_name
+    name            = "${var.environment}-${var.component_name}-ecr-endpoint-sg"
+    Environment     = var.environment
+    Deductions-VPC  = var.component_name
+  }
+}
+
+resource "aws_security_group" "logs-endpoint-sg" {
+  name        = "${var.environment}-${var.component_name}-logs-endpoint-sg"
+  description = "Traffic for the CloudWatch Logs VPC endpoint."
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+
+    security_groups = [
+      aws_security_group.gp-to-repo-ecs-task-sg.id,
+      aws_security_group.gp2gp-adaptor-ecs-task-sg.id,
+      aws_security_group.administration-portal-ecs-task-sg.id,
+      aws_security_group.generic-comp-ecs-task-sg.id
+    ]
+  }
+
+  tags = {
+    name            = "${var.environment}-${var.component_name}-logs-endpoint-sg"
+    Environment     = var.environment
+    Deductions-VPC  = var.component_name
   }
 }
