@@ -151,7 +151,6 @@ case "${command}" in
       create_secret "/nhs/${NHS_ENVIRONMENT}/mq/app-username"
       create_secret "/nhs/${NHS_ENVIRONMENT}/mq/app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)
-      create_value "/NHS/${NHS_ENVIRONMENT}-${account_id}/tf/deductions_private_bastion" "false"
       ;;
   create_secrets)
       # Needs to run only once, when adding new environment

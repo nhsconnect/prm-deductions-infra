@@ -8,7 +8,6 @@ resource "aws_acm_certificate" "admin-portal-cert" {
     Environment = var.environment
     Deductions-VPC = var.component_name
   }
-  
 }
 
 resource "aws_acm_certificate" "gp2gp-cert" {
@@ -21,7 +20,6 @@ resource "aws_acm_certificate" "gp2gp-cert" {
     Environment = var.environment
     Deductions-VPC = var.component_name
   }
-  
 }
 
 resource "aws_acm_certificate" "gp-to-repo-cert" {
@@ -34,7 +32,6 @@ resource "aws_acm_certificate" "gp-to-repo-cert" {
     Environment = var.environment
     Deductions-VPC = var.component_name
   }
-  
 }
 
 resource "aws_acm_certificate" "generic-component-cert" {
@@ -46,8 +43,19 @@ resource "aws_acm_certificate" "generic-component-cert" {
     Terraform = "true"
     Environment = var.environment
     Deductions-VPC = var.component_name
+  } 
+}
+
+resource "aws_acm_certificate" "mq-admin-cert" {
+  domain_name       = "${var.environment}.mq-admin.patient-deductions.nhs.uk"
+
+  validation_method = "DNS"
+
+  tags = {
+    Terraform = "true"
+    Environment = var.environment
+    Deductions-VPC = var.component_name
   }
-  
 }
 
 resource "aws_route53_record" "admin-cert-validation" {
@@ -82,6 +90,14 @@ resource "aws_route53_record" "generic-component-cert-validation" {
   ttl     = 60
 }
 
+resource "aws_route53_record" "mq-admin-cert-validation" {
+  name    = aws_acm_certificate.mq-admin-cert.domain_validation_options.0.resource_record_name
+  type    = aws_acm_certificate.mq-admin-cert.domain_validation_options.0.resource_record_type
+  zone_id = data.aws_ssm_parameter.root_zone_id.value
+  records = [aws_acm_certificate.mq-admin-cert.domain_validation_options.0.resource_record_value]
+  ttl     = 60
+}
+
 resource "aws_acm_certificate_validation" "admin-cert-validation" {
   certificate_arn = aws_acm_certificate.admin-portal-cert.arn
 
@@ -111,5 +127,13 @@ resource "aws_acm_certificate_validation" "generic-component-cert-validation" {
 
   validation_record_fqdns = [
     aws_route53_record.generic-component-cert-validation.fqdn
+  ]
+}
+
+resource "aws_acm_certificate_validation" "mq-admin-cert-validation" {
+  certificate_arn = aws_acm_certificate.mq-admin-cert.arn
+
+  validation_record_fqdns = [
+    aws_route53_record.mq-admin-cert-validation.fqdn
   ]
 }

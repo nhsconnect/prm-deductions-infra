@@ -2,14 +2,14 @@ data "aws_ssm_parameter" "inbound_ips" {
     name = "/NHS/dev-${data.aws_caller_identity.current.account_id}/tf/inbound_ips"
 }
 
-data "aws_ssm_parameter" "deductions_private_bastion" {
-    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/tf/deductions_private_bastion"
-}
-
 data "aws_caller_identity" "current" {}
 
 data "aws_ssm_parameter" "root_zone_id" {
   name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/root_zone_id"
+}
+
+data "aws_ssm_parameter" "private_zone_id" {
+  name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/${var.environment}/private_root_zone_id"
 }
 
 data "aws_ssm_parameter" "mq-admin-username" {

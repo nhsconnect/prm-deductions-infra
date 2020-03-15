@@ -2,9 +2,27 @@ resource "aws_security_group" "mq_sg" {
     vpc_id = module.vpc.vpc_id
     name   = "deductor-mq-sg"
 
-  tags = {
-      Name = "deductor-mq-b-sg"
-  }
+    # ingress {
+    #     description     = "Allow traffic from Internal ALB to MQ Admin Console"
+    #     protocol        = "tcp"
+    #     from_port       = "8162"
+    #     to_port         = "8162"
+    #     security_groups = [aws_security_group.private-alb-internal-sg.id]
+    # }
+
+    tags = {
+        Name = "deductor-mq-b-sg"
+    }
+}
+
+resource "aws_security_group_rule" "ingress_int_alb_to_mq_admin" {
+    type                = "ingress"
+    security_group_id   = aws_security_group.mq_sg.id
+    description         = "Allow traffic from Internal ALB to MQ Admin Console"
+    protocol            = "tcp"
+    from_port           = "8162"
+    to_port             = "8162"
+    source_security_group_id    = aws_security_group.private-alb-internal-sg.id
 }
 
 resource "aws_security_group_rule" "ingress_ecs_tasks" {
@@ -17,15 +35,15 @@ resource "aws_security_group_rule" "ingress_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
-resource "aws_security_group_rule" "ingress_console_nlb" {
-  type                = "ingress"
-  security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access to MQ Admin Console NLB"
-  protocol            = "tcp"
-  from_port           = "8162"
-  to_port             = "8162"
-  cidr_blocks         = module.vpc.public_subnets_cidr_blocks
-}
+# resource "aws_security_group_rule" "ingress_console_nlb" {
+#   type                = "ingress"
+#   security_group_id   = aws_security_group.mq_sg.id
+#   description         = "Access to MQ Admin Console NLB"
+#   protocol            = "tcp"
+#   from_port           = "8162"
+#   to_port             = "8162"
+#   cidr_blocks         = module.vpc.public_subnets_cidr_blocks
+# }
 
 resource "aws_security_group_rule" "ingress_mhs" {
   type                = "ingress"
@@ -47,39 +65,6 @@ resource "aws_security_group_rule" "egress_all" {
   cidr_blocks         = ["0.0.0.0/0"]
 }
 
-# resource "aws_security_group" "ecs-tasks-sg" {
-#     name        = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-#     vpc_id      = module.vpc.vpc_id
-
-#     ingress {
-#         description     = "Allow traffic from ALB to PDS Adaptor"
-#         protocol        = "tcp"
-#         from_port       = "3000"
-#         to_port         = "3000"
-#         security_groups = [aws_security_group.deductions-private-alb-sg.id]
-#     }
-
-#     ingress {
-#         description     = "Allow traffic from ALB to GP2GP Adaptor"
-#         protocol        = "tcp"
-#         from_port       = "80"
-#         to_port         = "80"
-#         security_groups = [aws_security_group.deductions-private-alb-sg.id]
-#     }
-
-#     egress {
-#         description = "Allow All Outbound"
-#         protocol    = "-1"
-#         from_port   = 0
-#         to_port     = 0
-#         cidr_blocks = ["0.0.0.0/0"]
-#     }
-
-#     tags = {
-#         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
-#     }
-# }
-
 resource "aws_security_group" "generic-comp-ecs-task-sg" {
     name        = "${var.environment}-generic-comp-ecs-task-sg"
     vpc_id      = module.vpc.vpc_id
@@ -98,6 +83,22 @@ resource "aws_security_group" "generic-comp-ecs-task-sg" {
         from_port       = "80"
         to_port         = "80"
         security_groups = [aws_security_group.deductions-private-alb-sg.id]
+    }
+
+    ingress {
+        description     = "Allow traffic from Internal ALB to Generic Component Task"
+        protocol        = "tcp"
+        from_port       = "3000"
+        to_port         = "3000"
+        security_groups = [aws_security_group.private-alb-internal-sg.id]
+    }
+
+    ingress {
+        description     = "Allow traffic from Internal ALB to Generic Component Task"
+        protocol        = "tcp"
+        from_port       = "80"
+        to_port         = "80"
+        security_groups = [aws_security_group.private-alb-internal-sg.id]
     }
 
     egress {
