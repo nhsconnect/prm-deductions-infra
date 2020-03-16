@@ -1,4 +1,4 @@
-# Instance Security group
+
 resource "aws_security_group" "vpn_sg" {
   name        = "VPN VM ${var.environment} security group"
   description = "Security group for VPN VM"
@@ -9,25 +9,7 @@ resource "aws_security_group" "vpn_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
-      ["10.0.0.0/8", "${var.my_ip}/32"])
-  }
-
-  # VPN from whitelisted IP
-  ingress {
-    from_port = var.vpn_port
-    to_port   = var.vpn_port
-    protocol  = "tcp"
-    cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
-      ["10.0.0.0/8", "${var.my_ip}/32"])
-  }
-
-  ingress {
-    from_port = var.vpn_port
-    to_port   = var.vpn_port
-    protocol  = "udp"
-    cidr_blocks = concat(split(",", "${data.aws_ssm_parameter.inbound_ips.value}"),
-      ["10.0.0.0/8", "${var.my_ip}/32"])
+    cidr_blocks = local.allowed_public_ips
   }
 
   # all traffic from public subnet
@@ -51,6 +33,6 @@ resource "aws_security_group" "vpn_sg" {
   }
 
   tags = {
-    Name      = "Security group for VPN to ${var.environment}"
+    Name      = "Security group for VPN in ${var.environment}"
   }
 }

@@ -17,7 +17,8 @@ resource "aws_instance" "vpn" {
   source_dest_check = "false" # for VPN, this instance is a router
 
   vpc_security_group_ids = [
-    aws_security_group.vpn_sg.id,
+    local.dynamic_vpn_sg,
+    aws_security_group.vpn_sg.id
   ]
 
   tags = {
