@@ -7,9 +7,9 @@ output "deductions_private_private_subnets" {
   value       = module.deductions-private.deductions_private_private_subnets
 }
 
-output "deductions_private_alb_dns" {
-  value       = module.deductions-private.deductions_private_alb_dns
-}
+# output "deductions_private_alb_dns" {
+#   value       = module.deductions-private.deductions_private_alb_dns
+# }
 
 output "dns_server_1" {
   value = module.deductions-private.dns_server_1

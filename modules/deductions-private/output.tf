@@ -29,9 +29,9 @@ output "public_subnets_route_table_id" {
   value = module.vpc.public_route_table_ids[0]
 }
 
-output "deductions_private_alb_dns" {
-  value = aws_alb.alb.dns_name
-}
+# output "deductions_private_alb_dns" {
+#   value = aws_alb.alb.dns_name
+# }
 
 resource "aws_ssm_parameter" "deductions_private_ecs_cluster_id" {
   name = "/nhs/${var.environment}/deductions_private_ecs_cluster_id"
@@ -69,11 +69,11 @@ resource "aws_ssm_parameter" "deductions_private_private_subnets" {
   value = join(",", module.vpc.private_subnets)
 }
 
-resource "aws_ssm_parameter" "deductions_private_alb_dns" {
-  name = "/nhs/${var.environment}/deductions_private_alb_dns"
-  type = "String"
-  value = aws_alb.alb.dns_name
-}
+# resource "aws_ssm_parameter" "deductions_private_alb_dns" {
+#   name = "/nhs/${var.environment}/deductions_private_alb_dns"
+#   type = "String"
+#   value = aws_alb.alb.dns_name
+# }
 
 resource "aws_ssm_parameter" "deductions_private_vpc_id" {
   name = "/nhs/${var.environment}/deductions_private_vpc_id"
@@ -81,23 +81,23 @@ resource "aws_ssm_parameter" "deductions_private_vpc_id" {
   value = module.vpc.vpc_id
 }
 
-resource "aws_ssm_parameter" "deductions_private_alb_arn" {
-  name = "/nhs/${var.environment}/deductions_private_alb_arn"
-  type = "String"
-  value = aws_alb.alb.arn
-}
+# resource "aws_ssm_parameter" "deductions_private_alb_arn" {
+#   name = "/nhs/${var.environment}/deductions_private_alb_arn"
+#   type = "String"
+#   value = aws_alb.alb.arn
+# }
 
-resource "aws_ssm_parameter" "deductions_private_alb_httpl_arn" {
-  name = "/nhs/${var.environment}/deductions_private_alb_httpl_arn"
-  type = "String"
-  value = aws_alb_listener.alb-listener.arn
-}
+# resource "aws_ssm_parameter" "deductions_private_alb_httpl_arn" {
+#   name = "/nhs/${var.environment}/deductions_private_alb_httpl_arn"
+#   type = "String"
+#   value = aws_alb_listener.alb-listener.arn
+# }
 
-resource "aws_ssm_parameter" "deductions_private_alb_httpsl_arn" {
-  name = "/nhs/${var.environment}/deductions_private_alb_httpsl_arn"
-  type = "String"
-  value = aws_alb_listener.alb-listener-https.arn
-}
+# resource "aws_ssm_parameter" "deductions_private_alb_httpsl_arn" {
+#   name = "/nhs/${var.environment}/deductions_private_alb_httpsl_arn"
+#   type = "String"
+#   value = aws_alb_listener.alb-listener-https.arn
+# }
 
 resource "aws_ssm_parameter" "deductions_private_int_alb_httpl_arn" {
   name = "/nhs/${var.environment}/deductions_private_int_alb_httpl_arn"
