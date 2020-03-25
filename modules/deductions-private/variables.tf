@@ -58,6 +58,10 @@ variable "deployment_mode" {
   description = "The deployment mode of the broker. Supported: SINGLE_INSTANCE and ACTIVE_STANDBY_MULTI_AZ"
 }
 
+variable "mq_deployment_mode" {
+  type = string
+}
+
 variable "engine_type" {
   type        = string
   default     = "ActiveMQ"

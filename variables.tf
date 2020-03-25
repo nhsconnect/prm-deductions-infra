@@ -82,6 +82,10 @@ variable "broker_name" {
   type = string
 }
 
+variable "mq_deployment_mode" {
+  type = string
+}
+
 variable "apply_immediately" {
   type        = string
   default     = "false"

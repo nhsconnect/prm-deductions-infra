@@ -26,6 +26,7 @@ deductions_core_azs               = ["eu-west-2b", "eu-west-2a"]
 
 broker_name                         = "deductor-amq-broker-test"
 deployment_mode                     = "ACTIVE_STANDBY_MULTI_AZ"
+mq_deployment_mode                  = "SINGLE_INSTANCE"
 engine_type                         = "ActiveMQ"
 engine_version                      = "5.15.10"
 host_instance_type                  = "mq.t2.micro"

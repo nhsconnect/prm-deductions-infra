@@ -44,6 +44,7 @@ module "deductions-private" {
 
     broker_name                    = var.broker_name
     deployment_mode                = var.deployment_mode
+    mq_deployment_mode             = var.mq_deployment_mode
     engine_type                    = var.engine_type
     engine_version                 = var.engine_version
     host_instance_type             = var.host_instance_type

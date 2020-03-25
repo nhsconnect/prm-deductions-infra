@@ -32,10 +32,10 @@ output "deductions_core_database_subnets" {
   value       = module.deductions-core.deductions_core_database_subnets
 }
 
-output "deductions_core_ehr_repo_alb_tg_arn" {
-  value       = module.deductions-core.deductions_core_ehr_repo_alb_tg_arn
-}
+# output "deductions_core_ehr_repo_alb_tg_arn" {
+#   value       = module.deductions-core.deductions_core_ehr_repo_alb_tg_arn
+# }
 
-output "deductions_core_alb_dns" {
-  value       = module.deductions-core.deductions_core_alb_dns
-}
+# output "deductions_core_alb_dns" {
+#   value       = module.deductions-core.deductions_core_alb_dns
+# }
