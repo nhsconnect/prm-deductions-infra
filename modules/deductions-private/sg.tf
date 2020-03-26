@@ -164,7 +164,7 @@ resource "aws_security_group" "administration-portal-ecs-task-sg" {
 }
 
 resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
-    name        = "${var.environment}-gp2gp-adaptor--ecs-task-sg"
+    name        = "${var.environment}-gp2gp-adaptor-ecs-task-sg"
     vpc_id      = module.vpc.vpc_id
 
     ingress {
@@ -232,7 +232,7 @@ resource "aws_security_group" "deductions-private-alb-sg" {
         to_port     = 443
         cidr_blocks = var.allowed_public_ips
     }
-    
+
     egress {
         description = "Allow All Outbound"
         from_port   = 0
@@ -314,7 +314,7 @@ resource "aws_security_group" "private-alb-internal-sg" {
         to_port     = 443
         cidr_blocks = [var.cidr]
     }
-    
+
     egress {
         description = "Allow All Outbound"
         from_port   = 0
