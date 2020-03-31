@@ -35,6 +35,16 @@ resource "aws_security_group_rule" "ingress_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
+resource "aws_security_group_rule" "ingress_amqp_ecs_tasks" {
+  type                = "ingress"
+  security_group_id   = aws_security_group.mq_sg.id
+  description         = "Access for Deductions Private ECS Tasks"
+  protocol            = "tcp"
+  from_port           = "5671"
+  to_port             = "5671"
+  source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
+}
+
 # resource "aws_security_group_rule" "ingress_console_nlb" {
 #   type                = "ingress"
 #   security_group_id   = aws_security_group.mq_sg.id
