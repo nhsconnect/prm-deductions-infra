@@ -40,6 +40,12 @@ output "public_subnets_route_table_id" {
   value = module.vpc.public_route_table_ids[0]
 }
 
+resource "aws_ssm_parameter" "deductions_core_vpc_id" {
+  name = "/nhs/${var.environment}/deductions_core_vpc_id"
+  type = "String"
+  value = module.vpc.vpc_id
+}
+
 resource "aws_ssm_parameter" "deductions_core_ecs_cluster_id" {
   name = "/nhs/${var.environment}/deductions_core_ecs_cluster_id"
   type = "String"
@@ -64,11 +70,12 @@ resource "aws_ssm_parameter" "deductions_core_private_subnets" {
 #   value = aws_alb_target_group.ehr-repo-alb-tg.arn
 # }
 
-resource "aws_ssm_parameter" "deductions_core_ehr_repo_internal_alb_tg_arn" {
-  name = "/nhs/${var.environment}/deductions_core_ehr_repo_internal_alb_tg_arn"
-  type = "String"
-  value = aws_alb_target_group.ehr-repo-alb-internal-tg.arn
-}
+# resource "aws_ssm_parameter" "deductions_core_ehr_repo_internal_alb_tg_arn" {
+#   name = "/nhs/${var.environment}/deductions_core_ehr_repo_internal_alb_tg_arn"
+#   type = "String"
+#   value = aws_alb_target_group.ehr-repo-alb-internal-tg.arn
+# }
+
 #
 # resource "aws_ssm_parameter" "deductions_core_alb_dns" {
 #   name = "/nhs/${var.environment}/deductions_core_alb_dns"
@@ -80,4 +87,16 @@ resource "aws_ssm_parameter" "deductions_core_internal_alb_dns" {
   name = "/nhs/${var.environment}/deductions_core_internal_alb_dns"
   type = "String"
   value = aws_alb.alb-internal.dns_name
+}
+
+resource "aws_ssm_parameter" "deductions_core_int_alb_httpl_arn" {
+  name = "/nhs/${var.environment}/deductions_core_int_alb_httpl_arn"
+  type = "String"
+  value = aws_alb_listener.int-alb-listener-http.arn
+}
+
+resource "aws_ssm_parameter" "deductions_core_int_alb_httpsl_arn" {
+  name = "/nhs/${var.environment}/deductions_core_int_alb_httpsl_arn"
+  type = "String"
+  value = aws_alb_listener.int-alb-listener-https.arn
 }

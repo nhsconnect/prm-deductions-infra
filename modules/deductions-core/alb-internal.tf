@@ -11,25 +11,7 @@ resource "aws_alb" "alb-internal" {
   }
 }
 
-resource "aws_alb_target_group" "ehr-repo-alb-internal-tg" {
-  name        = "${var.environment}-${var.component_name}-ehr-int-tg"
-  port        = 3000
-  protocol    = "HTTP"
-  vpc_id      = module.vpc.vpc_id
-  target_type = "ip"
-  deregistration_delay = var.ehr_deregistration_delay
-  health_check {
-    healthy_threshold   = 3
-    unhealthy_threshold = 5
-    timeout             = 5
-    interval            = 10
-    path                = "/health"
-    port                = 3000
-  }
-}
-
-# Redirect all traffic from the ALB to the target group
-resource "aws_alb_listener" "alb-internal-listener" {
+resource "aws_alb_listener" "int-alb-listener-http" {
   load_balancer_arn = aws_alb.alb-internal.arn
   port              = "80"
   protocol          = "HTTP"
@@ -45,23 +27,27 @@ resource "aws_alb_listener" "alb-internal-listener" {
   }
 }
 
-resource "aws_alb_listener_rule" "ehr-repo-internal-listener-rule" {
-  listener_arn = aws_alb_listener.alb-internal-listener.arn
-  priority     = 100
+resource "aws_alb_listener" "int-alb-listener-https" {
+  load_balancer_arn = aws_alb.alb-internal.arn
+  port              = "443"
+  protocol          = "HTTPS"
 
-  action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.ehr-repo-alb-internal-tg.arn
-  }
+  ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn = aws_acm_certificate_validation.certificate-validation.certificate_arn
 
-  condition {
-    field  = "host-header"
-    values = ["${var.environment}.ehr-repo.patient-deductions.nhs.uk"]
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Error"
+      status_code  = "501"
+    }
   }
 }
 
 resource "aws_alb_listener_rule" "alb-internal-check-listener-rule" {
-  listener_arn = aws_alb_listener.alb-internal-listener.arn
+  listener_arn = aws_alb_listener.int-alb-listener-http.arn
   priority     = 200
 
   action {
@@ -78,4 +64,6 @@ resource "aws_alb_listener_rule" "alb-internal-check-listener-rule" {
     field  = "host-header"
     values = ["${var.environment}.alb.patient-deductions.nhs.uk"]
   }
+
+  depends_on = [aws_alb_listener.int-alb-listener-http]
 }

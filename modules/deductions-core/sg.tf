@@ -82,6 +82,14 @@ resource "aws_security_group" "core-alb-internal-sg" {
         cidr_blocks = [var.allowed_cidr]
     }
 
+    ingress {
+        description = "Allow deductions private subnet to access Core internal ALB"
+        protocol    = "tcp"
+        from_port   = 443
+        to_port     = 443
+        cidr_blocks = [var.allowed_cidr]
+    }
+
     egress {
         description = "Allow All Outbound"
         from_port   = 0

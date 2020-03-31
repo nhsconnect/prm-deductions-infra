@@ -43,7 +43,7 @@ resource "aws_acm_certificate" "generic-component-cert" {
     Terraform = "true"
     Environment = var.environment
     Deductions-VPC = var.component_name
-  } 
+  }
 }
 
 resource "aws_acm_certificate" "mq-admin-cert" {
