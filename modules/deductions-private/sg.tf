@@ -25,6 +25,16 @@ resource "aws_security_group_rule" "ingress_int_alb_to_mq_admin" {
     source_security_group_id    = aws_security_group.private-alb-internal-sg.id
 }
 
+resource "aws_security_group_rule" "vpn_to_mq" {
+    type                = "ingress"
+    security_group_id   = aws_security_group.mq_sg.id
+    description         = "Allow traffic from VPN to MQ"
+    protocol            = "tcp"
+    from_port           = "0"
+    to_port             = "65535"
+    source_security_group_id    = data.aws_ssm_parameter.vpn_sg.value
+}
+
 resource "aws_security_group_rule" "ingress_ecs_tasks" {
   type                = "ingress"
   security_group_id   = aws_security_group.mq_sg.id
@@ -386,4 +396,21 @@ resource "aws_security_group" "logs-endpoint-sg" {
     Environment     = var.environment
     Deductions-VPC  = var.component_name
   }
+}
+
+resource "aws_security_group" "state-db-sg" {
+    name        = "${var.environment}-state-db-sg"
+    vpc_id      = module.vpc.vpc_id
+
+    ingress {
+        description     = "Allow traffic from gp-to-repo to the db"
+        protocol        = "tcp"
+        from_port       = "5432"
+        to_port         = "5432"
+        security_groups = [aws_security_group.gp-to-repo-ecs-task-sg.id]
+    }
+
+    tags = {
+        Name = "${var.environment}-state-db-sg"
+    }
 }

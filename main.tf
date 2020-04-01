@@ -36,6 +36,7 @@ module "deductions-private" {
 
     public_subnets      = var.deductions_private_public_subnets
     private_subnets     = var.deductions_private_private_subnets
+    database_subnets    = var.deductions_private_database_subnets
     azs                 = var.deductions_private_azs
 
     allowed_public_ips  = local.allowed_public_ips
@@ -56,6 +57,10 @@ module "deductions-private" {
     maintenance_time_of_day        = var.maintenance_time_of_day
     maintenance_time_zone          = var.maintenance_time_zone
     mq_allow_public_console_access = var.mq_allow_public_console_access
+
+    state_db_allocated_storage     = var.state_db_allocated_storage
+    state_db_engine_version        = var.state_db_engine_version
+    state_db_instance_class        = var.state_db_instance_class
 }
 
 module "vpn" {

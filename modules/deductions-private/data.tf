@@ -27,3 +27,15 @@ data "aws_ssm_parameter" "mq-app-username" {
 data "aws_ssm_parameter" "mq-app-password" {
   name = "/nhs/${var.environment}/mq/app-password"
 }
+
+data "aws_ssm_parameter" "vpn_sg" {
+  name = "/nhs/${var.environment}/vpn_sg"
+}
+
+data "aws_ssm_parameter" "db-username" {
+  name = "/nhs/${var.environment}/state-db/db-username"
+}
+
+data "aws_ssm_parameter" "db-password" {
+  name = "/nhs/${var.environment}/state-db/db-password"
+}

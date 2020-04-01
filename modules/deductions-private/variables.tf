@@ -27,6 +27,10 @@ variable "private_subnets" {
   type = list
 }
 
+variable "database_subnets" {
+  type = list
+}
+
 variable "azs" {
   type = list
 }
@@ -137,3 +141,7 @@ variable "mq_application_password" {
 variable "mq_allow_public_console_access"{
   description = "Will create an NLB in two public subnets to provide internet access to the MQ admin console"
 }
+
+variable "state_db_allocated_storage" {}
+variable "state_db_engine_version" {}
+variable "state_db_instance_class" {}
