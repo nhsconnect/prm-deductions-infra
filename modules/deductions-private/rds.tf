@@ -6,7 +6,7 @@ resource "aws_db_instance" "state-db" {
   engine                  = "postgres"
   engine_version          = var.state_db_engine_version
   instance_class          = var.state_db_instance_class
-  name                    = "deductionsstate"
+  name                    = "gp_to_repo"
   username                = data.aws_ssm_parameter.db-username.value
   password                = data.aws_ssm_parameter.db-password.value
   parameter_group_name    = "default.postgres11"
@@ -16,8 +16,8 @@ resource "aws_db_instance" "state-db" {
   maintenance_window      = "Sun:00:00-Sun:03:00"
   skip_final_snapshot     = true
 
-  db_subnet_group_name = aws_db_subnet_group.db-cluster-subnet-group.name
-  vpc_security_group_ids  = [aws_security_group.state-db-sg.id]
+  db_subnet_group_name   = aws_db_subnet_group.db-cluster-subnet-group.name
+  vpc_security_group_ids = [aws_security_group.state-db-sg.id]
 }
 
 resource "aws_db_subnet_group" "db-cluster-subnet-group" {
@@ -30,7 +30,7 @@ resource "aws_db_subnet_group" "db-cluster-subnet-group" {
 }
 
 resource "aws_ssm_parameter" "rds_endpoint" {
-    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/private/rds_endpoint"
-    type = "String"
-    value = aws_db_instance.state-db.endpoint
+  name  = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/private/rds_endpoint"
+  type  = "String"
+  value = aws_db_instance.state-db.endpoint
 }
