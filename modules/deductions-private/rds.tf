@@ -34,3 +34,13 @@ resource "aws_ssm_parameter" "rds_endpoint" {
   type  = "String"
   value = aws_db_instance.state-db.endpoint
 }
+
+# provider "postgresql" {
+#   host            = aws_db_instance.state-db.address
+#   port            = aws_db_instance.state-db.port
+#   database        = "gp_to_repo"
+#   username        = data.aws_ssm_parameter.db-username.value
+#   password        = data.aws_ssm_parameter.db-password.value
+#   sslmode         = "require"
+#   connect_timeout = 15
+# }

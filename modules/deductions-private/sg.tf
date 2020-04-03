@@ -410,6 +410,14 @@ resource "aws_security_group" "state-db-sg" {
         security_groups = [aws_security_group.gp-to-repo-ecs-task-sg.id]
     }
 
+    ingress {
+        description     = "Allow traffic from VPN to the State DB"
+        protocol        = "tcp"
+        from_port       = "5432"
+        to_port         = "5432"
+        security_groups = [data.aws_ssm_parameter.vpn_sg.value]
+    }
+
     tags = {
         Name = "${var.environment}-state-db-sg"
     }

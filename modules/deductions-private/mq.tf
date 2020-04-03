@@ -40,6 +40,27 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   }
 }
 
+data "aws_iam_policy_document" "mq-log-publishing-policy" {
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+
+    resources = ["arn:aws:logs:*:*:log-group:/aws/amazonmq/*"]
+
+    principals {
+      identifiers = ["mq.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_resource_policy" "mq-log-publishing-policy" {
+  policy_document = data.aws_iam_policy_document.mq-log-publishing-policy.json
+  policy_name     = "${var.environment}-mq-log-publishing-policy"
+}
+
 # resource "aws_mq_broker" "deductions_mq_broker" {
 #   broker_name                = "${var.environment}-deductions-private-mq"
 #   deployment_mode            = var.mq_deployment_mode
