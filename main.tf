@@ -4,10 +4,10 @@ provider "aws" {
   region    = var.region
 }
 
-terraform{
+terraform {
       backend "s3" {
-        bucket  = "prm-327778747031-terraform-states"
-        key     = "gpportal/terraform.tfstate"
+        bucket  = "prm-deductions-terraform-state"
+        key     = "infra/terraform.tfstate"
         region  = "eu-west-2"
         encrypt = true
     }
