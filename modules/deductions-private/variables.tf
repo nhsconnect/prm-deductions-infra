@@ -142,6 +142,10 @@ variable "mq_allow_public_console_access"{
   description = "Will create an NLB in two public subnets to provide internet access to the MQ admin console"
 }
 
+variable "private_zone_id" {
+  description = "ID of patient-deductions.nhs.uk private zone"
+}
+
 variable "state_db_allocated_storage" {}
 variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}

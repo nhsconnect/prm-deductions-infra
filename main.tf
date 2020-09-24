@@ -38,6 +38,7 @@ module "deductions-private" {
     private_subnets     = var.deductions_private_private_subnets
     database_subnets    = var.deductions_private_database_subnets
     azs                 = var.deductions_private_azs
+    private_zone_id     = aws_route53_zone.private.zone_id
 
     allowed_public_ips  = local.allowed_public_ips
 
@@ -63,15 +64,15 @@ module "deductions-private" {
     state_db_instance_class        = var.state_db_instance_class
 }
 
-module "vpn" {
-    source              = "./modules/vpn/"
-    region              = var.region
-    vpc_id              = module.deductions-private.vpc_id
-    availability_zone   = var.deductions_private_azs[0]
-    public_subnet_id    = module.deductions-private.public_subnet_id
-    environment         = var.environment
-    my_ip               = var.my_ip
-}
+# module "vpn" {
+#     source              = "./modules/vpn/"
+#     region              = var.region
+#     vpc_id              = module.deductions-private.vpc_id
+#     availability_zone   = var.deductions_private_azs[0]
+#     public_subnet_id    = module.deductions-private.public_subnet_id
+#     environment         = var.environment
+#     my_ip               = var.my_ip
+# }
 
 module "deductions-core" {
     source              = "./modules/deductions-core/"
