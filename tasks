@@ -30,7 +30,7 @@ function tf_plan {
 
 function tf_apply {
   check_env
-  terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
+  terraform init -reconfigure -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   terraform apply nhs_deployment.tfplan
   terraform output -json > tf-out.json
