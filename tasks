@@ -45,7 +45,7 @@ function create_secret {
   else
     set -e
     echo "Secret does not exists. Creating $secret_id"
-    value=$(openssl rand -base64 24)
+    value=$(openssl rand -base64 24  | tr -d "/@\'+")
     aws ssm put-parameter \
      --region $AWS_REGION \
      --name $secret_id \
