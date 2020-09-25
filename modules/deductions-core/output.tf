@@ -41,62 +41,43 @@ output "public_subnets_route_table_id" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_vpc_id" {
-  name = "/nhs/${var.environment}/deductions_core_vpc_id"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-vpc-id"
   type = "String"
   value = module.vpc.vpc_id
 }
 
 resource "aws_ssm_parameter" "deductions_core_ecs_cluster_id" {
-  name = "/nhs/${var.environment}/deductions_core_ecs_cluster_id"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-ecs-cluster-id"
   type = "String"
   value = aws_ecs_cluster.ecs-cluster.id
 }
 
 resource "aws_ssm_parameter" "deductions_core_ecs_tasks_sg_id" {
-  name = "/nhs/${var.environment}/deductions_core_ecs_tasks_sg_id"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-ecs-tasks-sg-id"
   type = "String"
   value = aws_security_group.ecs-tasks-sg.id
 }
 
 resource "aws_ssm_parameter" "deductions_core_private_subnets" {
-  name = "/nhs/${var.environment}/deductions_core_private_subnets"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-private-subnets"
   type = "String"
   value = join(",", module.vpc.private_subnets)
 }
 
-# resource "aws_ssm_parameter" "deductions_core_ehr_repo_alb_tg_arn" {
-#   name = "/nhs/${var.environment}/deductions_core_ehr_repo_alb_tg_arn"
-#   type = "String"
-#   value = aws_alb_target_group.ehr-repo-alb-tg.arn
-# }
-
-# resource "aws_ssm_parameter" "deductions_core_ehr_repo_internal_alb_tg_arn" {
-#   name = "/nhs/${var.environment}/deductions_core_ehr_repo_internal_alb_tg_arn"
-#   type = "String"
-#   value = aws_alb_target_group.ehr-repo-alb-internal-tg.arn
-# }
-
-#
-# resource "aws_ssm_parameter" "deductions_core_alb_dns" {
-#   name = "/nhs/${var.environment}/deductions_core_alb_dns"
-#   type = "String"
-#   value = aws_alb.alb.dns_name
-# }
-
 resource "aws_ssm_parameter" "deductions_core_internal_alb_dns" {
-  name = "/nhs/${var.environment}/deductions_core_internal_alb_dns"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-internal-alb-dns"
   type = "String"
   value = aws_alb.alb-internal.dns_name
 }
 
 resource "aws_ssm_parameter" "deductions_core_int_alb_httpl_arn" {
-  name = "/nhs/${var.environment}/deductions_core_int_alb_httpl_arn"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-int-alb-httpl-arn"
   type = "String"
   value = aws_alb_listener.int-alb-listener-http.arn
 }
 
 resource "aws_ssm_parameter" "deductions_core_int_alb_httpsl_arn" {
-  name = "/nhs/${var.environment}/deductions_core_int_alb_httpsl_arn"
+  name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-core-int-alb-httpsl-arn"
   type = "String"
   value = aws_alb_listener.int-alb-listener-https.arn
 }

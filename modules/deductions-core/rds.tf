@@ -19,7 +19,7 @@ resource "aws_rds_cluster" "db-cluster" {
 }
 
 resource "aws_ssm_parameter" "rds_endpoint" {
-    name = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/core/rds_endpoint"
+    name = "/repo/${var.environment}/prm-deductions-infra/output/core-rds-endpoint"
     type = "String"
     value = aws_rds_cluster.db-cluster.endpoint
 }

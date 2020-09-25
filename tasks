@@ -85,7 +85,7 @@ function get_aws_value {
 }
 
 function generate_ssh_key {
-  secret_id="/NHS/deductions/ssh/id_rsa"
+  secret_id="/repo/prm-deductions-infra/output/ssh-id-rsa"
   ssh_directory=modules/ssh
   mkdir -p ${ssh_directory}/
   if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
@@ -144,12 +144,12 @@ case "${command}" in
       dojo "./tasks _tf_apply"
       ;;
   _create_secrets)
-      create_secret "/nhs/${NHS_ENVIRONMENT}/db/db-username"
-      create_secret "/nhs/${NHS_ENVIRONMENT}/db/db-password"
-      create_secret "/nhs/${NHS_ENVIRONMENT}/mq/admin-username"
-      create_secret "/nhs/${NHS_ENVIRONMENT}/mq/admin-password"
-      create_secret "/nhs/${NHS_ENVIRONMENT}/mq/app-username"
-      create_secret "/nhs/${NHS_ENVIRONMENT}/mq/app-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/db-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/db-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-admin-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-admin-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)
       ;;
   create_secrets)
@@ -167,8 +167,8 @@ case "${command}" in
       ;;
   _detect_active_mq)
       account_id=$(aws sts get-caller-identity | jq -r .Account)
-      MQ_ENDPOINT_1=$(get_aws_value "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/0")
-      MQ_ENDPOINT_2=$(get_aws_value "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/1")
+      MQ_ENDPOINT_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/amqp-endpoint-0")
+      MQ_ENDPOINT_2=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/amqp-endpoint-1")
       MQ_HOST_1=$(echo $MQ_ENDPOINT_1 | sed 's#amqp+ssl://##' | sed 's#:5671##')
       MQ_HOST_2=$(echo $MQ_ENDPOINT_2 | sed 's#amqp+ssl://##' | sed 's#:5671##')
       if nc -zvw3 $MQ_HOST_1 5671; then
@@ -181,11 +181,11 @@ case "${command}" in
       fi
       aws ssm put-parameter \
        --region "${AWS_REGION}" \
-       --name "/NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/active" \
+       --name "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/amqp-endpoint-active" \
        --type String \
        --overwrite \
        --value "$MQ_ENDPOINT_ACTIVE"
-      echo "Stored active MQ endpoint at /NHS/${NHS_ENVIRONMENT}-${account_id}/amqp-endpoint/active"
+      echo "Stored active MQ endpoint at /repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/amqp-endpoint-active"
       ;;
   detect_active_mq)
       check_env

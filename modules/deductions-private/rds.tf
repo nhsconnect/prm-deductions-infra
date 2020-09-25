@@ -30,7 +30,7 @@
 # }
 
 # resource "aws_ssm_parameter" "rds_endpoint" {
-#   name  = "/NHS/${var.environment}-${data.aws_caller_identity.current.account_id}/private/rds_endpoint"
+#   name  = "/repo/${var.environment}/prm-deductions-infra/output/private-rds-endpoint"
 #   type  = "String"
 #   value = aws_db_instance.state-db.endpoint
 # }

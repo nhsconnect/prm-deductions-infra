@@ -2,7 +2,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_ssm_parameter" "agent_ips" {
-    name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/gocd-prod/agent_ips"
+    name = "/repo/prod/prm-deductions-base-infra/output/gocd-agent-ips"
 }
 
 locals {

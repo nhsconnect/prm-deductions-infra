@@ -13,15 +13,15 @@ module "gocd" {
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
-  name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/gocd-prod/vpc_id"
+  name = "/repo/prod/prm-deductions-base-infra/output/gocd-vpc-id"
 }
 
 data "aws_ssm_parameter" "gocd_zone_id" {
-  name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/gocd-prod/route53_zone_id"
+  name = "/repo/${var.environment}/prm-gocd-infra/output/gocd-route53-zone-id"
 }
 
 data "aws_ssm_parameter" "gocd_cidr_block" {
-  name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/gocd-prod/cidr_block"
+  name = "/repo/${var.environment}/prm-deductions-base-infra/output/gocd-cidr-block"
 }
 
 locals {
@@ -51,7 +51,7 @@ resource "aws_vpc_peering_connection" "gocd_peering_connection" {
 }
 
 data "aws_ssm_parameter" "route_table_id" {
-  name = "/NHS/deductions-${data.aws_caller_identity.current.account_id}/gocd-prod/route_table_id"
+  name = "/repo/${var.environment}/prm-gocd-infra/output/gocd-route-table-id"
 }
 
 # Add a route to the deductions-private VPC in the gocd VPC route table
