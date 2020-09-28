@@ -8,6 +8,11 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "gocd_environment" {
+  type        = string
+  default     = "prod"
+}
+
 variable "component_name" {
   type        = string
   default     = "deductions-private"
