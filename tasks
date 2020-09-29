@@ -85,7 +85,7 @@ function get_aws_value {
 }
 
 function generate_ssh_key {
-  secret_id="/repo/prm-deductions-infra/output/ssh-id-rsa"
+  secret_id="/repo/prm-deductions-infra/user-input/ssh-id-rsa"
   ssh_directory=modules/ssh
   mkdir -p ${ssh_directory}/
   if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
