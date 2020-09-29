@@ -5,11 +5,11 @@ data "aws_ssm_parameter" "root_zone_id" {
 }
 
 data "aws_ssm_parameter" "mq-admin-username" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/mq-admin-username"
+  name = "/repo/${var.environment}/prm-deductions-infra/user-input/mq-admin-username"
 }
 
 data "aws_ssm_parameter" "mq-admin-password" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/mq-admin-password"
+  name = "/repo/${var.environment}/prm-deductions-infra/user-input/mq-admin-password"
 }
 
 data "aws_ssm_parameter" "mq-app-username" {
@@ -27,9 +27,9 @@ data "aws_ssm_parameter" "mq-app-password" {
 # State database does not exist yet so the below is temporarily commented out
 
 # data "aws_ssm_parameter" "db-username" {
-#   name = "/repo/${var.environment}/prm-deductions-base-infra/output/state-db-username"
+#   name = "/repo/${var.environment}/prm-deductions-base-infra/user-input/state-db-username"
 # }
 
 # data "aws_ssm_parameter" "db-password" {
-#   name = "/repo/${var.environment}/prm-deductions-base-infra/output/state-db-password"
+#   name = "/repo/${var.environment}/prm-deductions-base-infra/user-input/state-db-password"
 # }

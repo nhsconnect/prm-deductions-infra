@@ -144,10 +144,10 @@ case "${command}" in
       dojo "./tasks _tf_apply"
       ;;
   _create_secrets)
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/db-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/db-password"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-admin-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-admin-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/db-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/db-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/mq-admin-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/mq-admin-password"
       create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-username"
       create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)

@@ -5,9 +5,9 @@ data "aws_ssm_parameter" "root_zone_id" {
 }
 
 data "aws_ssm_parameter" "db-username" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/db-username"
+  name = "/repo/${var.environment}/prm-deductions-infra/user-input/db-username"
 }
 
 data "aws_ssm_parameter" "db-password" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/db-password"
+  name = "/repo/${var.environment}/prm-deductions-infra/user-input/db-password"
 }
