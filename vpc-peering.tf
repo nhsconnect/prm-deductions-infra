@@ -14,6 +14,8 @@ resource "aws_vpc_peering_connection" "core_private" {
 
   tags = {
     Name = "${var.environment}-deductions-core-private-peering"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 

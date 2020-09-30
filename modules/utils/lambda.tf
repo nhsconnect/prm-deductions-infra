@@ -19,6 +19,11 @@ resource "aws_lambda_function" "stop-ecs-services-lambda" {
     }
   }
 
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+
   depends_on = [data.archive_file.lambda-zip]
 }
 
@@ -41,6 +46,11 @@ resource "aws_lambda_function" "start-ecs-services-lambda" {
       DESIRED_COUNT_DEV  = 1
       DESIRED_COUNT_TEST = 2
     }
+  }
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 
   depends_on = [data.archive_file.lambda-zip[0]]

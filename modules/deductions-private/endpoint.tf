@@ -12,10 +12,8 @@ resource "aws_vpc_endpoint" "ecr" {
 
     tags = {
         Name            = "${var.environment}-${var.component_name}-ecr-endpoint"
-        Terraform       = "true"
-        Environment     = var.environment
-        Deductions-VPC  = var.component_name
-
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -32,9 +30,8 @@ resource "aws_vpc_endpoint" "cloudwatch-logs" {
 
     tags = {
         Name            = "${var.environment}-${var.component_name}-logs-endpoint"
-        Terraform       = "true"
-        Environment     = var.environment
-        Deductions-VPC  = var.component_name
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 

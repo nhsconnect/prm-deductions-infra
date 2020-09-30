@@ -13,6 +13,10 @@ resource "aws_iam_role" "vpn-server" {
   name               = "vpn-${var.environment}-server"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.instance-assume-role-policy.json
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_iam_instance_profile" "vpn-server" {

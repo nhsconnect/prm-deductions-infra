@@ -23,6 +23,8 @@ resource "aws_security_group" "ecs-tasks-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -40,6 +42,8 @@ resource "aws_security_group" "db-sg" {
 
     tags = {
         Name = "db-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -100,5 +104,7 @@ resource "aws_security_group" "core-alb-internal-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-alb-internal-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }

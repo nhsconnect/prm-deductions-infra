@@ -34,9 +34,8 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   }
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 
@@ -110,6 +109,7 @@ resource "aws_ssm_parameter" "amqp-endpoint-0" {
   value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.1
 
   tags = {
+    CreatedBy   = var.repo_name
     Environment = var.environment
   }
 }
@@ -121,6 +121,7 @@ resource "aws_ssm_parameter" "amqp-endpoint-1" {
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.1
 
   tags = {
+    CreatedBy   = var.repo_name
     Environment = var.environment
   }
 }
@@ -132,6 +133,7 @@ resource "aws_ssm_parameter" "stomp-endpoint-0" {
   value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.2
 
   tags = {
+    CreatedBy   = var.repo_name
     Environment = var.environment
   }
 }
@@ -143,6 +145,7 @@ resource "aws_ssm_parameter" "stomp-endpoint-1" {
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.2
 
   tags = {
+    CreatedBy   = var.repo_name
     Environment = var.environment
   }
 }

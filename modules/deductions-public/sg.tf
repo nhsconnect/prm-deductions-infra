@@ -27,6 +27,8 @@ resource "aws_security_group" "alb-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-alb-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -54,5 +56,7 @@ resource "aws_security_group" "gp-portal-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-${var.component_name}-ecs-tasks-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }

@@ -17,9 +17,8 @@ module "vpc" {
     enable_dns_hostnames    = true
 
     tags = {
-        Terraform = "true"
+        CreatedBy   = var.repo_name
         Environment = var.environment
-        Deductions-VPC = var.component_name
     }
 }
 
@@ -27,10 +26,18 @@ resource "aws_ssm_parameter" "private_rtb" {
     name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-public-private-rtb"
     type = "String"
     value = module.vpc.private_route_table_ids[0]
+    tags = {
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
 }
 
 resource "aws_ssm_parameter" "public_rtb" {
     name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-public-public-rtb"
     type = "String"
     value = module.vpc.public_route_table_ids[0]
+    tags = {
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
 }

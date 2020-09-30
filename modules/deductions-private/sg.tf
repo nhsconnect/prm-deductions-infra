@@ -12,6 +12,8 @@ resource "aws_security_group" "mq_sg" {
 
     tags = {
         Name = "deductor-mq-b-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -131,6 +133,8 @@ resource "aws_security_group" "generic-comp-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-generic-comp-ecs-task-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -180,6 +184,8 @@ resource "aws_security_group" "administration-portal-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-administration-portal-ecs-task-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -229,6 +235,8 @@ resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-gp2gp-adaptor-ecs-task-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -263,6 +271,8 @@ resource "aws_security_group" "deductions-private-alb-sg" {
 
     tags = {
         Name = "${var.environment}-deductions-private-alb-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -312,6 +322,8 @@ resource "aws_security_group" "gp-to-repo-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-gp-to-repo-ecs-task-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -345,6 +357,8 @@ resource "aws_security_group" "private-alb-internal-sg" {
 
     tags = {
         Name = "${var.environment}-deductions-private-alb-internal-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }
 
@@ -367,9 +381,9 @@ resource "aws_security_group" "ecr-endpoint-sg" {
   }
 
   tags = {
-    name            = "${var.environment}-${var.component_name}-ecr-endpoint-sg"
-    Environment     = var.environment
-    Deductions-VPC  = var.component_name
+    Name            = "${var.environment}-${var.component_name}-ecr-endpoint-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 
@@ -392,9 +406,9 @@ resource "aws_security_group" "logs-endpoint-sg" {
   }
 
   tags = {
-    name            = "${var.environment}-${var.component_name}-logs-endpoint-sg"
-    Environment     = var.environment
-    Deductions-VPC  = var.component_name
+    Name            = "${var.environment}-${var.component_name}-logs-endpoint-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 
@@ -420,5 +434,7 @@ resource "aws_security_group" "state-db-sg" {
 
     tags = {
         Name = "${var.environment}-state-db-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
     }
 }

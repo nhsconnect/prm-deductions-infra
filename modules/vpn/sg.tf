@@ -34,5 +34,7 @@ resource "aws_security_group" "vpn_sg" {
 
   tags = {
     Name      = "Security group for VPN in ${var.environment}"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }

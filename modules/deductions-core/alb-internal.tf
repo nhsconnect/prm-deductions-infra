@@ -5,9 +5,8 @@ resource "aws_alb" "alb-internal" {
   internal        = true
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 

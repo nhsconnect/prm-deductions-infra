@@ -47,6 +47,8 @@ resource "aws_vpc_peering_connection" "gocd_peering_connection" {
 
   tags = {
     Name = "deductions-private-gocd-peering-connection"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 

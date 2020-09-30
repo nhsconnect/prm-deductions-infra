@@ -6,4 +6,8 @@ locals {
 resource "aws_key_pair" "vpn_ssh_key" {
   key_name   = "vpn-${var.environment}-ssh-key"
   public_key = local.public_key
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }

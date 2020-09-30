@@ -23,6 +23,8 @@ resource "aws_instance" "vpn" {
 
   tags = {
     Name      = "VPN to ${var.environment} env"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 

@@ -12,9 +12,8 @@ resource "aws_rds_cluster" "db-cluster" {
     skip_final_snapshot = true
 
     tags = {
-      Terraform = "true"
+      CreatedBy   = var.repo_name
       Environment = var.environment
-      Deductions-VPC = var.component_name
     }
 }
 
@@ -22,6 +21,10 @@ resource "aws_ssm_parameter" "rds_endpoint" {
     name = "/repo/${var.environment}/prm-deductions-infra/output/core-rds-endpoint"
     type = "String"
     value = aws_rds_cluster.db-cluster.endpoint
+    tags = {
+      CreatedBy   = var.repo_name
+      Environment = var.environment
+    }
 }
 
 resource "aws_db_subnet_group" "db-cluster-subnet-group" {
@@ -30,6 +33,8 @@ resource "aws_db_subnet_group" "db-cluster-subnet-group" {
 
   tags = {
     Name = "${var.environment}-ehr-db-subnet-group"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
   }
 }
 
@@ -40,4 +45,8 @@ resource "aws_rds_cluster_instance" "ehr-db-instances" {
   instance_class        = "db.t3.medium"
   engine                = "aurora-postgresql"
   db_subnet_group_name  = aws_db_subnet_group.db-cluster-subnet-group.name
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }

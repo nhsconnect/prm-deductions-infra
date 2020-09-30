@@ -4,9 +4,8 @@ resource "aws_acm_certificate" "certificate" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 

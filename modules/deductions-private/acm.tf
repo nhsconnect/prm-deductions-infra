@@ -4,9 +4,8 @@ resource "aws_acm_certificate" "admin-portal-cert" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 
@@ -16,9 +15,8 @@ resource "aws_acm_certificate" "gp2gp-cert" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 
@@ -28,9 +26,8 @@ resource "aws_acm_certificate" "gp-to-repo-cert" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 
@@ -40,9 +37,8 @@ resource "aws_acm_certificate" "generic-component-cert" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 
@@ -52,9 +48,8 @@ resource "aws_acm_certificate" "mq-admin-cert" {
   validation_method = "DNS"
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 

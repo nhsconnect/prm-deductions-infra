@@ -4,6 +4,10 @@ resource "aws_cloudwatch_event_rule" "morning-mon-fri" {
   name                = "Morning-Monday-to-Friday"
   description         = "Fires 7am Monday to Friday"
   schedule_expression = "cron(0 7 ? * MON-FRI *)"
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "evening-mon-fri" {
@@ -12,6 +16,10 @@ resource "aws_cloudwatch_event_rule" "evening-mon-fri" {
   name                = "Evening-Monday-to-Friday"
   description         = "Fires 8pm Monday to Friday"
   schedule_expression = "cron(0 20 ? * MON-FRI *)"
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_cloudwatch_event_target" "turn-on-ecs-tasks" {

@@ -8,8 +8,7 @@ resource "aws_s3_bucket" "gp2gp-bucket" {
   }
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }

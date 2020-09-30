@@ -5,9 +5,8 @@ resource "aws_alb" "alb" {
   security_groups = [aws_security_group.alb-sg.id]
 
   tags = {
-    Terraform = "true"
+    CreatedBy   = var.repo_name
     Environment = var.environment
-    Deductions-VPC = var.component_name
   }
 }
 

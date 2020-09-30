@@ -14,4 +14,9 @@ resource "aws_ssm_parameter" "private_zone_id" {
   name = "/repo/${var.environment}/prm-deductions-infra/output/private-root-zone-id"
   type  = "String"
   value = aws_route53_zone.private.zone_id
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }

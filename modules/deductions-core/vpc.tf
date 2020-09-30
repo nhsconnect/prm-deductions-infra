@@ -18,8 +18,7 @@ module "vpc" {
     enable_dns_hostnames    = true
 
     tags = {
-        Terraform = "true"
+        CreatedBy   = var.repo_name
         Environment = var.environment
-        Deductions-VPC = var.component_name
     }
 }

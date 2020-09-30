@@ -4,6 +4,10 @@ resource "aws_iam_role" "ecs-service-control-role" {
   name = "ECSServiceControlRole"
 
   assume_role_policy = data.aws_iam_policy_document.ecs-service-control-policy.json
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 data "aws_iam_policy_document" "ecs-service-control-policy" {
