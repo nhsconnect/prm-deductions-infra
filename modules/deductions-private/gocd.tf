@@ -13,7 +13,7 @@ module "gocd" {
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
-  name = "/repo/prod/prm-deductions-base-infra/output/gocd-vpc-id"
+  name = "/repo/prod/prm-gocd-infra/output/gocd-vpc-id"
 }
 
 data "aws_ssm_parameter" "gocd_zone_id" {
@@ -21,7 +21,7 @@ data "aws_ssm_parameter" "gocd_zone_id" {
 }
 
 data "aws_ssm_parameter" "gocd_cidr_block" {
-  name = "/repo/${var.gocd_environment}/prm-deductions-base-infra/output/gocd-cidr-block"
+  name = "/repo/${var.gocd_environment}/prm-gocd-infra/output/gocd-cidr-block"
 }
 
 locals {
