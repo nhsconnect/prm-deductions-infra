@@ -13,3 +13,8 @@ variable "vpn_port" {
 variable "vpn_ami_id" {
   default = "ami-04cc79dd5df3bffca"
 }
+
+variable "repo_name" {
+  type = string
+  default = "prm-deductions-infra"
+}

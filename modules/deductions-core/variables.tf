@@ -8,6 +8,11 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "repo_name" {
+  type = string
+  default = "prm-deductions-infra"
+}
+
 variable "component_name" {
   type        = string
   default     = "deductions-core"

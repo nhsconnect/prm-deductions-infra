@@ -7,6 +7,11 @@ variable "environment" {
   type = string
 }
 
+variable "repo_name" {
+  type = string
+  default = "prm-deductions-infra"
+}
+
 variable "my_ip" {
   default = "127.0.0.1"
 }
