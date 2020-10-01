@@ -18,7 +18,7 @@ resource "aws_rds_cluster" "db-cluster" {
 }
 
 resource "aws_ssm_parameter" "rds_endpoint" {
-    name = "/repo/${var.environment}/prm-deductions-infra/output/core-rds-endpoint"
+    name = "/repo/${var.environment}/${var.repo_name}/output/core-rds-endpoint"
     type = "String"
     value = aws_rds_cluster.db-cluster.endpoint
     tags = {

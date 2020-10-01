@@ -23,7 +23,7 @@ module "vpc" {
 }
 
 resource "aws_ssm_parameter" "private_rtb" {
-    name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-public-private-rtb"
+    name = "/repo/${var.environment}/${var.repo_name}/output/deductions-public-private-rtb"
     type = "String"
     value = module.vpc.private_route_table_ids[0]
     tags = {
@@ -33,7 +33,7 @@ resource "aws_ssm_parameter" "private_rtb" {
 }
 
 resource "aws_ssm_parameter" "public_rtb" {
-    name = "/repo/${var.environment}/prm-deductions-infra/output/deductions-public-public-rtb"
+    name = "/repo/${var.environment}/${var.repo_name}/output/deductions-public-public-rtb"
     type = "String"
     value = module.vpc.public_route_table_ids[0]
     tags = {

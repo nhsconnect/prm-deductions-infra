@@ -13,11 +13,11 @@ data "aws_ssm_parameter" "mq-admin-password" {
 }
 
 data "aws_ssm_parameter" "mq-app-username" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/mq-app-username"
+  name = "/repo/${var.environment}/${var.repo_name}/output/mq-app-username"
 }
 
 data "aws_ssm_parameter" "mq-app-password" {
-  name = "/repo/${var.environment}/prm-deductions-infra/output/mq-app-password"
+  name = "/repo/${var.environment}/${var.repo_name}/output/mq-app-password"
 }
 
 # data "aws_ssm_parameter" "vpn_sg" {

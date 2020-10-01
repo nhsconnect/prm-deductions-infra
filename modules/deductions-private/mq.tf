@@ -103,7 +103,7 @@ resource "aws_cloudwatch_log_resource_policy" "mq-log-publishing-policy" {
 # }
 
 resource "aws_ssm_parameter" "amqp-endpoint-0" {
-  name        = "/repo/${var.environment}/prm-deductions-infra/output/amqp-endpoint-0"
+  name        = "/repo/${var.environment}/${var.repo_name}/output/amqp-endpoint-0"
   description = "AMQP endpoint to MQ broker. Index: 0"
   type        = "String"
   value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.1
@@ -115,7 +115,7 @@ resource "aws_ssm_parameter" "amqp-endpoint-0" {
 }
 
 resource "aws_ssm_parameter" "amqp-endpoint-1" {
-  name        = "/repo/${var.environment}/prm-deductions-infra/output/amqp-endpoint-1"
+  name        = "/repo/${var.environment}/${var.repo_name}/output/amqp-endpoint-1"
   description = "AMQP endpoint to MQ broker. Index: 1"
   type        = "String"
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.1
@@ -127,7 +127,7 @@ resource "aws_ssm_parameter" "amqp-endpoint-1" {
 }
 
 resource "aws_ssm_parameter" "stomp-endpoint-0" {
-  name        = "/repo/${var.environment}/prm-deductions-infra/output/stomp-endpoint-0"
+  name        = "/repo/${var.environment}/${var.repo_name}/output/stomp-endpoint-0"
   description = "STOMP endpoint to MQ broker. Index: 0"
   type        = "String"
   value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.2
@@ -139,7 +139,7 @@ resource "aws_ssm_parameter" "stomp-endpoint-0" {
 }
 
 resource "aws_ssm_parameter" "stomp-endpoint-1" {
-  name        = "/repo/${var.environment}/prm-deductions-infra/output/stomp-endpoint-1"
+  name        = "/repo/${var.environment}/${var.repo_name}/output/stomp-endpoint-1"
   description = "STOMP endpoint to MQ broker. Index: 1"
   type        = "String"
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.2
