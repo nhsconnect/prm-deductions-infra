@@ -30,7 +30,7 @@
 # }
 
 # resource "aws_ssm_parameter" "rds_endpoint" {
-#   name  = "/repo/${var.environment}/prm-deductions-infra/output/private-rds-endpoint"
+#   name  = "/repo/${var.environment}/output/prm-deductions-infra/private-rds-endpoint"
 #   type  = "String"
 #   value = aws_db_instance.state-db.endpoint
 # }

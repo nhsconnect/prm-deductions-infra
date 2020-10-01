@@ -24,7 +24,7 @@ module "vpc" {
 }
 
 resource "aws_ssm_parameter" "private_rtb" {
-    name = "/repo/${var.environment}/${var.repo_name}/output/tf-deductions-private-private-rtb"
+    name = "/repo/${var.environment}/output/${var.repo_name}/tf-deductions-private-private-rtb"
     type = "String"
     value = module.vpc.private_route_table_ids[0]
 
@@ -35,7 +35,7 @@ resource "aws_ssm_parameter" "private_rtb" {
 }
 
 resource "aws_ssm_parameter" "public_rtb" {
-    name = "/repo/${var.environment}/${var.repo_name}/output/tf-deductions-private-public-rtb"
+    name = "/repo/${var.environment}/output/${var.repo_name}/tf-deductions-private-public-rtb"
     type = "String"
     value = module.vpc.public_route_table_ids[0]
 

@@ -11,7 +11,7 @@ resource "aws_route53_zone" "private" {
 
 # Save the zone IDs to use them in other infra projects
 resource "aws_ssm_parameter" "private_zone_id" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/private-root-zone-id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/private-root-zone-id"
   type  = "String"
   value = aws_route53_zone.private.zone_id
 

@@ -41,7 +41,7 @@ output "public_subnets_route_table_id" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_vpc_id" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-vpc-id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-vpc-id"
   type = "String"
   value = module.vpc.vpc_id
   tags = {
@@ -51,7 +51,7 @@ resource "aws_ssm_parameter" "deductions_core_vpc_id" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_ecs_cluster_id" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-ecs-cluster-id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-ecs-cluster-id"
   type = "String"
   value = aws_ecs_cluster.ecs-cluster.id
   tags = {
@@ -61,7 +61,7 @@ resource "aws_ssm_parameter" "deductions_core_ecs_cluster_id" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_ecs_tasks_sg_id" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-ecs-tasks-sg-id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-ecs-tasks-sg-id"
   type = "String"
   value = aws_security_group.ecs-tasks-sg.id
   tags = {
@@ -71,7 +71,7 @@ resource "aws_ssm_parameter" "deductions_core_ecs_tasks_sg_id" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_private_subnets" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-private-subnets"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-private-subnets"
   type = "String"
   value = join(",", module.vpc.private_subnets)
   tags = {
@@ -81,7 +81,7 @@ resource "aws_ssm_parameter" "deductions_core_private_subnets" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_internal_alb_dns" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-internal-alb-dns"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-internal-alb-dns"
   type = "String"
   value = aws_alb.alb-internal.dns_name
   tags = {
@@ -91,7 +91,7 @@ resource "aws_ssm_parameter" "deductions_core_internal_alb_dns" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_int_alb_httpl_arn" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-int-alb-httpl-arn"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-int-alb-httpl-arn"
   type = "String"
   value = aws_alb_listener.int-alb-listener-http.arn
   tags = {
@@ -101,7 +101,7 @@ resource "aws_ssm_parameter" "deductions_core_int_alb_httpl_arn" {
 }
 
 resource "aws_ssm_parameter" "deductions_core_int_alb_httpsl_arn" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/deductions-core-int-alb-httpsl-arn"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-int-alb-httpsl-arn"
   type = "String"
   value = aws_alb_listener.int-alb-listener-https.arn
   tags = {

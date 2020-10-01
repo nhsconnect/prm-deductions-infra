@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_ssm_parameter" "root_zone_id" {
-  name = "/repo/prm-deductions-base-infra/output/root-zone-id"
+  name = "/repo/output/prm-deductions-base-infra/root-zone-id"
 }
 
 data "aws_ssm_parameter" "mq-admin-username" {
@@ -13,15 +13,15 @@ data "aws_ssm_parameter" "mq-admin-password" {
 }
 
 data "aws_ssm_parameter" "mq-app-username" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/mq-app-username"
+  name = "/repo/${var.environment}/output/${var.repo_name}/mq-app-username"
 }
 
 data "aws_ssm_parameter" "mq-app-password" {
-  name = "/repo/${var.environment}/${var.repo_name}/output/mq-app-password"
+  name = "/repo/${var.environment}/output/${var.repo_name}/mq-app-password"
 }
 
 # data "aws_ssm_parameter" "vpn_sg" {
-#   name = "/repo/${var.environment}/prm-deductions-base-infra/output/vpn-sg"
+#   name = "/repo/${var.environment}/output/prm-deductions-base-infra/vpn-sg"
 # }
 
 # State database does not exist yet so the below is temporarily commented out

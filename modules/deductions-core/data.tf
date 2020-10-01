@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 data "aws_ssm_parameter" "root_zone_id" {
-  name = "/repo/prm-deductions-base-infra/output/root-zone-id"
+  name = "/repo/output/prm-deductions-base-infra/root-zone-id"
 }
 
 data "aws_ssm_parameter" "db-username" {

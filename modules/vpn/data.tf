@@ -1,9 +1,9 @@
 data "aws_ssm_parameter" "agent_ips" {
-    name = "/repo/prod/prm-gocd-infra/output/gocd-agent-ips"
+    name = "/repo/prod/output/prm-gocd-infra/gocd-agent-ips"
 }
 
 data "aws_ssm_parameter" "public_zone_id" {
-    name = "/repo/prm-deductions-base-infra/output/root-zone-id"
+    name = "/repo/output/prm-deductions-base-infra/root-zone-id"
 }
 
 data "aws_route53_zone" "public_zone" {
@@ -22,7 +22,7 @@ data "aws_subnet" "public-subnet" {
 }
 
 data "aws_ssm_parameter" "dynamic_vpn_sg" {
-  name = "/repo/${var.environment}/prm-deductions-base-infra/output/vpn-sg"
+  name = "/repo/${var.environment}/output/prm-deductions-base-infra/vpn-sg"
 }
 
 locals {
