@@ -85,7 +85,7 @@ function get_aws_value {
 }
 
 function generate_ssh_key {
-  secret_id="/repo/prm-deductions-infra/user-input/ssh-id-rsa"
+  secret_id="/repo/user-input/ssh-id-rsa"
   ssh_directory=modules/ssh
   mkdir -p ${ssh_directory}/
   if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
@@ -144,10 +144,10 @@ case "${command}" in
       dojo "./tasks _tf_apply"
       ;;
   _create_secrets)
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/db-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/db-password"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/mq-admin-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/user-input/mq-admin-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/db-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
       create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-username"
       create_secret "/repo/${NHS_ENVIRONMENT}/prm-deductions-infra/output/mq-app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)
