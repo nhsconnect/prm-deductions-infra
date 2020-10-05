@@ -148,8 +148,8 @@ case "${command}" in
       create_secret "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
       create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
       create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
-      create_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/mq-app-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/mq-app-password"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
+      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)
       ;;
   create_secrets)
