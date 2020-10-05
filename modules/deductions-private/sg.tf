@@ -2,13 +2,13 @@ resource "aws_security_group" "mq_sg" {
     vpc_id = module.vpc.vpc_id
     name   = "deductor-mq-sg"
 
-    # ingress {
-    #     description     = "Allow traffic from Internal ALB to MQ Admin Console"
-    #     protocol        = "tcp"
-    #     from_port       = "8162"
-    #     to_port         = "8162"
-    #     security_groups = [aws_security_group.private-alb-internal-sg.id]
-    # }
+    ingress {
+        description     = "Allow traffic from within the same vpc"
+        protocol        = "tcp"
+        from_port       = "5671"
+        to_port         = "5671"
+        cidr_blocks     = [var.cidr]
+    }
 
     tags = {
         Name = "deductor-mq-b-sg"
