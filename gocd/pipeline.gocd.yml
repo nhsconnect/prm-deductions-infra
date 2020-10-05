@@ -58,16 +58,16 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks sanity_check
-            # active_mq:
-            #   resources:
-            #     - dev
-            #     - mhs # Agent runs in mhs vpc
-            #   tasks:
-            #     - exec:
-            #         command: /bin/bash
-            #         arguments:
-            #           - -c
-            #           - ./tasks detect_active_mq
+            active_mq:
+              resources:
+                - dev
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks detect_active_mq
 
       - deploy_test:
           clean_workspace: true
@@ -90,13 +90,13 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks sanity_check
-            # active_mq:
-            #   resources:
-            #     - test
-            #     - mhs # Agent runs in mhs vpc
-            #   tasks:
-            #     - exec:
-            #         command: /bin/bash
-            #         arguments:
-            #           - -c
-            #           - ./tasks detect_active_mq
+            active_mq:
+              resources:
+                - test
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks detect_active_mq
