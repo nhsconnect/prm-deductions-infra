@@ -26,6 +26,12 @@ resource "aws_instance" "vpn" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+
+  volume_tags = {
+    Name      = "VPN to ${var.environment} env"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_eip" "eip" {
