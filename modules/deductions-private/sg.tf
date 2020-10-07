@@ -2,19 +2,21 @@ resource "aws_security_group" "mq_sg" {
     vpc_id = module.vpc.vpc_id
     name   = "deductor-mq-sg"
 
-    ingress {
-        description     = "Allow traffic from within the same vpc"
-        protocol        = "tcp"
-        from_port       = "5671"
-        to_port         = "5671"
-        cidr_blocks     = [var.cidr]
-    }
-
     tags = {
         Name = "deductor-mq-b-sg"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
+}
+
+resource "aws_security_group_rule" "local_mq_access" {
+    type              = "ingress"
+    security_group_id = aws_security_group.mq_sg.id
+    description     = "Allow traffic from within the same vpc"
+    protocol        = "tcp"
+    from_port       = "5671"
+    to_port         = "5671"
+    cidr_blocks     = [var.cidr]
 }
 
 resource "aws_security_group_rule" "ingress_int_alb_to_mq_admin" {
