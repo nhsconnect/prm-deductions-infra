@@ -25,6 +25,10 @@ variable "component_name" {
 
 variable "cidr" {}
 
+variable "gocd_cidr" {}
+
+variable "deductions_core_cidr" {}
+
 variable "mhs_cidr" {}
 
 variable "allowed_public_ips" {}
@@ -159,3 +163,5 @@ variable "private_zone_id" {
 variable "state_db_allocated_storage" {}
 variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}
+
+variable "vpn_client_subnet" {}

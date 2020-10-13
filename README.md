@@ -51,7 +51,7 @@ aws_access_key_id = <your-aws-access-key-id>
 aws_secret_access_key = <your-aws-secret-access-key>
 ```
 
-#### Assume role with elevated permissions 
+#### Assume role with elevated permissions
 
 ##### Install `assume-role` locally
 `brew install remind101/formulae/assume-role`
@@ -75,7 +75,7 @@ When creating the new ssm keys, please follow the agreed convention as per the d
 * all parts of the keys are lower case
 * the words are separated by dashes (`kebab case`)
 * `env` is optional
-  
+
 ### Design:
 Please follow this design to ensure the ssm keys are easy to maintain and navigate through:
 
@@ -89,25 +89,30 @@ Please follow this design to ensure the ssm keys are easy to maintain and naviga
 
 ## Generating VPN client keys
 
-On the VPN server run:
-
+1. [Gain access to AWS as described above](#Access-to-AWS)
+1. Generate VPN client configuration for each environment:
 ```
-docker run -v /var/nhs/openvpn:/etc/openvpn --rm -ti kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
+NHS_ENVIRONMENT=<env-name> ./tasks generate_vpn_client_crt <your-first-name.your-last-name>
 ```
-
-Then get archive of certificates
+E.g. to get access to both dev and test environments, you'll need to run:
 ```
-docker run -v /var/nhs/openvpn:/etc/openvpn --rm -ti kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
-```
-
-Getting all client keys at once:
-```
-docker run --rm -it -v /var/nhs/openvpn/:/etc/openvpn --volume /home/ubuntu/openvpn_clients:/etc/openvpn/clients kylemanna/openvpn ovpn_getclient_all
+NHS_ENVIRONMENT=dev ./tasks generate_vpn_client_crt <your-first-name.your-last-name>
+NHS_ENVIRONMENT=test ./tasks generate_vpn_client_crt <your-first-name.your-last-name>
 ```
 
-Add stunnel key to the collection:
+## Creating CA
+
+All vpn endpoints use the same CA which needs to be generated only once.
+
+The operation is automated, mostly for reference:
 ```
-sudo cp /etc/stunnel/*-stunnel.pem /home/ubuntu/openvpn_clients
+./tasks generate_vpn_ca
 ```
 
-Then distribute `/home/ubuntu/openvpn_clients` to all clients.
+## Creating VPN server certificate
+
+Each VPN endpoint has its own server certificate signed by above CA. The operation is automated in the task:
+```
+NHS_ENVIRONMENT=dev ./tasks generate_vpn_ca
+```
+It is part of a pipeline that deploys each environment.

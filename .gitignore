@@ -314,6 +314,8 @@ latest.zip
 *.pem
 /nhs_deployment.tfplan
 /tf-out.json
+/easy-rsa
+/client-config
 /modules/ssh/*
 /ansible/group_vars/dev.yml
 /ansible/group_vars/test.yml
