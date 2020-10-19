@@ -134,7 +134,7 @@ function create_secret_ssm_param {
 
 function generate_secret_ssm_param {
   value=$(openssl rand -base64 24  | tr -d "/@\'+")
-  create_secret_ssm_param $value
+  create_secret_ssm_param $1 $value
 }
 
 function create_ssm_param {
