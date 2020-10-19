@@ -41,7 +41,7 @@ function setup_vpn_ca {
     git clone https://github.com/OpenVPN/easy-rsa.git
   fi
   cd easy-rsa/easyrsa3
-  ./easyrsa init-pki
+  echo yes | ./easyrsa init-pki
   cd pki
   echo "$(get_aws_value "/repo/user-input/vpn-ca-crt")" > ca.crt
   echo "$(get_aws_value "/repo/user-input/vpn-ca-key")" > private/ca.key
