@@ -104,7 +104,7 @@ function generate_vpn_client_crt {
   dirname="client-config"
   mkdir -p $dirname
   cd $dirname
-  filename="$username.ovpn"
+  filename="${NHS_ENVIRONMENT}.$username.ovpn"
 
   echo "$config" > $filename
   echo -e "<cert>\n$client_crt\n</cert>\n" >> $filename
