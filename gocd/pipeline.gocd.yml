@@ -16,18 +16,17 @@ common:
           command: /bin/bash
           arguments:
             - -c
+            - ./tasks generate_vpn_server_crt
+      - exec:
+          command: /bin/bash
+          arguments:
+            - -c
             - ./tasks tf_plan create
       - exec:
           command: /bin/bash
           arguments:
             - -c
             - ./tasks tf_apply
-      # Disable VPN setup for now.
-      # - exec:
-      #     command: /bin/bash
-      #     arguments:
-      #       - -c
-      #       - ./tasks provision
 
 pipelines:
   "prm-deductions-infra":

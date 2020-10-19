@@ -36,16 +36,93 @@ function tf_apply {
   terraform output -json > tf-out.json
 }
 
-function create_secret {
+function setup_vpn_ca {
+  if [[ ! -d "easy-rsa" ]]; then
+    git clone https://github.com/OpenVPN/easy-rsa.git
+  fi
+  cd easy-rsa/easyrsa3
+  ./easyrsa init-pki
+  cd pki
+  echo "$(get_aws_value "/repo/user-input/vpn-ca-crt")" > ca.crt
+  echo "$(get_aws_value "/repo/user-input/vpn-ca-key")" > private/ca.key
+  echo "$(get_aws_value "/repo/user-input/vpn-ca-serial")" > serial
+  touch index.txt
+  touch index.txt.attr
+  mkdir -p certs_by_serial
+  mkdir -p issued
+  cd ..
+}
+
+function generate_vpn_ca {
+  if [[ ! -d "easy-rsa" ]]; then
+    git clone https://github.com/OpenVPN/easy-rsa.git
+  fi
+  cd easy-rsa/easyrsa3
+  ./easyrsa init-pki
+  EASYRSA_BATCH=true EASYRSA_REQ_CN="vpn.patient-deductions.nhs.uk" ./easyrsa build-ca nopass
+  create_secret_ssm_param "/repo/user-input/vpn-ca-crt" "$(cat pki/ca.crt)"
+  create_secret_ssm_param "/repo/user-input/vpn-ca-key" "$(cat pki/private/ca.key)"
+  create_secret_ssm_param "/repo/user-input/vpn-ca-serial" "$(cat pki/serial)"
+}
+
+function generate_vpn_server_crt {
+  check_env
+  crt_id="${NHS_ENVIRONMENT}.vpn.patient-deductions.nhs.uk"
+  existing_crt="$(aws acm list-certificates | jq -r --arg crt_id "$crt_id" '.CertificateSummaryList[] | select(.DomainName==$crt_id)')"
+  if [[ -z $existing_crt ]]; then
+    setup_vpn_ca
+    ./easyrsa build-server-full $crt_id nopass
+
+    aws acm import-certificate --certificate fileb://pki/issued/$crt_id.crt --private-key fileb://pki/private/$crt_id.key --certificate-chain fileb://pki/ca.crt
+  else
+    echo "Server certificate $crt_id already exists"
+  fi
+}
+
+function generate_vpn_client_crt {
+  check_env
+  if [[ -z $1 ]]; then
+    echo "Username required"
+    exit 1
+  fi
+  username="$1"
+  crt_id="$username.vpn.patient-deductions.nhs.uk"
+
+  setup_vpn_ca
+  if [[ ! -f pki/private/$crt_id.key ]]; then
+    echo "Client key file not present. Generating now."
+    ./easyrsa build-client-full $crt_id nopass
+  fi
+
+  client_crt="$(cat pki/issued/$crt_id.crt)"
+  client_key="$(cat pki/private/$crt_id.key)"
+
+  client_vpn_endpoint_id=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/client-vpn-endpoint-id")
+  config="$(aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $client_vpn_endpoint_id | jq -r ".ClientConfiguration")"
+
+  cd ../..
+  dirname="client-config"
+  mkdir -p $dirname
+  cd $dirname
+  filename="$username.ovpn"
+
+  echo "$config" > $filename
+  echo -e "<cert>\n$client_crt\n</cert>\n" >> $filename
+  echo -e "<key>\n$client_key\n</key>\n" >> $filename
+
+  echo "$username VPN client configuration file created in $dirname directory"
+}
+
+function create_secret_ssm_param {
   secret_id="$1"
+  value="$2"
   set +e
-  value=$(aws ssm get-parameter --region $AWS_REGION --name $secret_id | jq -r ".Parameter.Value")
+  aws ssm get-parameter --region $AWS_REGION --name $secret_id | jq -r ".Parameter.Value"
   if [[ $? == 0 ]]; then
     echo "Secret at $secret_id already exists"
   else
     set -e
     echo "Secret does not exists. Creating $secret_id"
-    value=$(openssl rand -base64 24  | tr -d "/@\'+")
     aws ssm put-parameter \
      --region $AWS_REGION \
      --name $secret_id \
@@ -55,11 +132,16 @@ function create_secret {
   fi
 }
 
-function create_value {
+function generate_secret_ssm_param {
+  value=$(openssl rand -base64 24  | tr -d "/@\'+")
+  create_secret_ssm_param $value
+}
+
+function create_ssm_param {
   value_id="$1"
   value="$2"
   set +e
-  value=$(aws ssm get-parameter --region $AWS_REGION --name $value_id | jq -r ".Parameter.Value")
+  aws ssm get-parameter --region $AWS_REGION --name $value_id | jq -r ".Parameter.Value"
   if [[ $? == 0 ]]; then
     echo "Value at $value_id already exists"
   else
@@ -76,7 +158,7 @@ function create_value {
 
 function get_aws_value {
   secret_id=$1
-  json=$(aws ssm get-parameter --region $AWS_REGION --name $secret_id)
+  json=$(aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id)
   if [ $? != 0 ]; then
     >&2 echo "Failed to obtain SSM value: $secret_id"
     exit 5
@@ -144,18 +226,36 @@ case "${command}" in
       dojo "./tasks _tf_apply"
       ;;
   _create_secrets)
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/db-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
-      create_secret "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-password"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-username"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-password"
       account_id=$(aws sts get-caller-identity | jq -r .Account)
       ;;
   create_secrets)
       # Needs to run only once, when adding new environment
       check_env
       dojo "./tasks _create_secrets"
+      ;;
+  _generate_vpn_ca)
+      generate_vpn_ca
+      ;;
+  generate_vpn_ca)
+      dojo "./tasks _generate_vpn_ca"
+      ;;
+  _generate_vpn_server_crt)
+      generate_vpn_server_crt
+      ;;
+  generate_vpn_server_crt)
+      dojo "./tasks _generate_vpn_server_crt"
+      ;;
+  _generate_vpn_client_crt)
+      generate_vpn_client_crt "$2"
+      ;;
+  generate_vpn_client_crt)
+      dojo "./tasks _generate_vpn_client_crt $2"
       ;;
   sanity_check)
       dojo "./tasks _sanity_check"
@@ -190,47 +290,6 @@ case "${command}" in
   detect_active_mq)
       check_env
       dojo "./tasks _detect_active_mq"
-      ;;
-  _generate_ansible_vars)
-      dns1=$(cat tf-out.json | jq -r ".dns_server_1.value")
-      if [ "${NHS_ENVIRONMENT}" == "dev" ]; then
-        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
-# This file is generated
-env: ${NHS_ENVIRONMENT}
-dns1: ${dns1}
-vpn_clients_subnet: 10.233.235.0/24
-vpn_clients_subnet_short: 10.233.235.0
-mhs_route: 10.33.0.0 255.255.0.0
-deductions_private_route: 10.20.0.0 255.255.0.0
-deductions_core_route: 10.25.0.0 255.255.0.0
-vpc_subnet: 10.33.0.0/16
-stunnel_client_port: 1337
-EOF
-      elif [ "${NHS_ENVIRONMENT}" == "test" ]; then
-        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
-# This file is generated
-env: ${NHS_ENVIRONMENT}
-dns1: ${dns1}
-vpn_clients_subnet: 10.233.236.0/24
-vpn_clients_subnet_short: 10.233.236.0
-mhs_route: 10.239.68.128 255.255.255.128
-deductions_private_route: 10.21.0.0 255.255.0.0
-deductions_core_route: 10.26.0.0 255.255.0.0
-vpc_subnet: 10.239.68.128/25
-stunnel_client_port: 1338
-EOF
-      fi
-      ;;
-  generate_ansible_vars)
-      dojo "./tasks _generate_ansible_vars"
-      ;;
-  _provision)
-      ansible-playbook -i ansible/inventory/$NHS_ENVIRONMENT.ini ansible/site.yml
-      ;;
-  provision)
-      check_env
-      ./tasks generate_ansible_vars
-      dojo -c Dojofile-ansible "./tasks _provision"
       ;;
   *)
       echo "Invalid command: '${command}'"

@@ -1,5 +1,5 @@
 variable "region" {
-  type = string
+  type    = string
   default = "eu-west-2"
 }
 
@@ -8,7 +8,7 @@ variable "environment" {
 }
 
 variable "repo_name" {
-  type = string
+  type    = string
   default = "prm-deductions-infra"
 }
 
@@ -48,6 +48,10 @@ variable "deductions_private_cidr" {
   type = string
 }
 
+variable "deductions_private_vpn_client_subnet" {
+  type = string
+}
+
 variable "deductions_private_public_subnets" {
   type = list
 }
@@ -83,6 +87,8 @@ variable "deductions_core_database_subnets" {
 variable "deductions_core_azs" {
   type = list
 }
+
+variable "gocd_cidr" {}
 
 variable "mhs_cidr" {}
 
@@ -185,7 +191,7 @@ variable "mq_application_password" {
   description = "Application password"
 }
 
-variable "mq_allow_public_console_access"{
+variable "mq_allow_public_console_access" {
   description = "Will create an NLB in two public subnets to provide internet access to the MQ admin console"
 }
 
