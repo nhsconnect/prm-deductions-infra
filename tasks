@@ -2,7 +2,7 @@
 
 set -Eeo pipefail
 
-AWS_REGION=eu-west-2
+export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
 
 function check_env {
@@ -117,14 +117,14 @@ function create_secret_ssm_param {
   secret_id="$1"
   value="$2"
   set +e
-  aws ssm get-parameter --region $AWS_REGION --name $secret_id | jq -r ".Parameter.Value"
+  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $secret_id | jq -r ".Parameter.Value"
   if [[ $? == 0 ]]; then
     echo "Secret at $secret_id already exists"
   else
     set -e
     echo "Secret does not exists. Creating $secret_id"
     aws ssm put-parameter \
-     --region $AWS_REGION \
+     --region $AWS_DEFAULT_REGION \
      --name $secret_id \
      --type SecureString \
      --overwrite \
@@ -141,14 +141,14 @@ function create_ssm_param {
   value_id="$1"
   value="$2"
   set +e
-  aws ssm get-parameter --region $AWS_REGION --name $value_id | jq -r ".Parameter.Value"
+  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $value_id | jq -r ".Parameter.Value"
   if [[ $? == 0 ]]; then
     echo "Value at $value_id already exists"
   else
     set -e
     echo "Value does not exists. Creating $value_id"
     aws ssm put-parameter \
-     --region $AWS_REGION \
+     --region $AWS_DEFAULT_REGION \
      --name $value_id \
      --type String \
      --overwrite \
@@ -158,7 +158,7 @@ function create_ssm_param {
 
 function get_aws_value {
   secret_id=$1
-  json=$(aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id)
+  json=$(aws ssm get-parameter --with-decryption --region $AWS_DEFAULT_REGION --name $secret_id)
   if [ $? != 0 ]; then
     >&2 echo "Failed to obtain SSM value: $secret_id"
     exit 5
@@ -173,7 +173,7 @@ function generate_ssh_key {
   if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
     #TODO check aws authentication
     set +e
-    id_rsa=$(aws ssm get-parameter --with-decryption --region $AWS_REGION --name $secret_id | jq -r ".Parameter.Value")
+    id_rsa=$(aws ssm get-parameter --with-decryption --region $AWS_DEFAULT_REGION --name $secret_id | jq -r ".Parameter.Value")
     if [[ $? == 0 ]]; then
       echo "$id_rsa" > ${ssh_directory}/id_rsa
     else
@@ -185,7 +185,7 @@ function generate_ssh_key {
   chmod 0600 ${ssh_directory}/id_rsa
   ssh-keygen -y -f "${ssh_directory}/id_rsa" > "${ssh_directory}/id_rsa.pub"
   aws ssm put-parameter \
-   --region $AWS_REGION \
+   --region $AWS_DEFAULT_REGION \
    --name $secret_id \
    --type SecureString \
    --overwrite \
@@ -280,7 +280,7 @@ case "${command}" in
         exit 3;
       fi
       aws ssm put-parameter \
-       --region "${AWS_REGION}" \
+       --region "${AWS_DEFAULT_REGION}" \
        --name "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-active" \
        --type String \
        --overwrite \
