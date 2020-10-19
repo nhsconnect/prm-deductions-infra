@@ -20,10 +20,6 @@ data "aws_ssm_parameter" "mq-app-password" {
   name = "/repo/${var.environment}/user-input/mq-app-password"
 }
 
-# data "aws_ssm_parameter" "vpn_sg" {
-#   name = "/repo/${var.environment}/output/prm-deductions-base-infra/vpn-sg"
-# }
-
 # State database does not exist yet so the below is temporarily commented out
 
 # data "aws_ssm_parameter" "db-username" {

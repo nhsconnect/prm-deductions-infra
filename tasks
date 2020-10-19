@@ -291,47 +291,6 @@ case "${command}" in
       check_env
       dojo "./tasks _detect_active_mq"
       ;;
-  _generate_ansible_vars)
-      dns1=$(cat tf-out.json | jq -r ".dns_server_1.value")
-      if [ "${NHS_ENVIRONMENT}" == "dev" ]; then
-        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
-# This file is generated
-env: ${NHS_ENVIRONMENT}
-dns1: ${dns1}
-vpn_clients_subnet: 10.233.235.0/24
-vpn_clients_subnet_short: 10.233.235.0
-mhs_route: 10.33.0.0 255.255.0.0
-deductions_private_route: 10.20.0.0 255.255.0.0
-deductions_core_route: 10.25.0.0 255.255.0.0
-vpc_subnet: 10.33.0.0/16
-stunnel_client_port: 1337
-EOF
-      elif [ "${NHS_ENVIRONMENT}" == "test" ]; then
-        cat << EOF > ansible/group_vars/${NHS_ENVIRONMENT}.yml
-# This file is generated
-env: ${NHS_ENVIRONMENT}
-dns1: ${dns1}
-vpn_clients_subnet: 10.233.236.0/24
-vpn_clients_subnet_short: 10.233.236.0
-mhs_route: 10.239.68.128 255.255.255.128
-deductions_private_route: 10.21.0.0 255.255.0.0
-deductions_core_route: 10.26.0.0 255.255.0.0
-vpc_subnet: 10.239.68.128/25
-stunnel_client_port: 1338
-EOF
-      fi
-      ;;
-  generate_ansible_vars)
-      dojo "./tasks _generate_ansible_vars"
-      ;;
-  _provision)
-      ansible-playbook -i ansible/inventory/$NHS_ENVIRONMENT.ini ansible/site.yml
-      ;;
-  provision)
-      check_env
-      ./tasks generate_ansible_vars
-      dojo -c Dojofile-ansible "./tasks _provision"
-      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1
