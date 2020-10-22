@@ -113,6 +113,6 @@ The operation is automated, mostly for reference:
 
 Each VPN endpoint has its own server certificate signed by above CA. The operation is automated in the task:
 ```
-NHS_ENVIRONMENT=dev ./tasks generate_vpn_ca
+NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt
 ```
 It is part of a pipeline that deploys each environment.
