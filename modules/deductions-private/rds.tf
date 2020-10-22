@@ -1,46 +1,53 @@
-# resource "aws_db_instance" "state-db" {
-#   identifier              = "${var.environment}-deductions-state-db"
-#   allocated_storage       = var.state_db_allocated_storage
-#   max_allocated_storage   = 0
-#   storage_type            = "gp2"
-#   engine                  = "postgres"
-#   engine_version          = var.state_db_engine_version
-#   instance_class          = var.state_db_instance_class
-#   name                    = "gp_to_repo"
-#   username                = data.aws_ssm_parameter.db-username.value
-#   password                = data.aws_ssm_parameter.db-password.value
-#   parameter_group_name    = "default.postgres11"
-#   publicly_accessible     = "false"
-#   backup_retention_period = 15
-#   backup_window           = "19:00-21:00"
-#   maintenance_window      = "Sun:00:00-Sun:03:00"
-#   skip_final_snapshot     = true
+resource "aws_rds_cluster" "db_cluster" {
+    cluster_identifier      = "${var.environment}-gp-to-repo-db-cluster"
+    engine                  = "aurora-postgresql"
+    database_name           = "gp-to-repo-db"
+    master_username         = data.aws_ssm_parameter.db-username.value
+    master_password         = data.aws_ssm_parameter.db-password.value
+    backup_retention_period = 5
+    preferred_backup_window = "07:00-09:00"
+    vpc_security_group_ids  = [aws_security_group.gp-to-repo-db-sg.id]
+    apply_immediately       = true
+    db_subnet_group_name    = aws_db_subnet_group.gp_to_repo_db_cluster_subnet_group.name
+    skip_final_snapshot = true
 
-#   db_subnet_group_name   = aws_db_subnet_group.db-cluster-subnet-group.name
-#   vpc_security_group_ids = [aws_security_group.state-db-sg.id]
-# }
+    tags = {
+      CreatedBy   = var.repo_name
+      Environment = var.environment
+    }
+}
 
-# resource "aws_db_subnet_group" "db-cluster-subnet-group" {
-#   name       = "${var.environment}-state-db-subnet-group"
-#   subnet_ids = module.vpc.database_subnets # @@@ SHOULD WE ADD ANOTHER SUBNET
+resource "aws_ssm_parameter" "rds_endpoint" {
+    name = "/repo/${var.environment}/output/${var.repo_name}/gp-to-repo-rds-endpoint"
+    type = "String"
+    value = aws_rds_cluster.db_cluster.endpoint
+    tags = {
+      CreatedBy   = var.repo_name
+      Environment = var.environment
+    }
+}
 
-#   tags = {
-#     Name = "${var.environment}-state-db-subnet-group"
-#   }
-# }
+resource "aws_db_subnet_group" "gp_to_repo_db_cluster_subnet_group" {
+  name       = "${var.environment}-gp-to-repo-db-subnet-group"
+  subnet_ids = module.vpc.database_subnets
 
-# resource "aws_ssm_parameter" "rds_endpoint" {
-#   name  = "/repo/${var.environment}/output/prm-deductions-infra/private-rds-endpoint"
-#   type  = "String"
-#   value = aws_db_instance.state-db.endpoint
-# }
+  tags = {
+    Name = "${var.environment}-gp-to-repo-db-subnet-group"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
 
-# provider "postgresql" {
-#   host            = aws_db_instance.state-db.address
-#   port            = aws_db_instance.state-db.port
-#   database        = "gp_to_repo"
-#   username        = data.aws_ssm_parameter.db-username.value
-#   password        = data.aws_ssm_parameter.db-password.value
-#   sslmode         = "require"
-#   connect_timeout = 15
-# }
+resource "aws_rds_cluster_instance" "gp_to_repo_db_instances" {
+  count                 = 1
+  identifier            = "${var.environment}-gp-to-repo-db-instance-${count.index}"
+  cluster_identifier    = aws_rds_cluster.db_cluster.id
+  instance_class        = "db.t3.medium"
+  engine                = "aurora-postgresql"
+  db_subnet_group_name  = aws_db_subnet_group.gp_to_repo_db_cluster_subnet_group.name
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}

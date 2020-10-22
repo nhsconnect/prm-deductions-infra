@@ -20,12 +20,10 @@ data "aws_ssm_parameter" "mq-app-password" {
   name = "/repo/${var.environment}/user-input/mq-app-password"
 }
 
-# State database does not exist yet so the below is temporarily commented out
+data "aws_ssm_parameter" "db-username" {
+  name = "/repo/${var.environment}/user-input/gp-to-repo-db-username"
+}
 
-# data "aws_ssm_parameter" "db-username" {
-#   name = "/repo/${var.environment}/user-input/state-db-username"
-# }
-
-# data "aws_ssm_parameter" "db-password" {
-#   name = "/repo/${var.environment}/user-input/state-db-password"
-# }
+data "aws_ssm_parameter" "db-password" {
+  name = "/repo/${var.environment}/user-input/gp-to-repo-db-password"
+}

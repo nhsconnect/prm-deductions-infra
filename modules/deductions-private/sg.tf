@@ -410,8 +410,8 @@ resource "aws_security_group" "logs-endpoint-sg" {
   }
 }
 
-resource "aws_security_group" "state-db-sg" {
-    name        = "${var.environment}-state-db-sg"
+resource "aws_security_group" "gp-to-repo-db-sg" {
+    name        = "${var.environment}-gp-to-repo-db-sg"
     vpc_id      = module.vpc.vpc_id
 
     ingress {
@@ -421,14 +421,6 @@ resource "aws_security_group" "state-db-sg" {
         to_port         = "5432"
         security_groups = [aws_security_group.gp-to-repo-ecs-task-sg.id]
     }
-
-    # ingress {
-    #     description     = "Allow traffic from VPN to the State DB"
-    #     protocol        = "tcp"
-    #     from_port       = "5432"
-    #     to_port         = "5432"
-    #     security_groups = [data.aws_ssm_parameter.vpn_sg.value]
-    # }
 
     tags = {
         Name = "${var.environment}-state-db-sg"
