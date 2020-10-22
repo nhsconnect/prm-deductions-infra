@@ -1,7 +1,7 @@
 resource "aws_rds_cluster" "db_cluster" {
     cluster_identifier      = "${var.environment}-gp-to-repo-db-cluster"
     engine                  = "aurora-postgresql"
-    database_name           = "gp-to-repo-db"
+    database_name           = "gptorepodb"
     master_username         = data.aws_ssm_parameter.db-username.value
     master_password         = data.aws_ssm_parameter.db-password.value
     backup_retention_period = 5
