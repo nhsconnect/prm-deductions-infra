@@ -399,7 +399,8 @@ resource "aws_security_group" "logs-endpoint-sg" {
       aws_security_group.gp-to-repo-ecs-task-sg.id,
       aws_security_group.gp2gp-adaptor-ecs-task-sg.id,
       aws_security_group.administration-portal-ecs-task-sg.id,
-      aws_security_group.generic-comp-ecs-task-sg.id
+      aws_security_group.generic-comp-ecs-task-sg.id,
+      aws_security_group.vpn.id
     ]
   }
 

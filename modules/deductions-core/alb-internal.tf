@@ -60,8 +60,9 @@ resource "aws_alb_listener_rule" "alb-internal-check-listener-rule" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${var.environment}.alb.patient-deductions.nhs.uk"]
+    host_header {
+      values = ["${var.environment}.alb.patient-deductions.nhs.uk"]
+    }
   }
 
   depends_on = [aws_alb_listener.int-alb-listener-http]

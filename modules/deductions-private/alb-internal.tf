@@ -60,8 +60,9 @@ resource "aws_alb_listener_rule" "mq-int-alb-http-listener-rule" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+    host_header {
+      values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+    }
   }
 }
 
@@ -75,8 +76,9 @@ resource "aws_alb_listener_rule" "mq-int-alb-https-listener-rule" {
   }
 
   condition {
-    field  = "host-header"
-    values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+    host_header {
+      values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+    }
   }
 }
 

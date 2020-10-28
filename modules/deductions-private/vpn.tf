@@ -40,9 +40,30 @@ resource "aws_ec2_client_vpn_endpoint" "vpn" {
   }
 }
 
+resource "aws_security_group" "vpn" {
+    name        = "${var.environment}-vpn-sg"
+    description = "Client VPN in ${var.environment} env"
+    vpc_id      = module.vpc.vpc_id
+
+    egress {
+        description = "Allow All Outbound"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "${var.environment}-vpn-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
+}
+
 resource "aws_ec2_client_vpn_network_association" "public_subnet" {
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   subnet_id              = module.vpc.public_subnets[0]
+  security_groups        = [ aws_security_group.vpn.id ]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "deductions_private" {
