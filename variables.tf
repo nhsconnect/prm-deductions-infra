@@ -127,8 +127,8 @@ variable "engine_type" {
 
 variable "engine_version" {
   type        = string
-  default     = "5.15.0"
-  description = "The version of the broker engine. Currently, Amazon MQ supports only 5.15.0 or 5.15.6."
+  default     = "5.15.13"
+  description = "The version of the broker engine."
 }
 
 variable "host_instance_type" {

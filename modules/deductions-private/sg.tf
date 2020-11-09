@@ -29,15 +29,15 @@ resource "aws_security_group_rule" "ingress_int_alb_to_mq_admin" {
     source_security_group_id    = aws_security_group.private-alb-internal-sg.id
 }
 
-# resource "aws_security_group_rule" "vpn_to_mq" {
-#     type                = "ingress"
-#     security_group_id   = aws_security_group.mq_sg.id
-#     description         = "Allow traffic from VPN to MQ"
-#     protocol            = "tcp"
-#     from_port           = "0"
-#     to_port             = "65535"
-#     source_security_group_id    = data.aws_ssm_parameter.vpn_sg.value
-# }
+ resource "aws_security_group_rule" "vpn_to_mq" {
+     type                = "ingress"
+     security_group_id   = aws_security_group.mq_sg.id
+     description         = "Allow traffic from VPN to MQ"
+     protocol            = "tcp"
+     from_port           = "61614"
+     to_port             = "61614"
+     source_security_group_id    = aws_security_group.vpn.id
+ }
 
 resource "aws_security_group_rule" "ingress_ecs_tasks" {
   type                = "ingress"
