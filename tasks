@@ -230,6 +230,8 @@ case "${command}" in
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-password"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-username"
+      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"

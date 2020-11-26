@@ -59,16 +59,6 @@ resource "aws_security_group_rule" "ingress_amqp_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
-# resource "aws_security_group_rule" "ingress_console_nlb" {
-#   type                = "ingress"
-#   security_group_id   = aws_security_group.mq_sg.id
-#   description         = "Access to MQ Admin Console NLB"
-#   protocol            = "tcp"
-#   from_port           = "8162"
-#   to_port             = "8162"
-#   cidr_blocks         = module.vpc.public_subnets_cidr_blocks
-# }
-
 resource "aws_security_group_rule" "ingress_mhs" {
   type                = "ingress"
   security_group_id   = aws_security_group.mq_sg.id
@@ -473,6 +463,25 @@ resource "aws_security_group" "gp-to-repo-db-sg" {
         from_port       = "5432"
         to_port         = "5432"
         security_groups = [aws_security_group.gp-to-repo-ecs-task-sg.id]
+    }
+
+    tags = {
+        Name = "${var.environment}-state-db-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
+}
+
+resource "aws_security_group" "repo-to-gp-db-sg" {
+    name        = "${var.environment}-repo-to-gp-db-sg"
+    vpc_id      = module.vpc.vpc_id
+
+    ingress {
+        description     = "Allow traffic from repo-to-gp to the db"
+        protocol        = "tcp"
+        from_port       = "5432"
+        to_port         = "5432"
+        security_groups = [aws_security_group.repo-to-gp-ecs-task-sg.id]
     }
 
     tags = {
