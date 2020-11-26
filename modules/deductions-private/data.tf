@@ -20,10 +20,18 @@ data "aws_ssm_parameter" "mq-app-password" {
   name = "/repo/${var.environment}/user-input/mq-app-password"
 }
 
-data "aws_ssm_parameter" "db-username" {
+data "aws_ssm_parameter" "gp-to-repo-db-username" {
   name = "/repo/${var.environment}/user-input/gp-to-repo-db-username"
 }
 
-data "aws_ssm_parameter" "db-password" {
+data "aws_ssm_parameter" "gp-to-repo-db-password" {
   name = "/repo/${var.environment}/user-input/gp-to-repo-db-password"
+}
+
+data "aws_ssm_parameter" "repo-to-gp-db-username" {
+  name = "/repo/${var.environment}/user-input/repo-to-gp-db-username"
+}
+
+data "aws_ssm_parameter" "repo-to-gp-db-password" {
+  name = "/repo/${var.environment}/user-input/repo-to-gp-db-password"
 }
