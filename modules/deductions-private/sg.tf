@@ -232,6 +232,24 @@ resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
     }
 }
 
+resource "aws_security_group" "gp2gp-worker-ecs-task-sg" {
+    name        = "${var.environment}-gp2gp-worker-ecs-task-sg"
+    vpc_id      = module.vpc.vpc_id
+
+    egress {
+        description = "Allow All Outbound"
+        protocol    = "-1"
+        from_port   = 0
+        to_port     = 0
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    tags = {
+        Name = "${var.environment}-gp2gp-worker-ecs-task-sg"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
+}
 
 resource "aws_security_group" "deductions-private-alb-sg" {
     name        = "${var.environment}-${var.component_name}-alb-sg"
