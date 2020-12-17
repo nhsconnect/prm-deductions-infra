@@ -59,6 +59,26 @@ resource "aws_security_group_rule" "ingress_amqp_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
+resource "aws_security_group_rule" "ingress_worker_ecs_tasks" {
+  type                = "ingress"
+  security_group_id   = aws_security_group.mq_sg.id
+  description         = "Access to AMQ from gp2gp worker ECS Task"
+  protocol            = "tcp"
+  from_port           = "61614"
+  to_port             = "61614"
+  source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
+}
+
+resource "aws_security_group_rule" "ingress_worker_amqp_ecs_tasks" {
+  type                = "ingress"
+  security_group_id   = aws_security_group.mq_sg.id
+  description         = "Access to AMQ from gp2gp worker ECS Task"
+  protocol            = "tcp"
+  from_port           = "5671"
+  to_port             = "5671"
+  source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
+}
+
 resource "aws_security_group_rule" "ingress_mhs" {
   type                = "ingress"
   security_group_id   = aws_security_group.mq_sg.id
@@ -454,14 +474,8 @@ resource "aws_security_group" "logs-endpoint-sg" {
     to_port     = 443
     protocol    = "tcp"
 
-    security_groups = [
-      aws_security_group.gp-to-repo-ecs-task-sg.id,
-      aws_security_group.gp2gp-adaptor-ecs-task-sg.id,
-      aws_security_group.repo-to-gp-ecs-task-sg.id,
-      aws_security_group.administration-portal-ecs-task-sg.id,
-      aws_security_group.generic-comp-ecs-task-sg.id,
-      aws_security_group.vpn.id
-    ]
+    # Allow to log from the local network
+    cidr_blocks = [var.cidr]
   }
 
   tags = {
