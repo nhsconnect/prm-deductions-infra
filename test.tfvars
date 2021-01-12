@@ -33,7 +33,7 @@ broker_name                    = "deductor-amq-broker-test"
 deployment_mode                = "ACTIVE_STANDBY_MULTI_AZ"
 mq_deployment_mode             = "SINGLE_INSTANCE"
 engine_type                    = "ActiveMQ"
-engine_version                 = "5.15.13"
+engine_version                 = "5.15.14"
 host_instance_type             = "mq.t2.micro"
 auto_minor_version_upgrade     = "true"
 apply_immediately              = "true"
@@ -47,3 +47,5 @@ mq_allow_public_console_access = true
 state_db_allocated_storage = "20"
 state_db_engine_version    = "11.5"
 state_db_instance_class    = "db.t2.small"
+
+mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD

@@ -13,20 +13,12 @@ terraform {
   }
 }
 
-# module "deductions-public" {
-#     source              = "./modules/deductions-public/"
-#     environment         = var.environment
-#     cidr                = var.deductions_public_cidr
-#     component_name      = var.deductions_public_component_name
-
-#     public_subnets      = var.deductions_public_public_subnets
-#     private_subnets     = var.deductions_public_private_subnets
-#     azs                 = var.deductions_public_azs
-
-#     allowed_public_ips  = local.allowed_public_ips
-
-#     private_zone_id     = aws_route53_zone.private.zone_id
-# }
+module "mhs" {
+  source    = "./modules/mhs/"
+  environment    = var.environment
+  mhs_vpc_cidr_block = var.mhs_vpc_cidr_block
+  repo_name = var.repo_name
+}
 
 module "deductions-private" {
   source         = "./modules/deductions-private/"
@@ -65,6 +57,8 @@ module "deductions-private" {
   state_db_allocated_storage = var.state_db_allocated_storage
   state_db_engine_version    = var.state_db_engine_version
   state_db_instance_class    = var.state_db_instance_class
+
+  core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
 }
 
 module "deductions-core" {
@@ -73,6 +67,7 @@ module "deductions-core" {
   component_name = var.deductions_core_component_name
 
   cidr             = var.deductions_core_cidr
+  deductions_private_cidr = var.deductions_private_cidr
   public_subnets   = var.deductions_core_public_subnets
   private_subnets  = var.deductions_core_private_subnets
   database_subnets = var.deductions_core_database_subnets
@@ -81,6 +76,8 @@ module "deductions-core" {
   allowed_cidr       = var.deductions_private_cidr
   private_zone_id    = aws_route53_zone.private.zone_id
   allowed_public_ips = local.allowed_public_ips
+
+  core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
 }
 
 module "utils" {
@@ -92,6 +89,7 @@ module "utils" {
 locals {
   deductions_core_vpc_id    = module.deductions-core.vpc_id
   deductions_private_vpc_id = module.deductions-private.vpc_id
+  mhs_vpc_id = module.mhs.vpc_id
 
   deductions_core_private_subnets_route_table_id    = module.deductions-core.private_subnets_route_table_id
   deductions_private_private_subnets_route_table_id = module.deductions-private.private_subnets_route_table_id

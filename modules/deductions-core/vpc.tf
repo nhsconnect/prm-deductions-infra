@@ -22,3 +22,9 @@ module "vpc" {
         Environment = var.environment
     }
 }
+
+resource "aws_route" "core_to_private" {
+    route_table_id            = module.vpc.private_route_table_ids[0]
+    destination_cidr_block    = var.deductions_private_cidr
+    vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
+}

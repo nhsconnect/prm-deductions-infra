@@ -198,3 +198,8 @@ variable "mq_allow_public_console_access" {
 variable "state_db_allocated_storage" {}
 variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}
+
+variable "mhs_vpc_cidr_block" {
+  type = string
+  description = "The CIDR block to use for the MHS VPC that is created. Should be a /16 block. Note that this cidr block must not overlap with the cidr blocks of the VPCs that the MHS VPC is to be peered with."
+}

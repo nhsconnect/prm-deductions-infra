@@ -165,3 +165,5 @@ variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}
 
 variable "vpn_client_subnet" {}
+
+variable "core_private_vpc_peering_connection_id" {}

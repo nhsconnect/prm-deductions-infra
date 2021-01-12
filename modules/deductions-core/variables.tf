@@ -45,3 +45,9 @@ variable "database_subnets" {
 variable "azs" {
   type = list
 }
+
+variable "deductions_private_cidr" {
+  type = string
+}
+
+variable "core_private_vpc_peering_connection_id" {}

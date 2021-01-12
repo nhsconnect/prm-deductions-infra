@@ -44,3 +44,15 @@ resource "aws_ssm_parameter" "public_rtb" {
         Environment = var.environment
     }
 }
+
+resource "aws_route" "private_private_to_core" {
+    route_table_id            = module.vpc.private_route_table_ids[0]
+    destination_cidr_block    = var.deductions_core_cidr
+    vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
+}
+
+resource "aws_route" "private_public_to_core" {
+    route_table_id            = module.vpc.public_route_table_ids[0]
+    destination_cidr_block    = var.deductions_core_cidr
+    vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
+}
