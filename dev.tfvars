@@ -10,6 +10,7 @@ deductions_core_component_name    = "deductions-core"
 gocd_cidr = "10.1.0.0/16"
 
 mhs_cidr = "10.33.0.0/16"
+mhs_cidr_newbits=8
 
 deductions_public_cidr            = "10.40.0.0/16"
 deductions_public_public_subnets  = ["10.40.1.0/24", "10.40.2.0/24"]
@@ -49,3 +50,5 @@ state_db_engine_version    = "11.5"
 state_db_instance_class    = "db.t2.small"
 
 mhs_vpc_cidr_block = "10.34.0.0/16" # Must not conflict with other networks
+
+deploy_mhs_test_harness = true

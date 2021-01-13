@@ -18,6 +18,8 @@ module "mhs" {
   environment    = var.environment
   mhs_vpc_cidr_block = var.mhs_vpc_cidr_block
   repo_name = var.repo_name
+  cidr_newbits= var.mhs_cidr_newbits
+  deploy_mhs_test_harness = var.deploy_mhs_test_harness
 }
 
 module "deductions-private" {
