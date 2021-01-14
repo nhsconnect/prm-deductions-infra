@@ -20,6 +20,8 @@ module "mhs" {
   repo_name = var.repo_name
   cidr_newbits= var.mhs_cidr_newbits
   deploy_mhs_test_harness = var.deploy_mhs_test_harness
+  deductions_private_cidr = var.deductions_private_cidr
+  deductions_private_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
 }
 
 module "deductions-private" {
@@ -38,7 +40,7 @@ module "deductions-private" {
 
   gocd_cidr            = var.gocd_cidr
   deductions_core_cidr = var.deductions_core_cidr
-  mhs_cidr             = var.mhs_cidr
+  mhs_vpc_cidr_block             = var.mhs_vpc_cidr_block
 
   broker_name                    = var.broker_name
   deployment_mode                = var.deployment_mode
@@ -61,6 +63,7 @@ module "deductions-private" {
   state_db_instance_class    = var.state_db_instance_class
 
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
+  mhs_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
 }
 
 module "deductions-core" {

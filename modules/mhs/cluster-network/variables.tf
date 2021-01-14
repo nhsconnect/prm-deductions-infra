@@ -15,7 +15,7 @@ variable "cidr_newbits" {
 }
 
 variable "mhs_vpc_id" {}
-
 variable "cluster_name" {}
-
 variable "cidr_delta" {}
+variable "deductions_private_cidr" {}
+variable "deductions_private_vpc_peering_connection_id" {}

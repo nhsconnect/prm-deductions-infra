@@ -90,8 +90,6 @@ variable "deductions_core_azs" {
 
 variable "gocd_cidr" {}
 
-variable "mhs_cidr" {}
-
 # deductions-public mq variables
 variable "broker_name" {
   type = string

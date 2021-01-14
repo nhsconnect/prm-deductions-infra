@@ -9,7 +9,6 @@ deductions_core_component_name    = "deductions-core"
 
 gocd_cidr = "10.1.0.0/16"
 
-mhs_cidr = "10.239.68.128/25"
 mhs_cidr_newbits=2
 
 deductions_public_cidr            = "10.41.0.0/16"

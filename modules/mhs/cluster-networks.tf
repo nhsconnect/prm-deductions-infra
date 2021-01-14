@@ -7,6 +7,8 @@ module "repo" {
   mhs_vpc_id = local.mhs_vpc_id
   cluster_name = "repo"
   cidr_delta = 0
+  deductions_private_cidr = var.deductions_private_cidr
+  deductions_private_vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
 }
 
 module "test-harness" {
@@ -19,4 +21,6 @@ module "test-harness" {
   cluster_name = "test-harness"
   count = var.deploy_mhs_test_harness ? 1 : 0
   cidr_delta = 15
+  deductions_private_cidr = var.deductions_private_cidr
+  deductions_private_vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
 }

@@ -89,14 +89,14 @@ resource "aws_ec2_client_vpn_authorization_rule" "gocd_vpc" {
 resource "aws_ec2_client_vpn_route" "mhs_vpc" {
   description = "mhs vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
-  destination_cidr_block = var.mhs_cidr
+  destination_cidr_block = var.mhs_vpc_cidr_block
   target_vpc_subnet_id   = module.vpc.public_subnets[0]
   depends_on = [aws_ec2_client_vpn_network_association.public_subnet]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "mhs_vpc" {
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
-  target_network_cidr    = var.mhs_cidr
+  target_network_cidr    = var.mhs_vpc_cidr_block
   authorize_all_groups   = true
 }
 

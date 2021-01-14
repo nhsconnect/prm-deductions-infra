@@ -17,4 +17,6 @@ variable "cidr_newbits" {
   description = "Defines the size of the subnets"
 }
 
+variable "deductions_private_cidr" {}
 variable "deploy_mhs_test_harness" {}
+variable "deductions_private_vpc_peering_connection_id" {}

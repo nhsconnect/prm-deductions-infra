@@ -86,7 +86,7 @@ resource "aws_security_group_rule" "ingress_mhs" {
   protocol            = "tcp"
   from_port           = "5671"
   to_port             = "5671"
-  cidr_blocks         = [var.mhs_cidr]
+  cidr_blocks         = [var.mhs_vpc_cidr_block]
 }
 
 resource "aws_security_group_rule" "egress_all" {

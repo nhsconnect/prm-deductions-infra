@@ -29,8 +29,6 @@ variable "gocd_cidr" {}
 
 variable "deductions_core_cidr" {}
 
-variable "mhs_cidr" {}
-
 variable "allowed_public_ips" {}
 
 variable "public_subnets" {
@@ -167,3 +165,5 @@ variable "state_db_instance_class" {}
 variable "vpn_client_subnet" {}
 
 variable "core_private_vpc_peering_connection_id" {}
+variable "mhs_vpc_cidr_block" {}
+variable "mhs_vpc_peering_connection_id" {}
