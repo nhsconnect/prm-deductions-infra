@@ -19,4 +19,5 @@ variable "cidr_newbits" {
 
 variable "deductions_private_cidr" {}
 variable "deploy_mhs_test_harness" {}
+variable "deploy_opentest" {}
 variable "deductions_private_vpc_peering_connection_id" {}

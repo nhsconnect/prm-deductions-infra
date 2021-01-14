@@ -51,3 +51,4 @@ state_db_instance_class    = "db.t2.small"
 mhs_vpc_cidr_block = "10.34.0.0/16" # Must not conflict with other networks
 
 deploy_mhs_test_harness = true
+deploy_opentest = true

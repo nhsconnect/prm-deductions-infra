@@ -20,6 +20,7 @@ module "mhs" {
   repo_name = var.repo_name
   cidr_newbits= var.mhs_cidr_newbits
   deploy_mhs_test_harness = var.deploy_mhs_test_harness
+  deploy_opentest = var.deploy_opentest
   deductions_private_cidr = var.deductions_private_cidr
   deductions_private_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
 }

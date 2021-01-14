@@ -207,3 +207,4 @@ variable "mhs_cidr_newbits" {
 }
 
 variable "deploy_mhs_test_harness" {}
+variable "deploy_opentest" {}

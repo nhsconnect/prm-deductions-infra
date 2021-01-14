@@ -9,6 +9,7 @@ module "repo" {
   cidr_delta = 0
   deductions_private_cidr = var.deductions_private_cidr
   deductions_private_vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
+  deploy_opentest = var.deploy_opentest
 }
 
 module "test-harness" {
@@ -23,4 +24,5 @@ module "test-harness" {
   cidr_delta = 15
   deductions_private_cidr = var.deductions_private_cidr
   deductions_private_vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
+  deploy_opentest = var.deploy_opentest
 }
