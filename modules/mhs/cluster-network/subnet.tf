@@ -9,7 +9,7 @@ resource "aws_subnet" "mhs_subnet" {
   # E.g if the VPC's CIDR block is 10.0.0.0/16, this generates subnets that have CIDR blocks 10.0.0.0/24, 10.0.1.0/24,
   # etc.
   # see https://www.terraform.io/docs/configuration/functions/cidrsubnet.html
-  cidr_block = cidrsubnet(var.mhs_vpc_cidr_block, var.cidr_newbits, count.index + var.cidr_delta)
+  cidr_block = var.mhs_subnets[count.index]
 
   map_public_ip_on_launch = false
 
