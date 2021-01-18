@@ -2,19 +2,12 @@ environment = "dev"
 region      = "eu-west-2"
 repo_name   = "prm-deductions-infra"
 
-
-deductions_public_component_name  = "deductions-public"
 deductions_private_component_name = "deductions-private"
 deductions_core_component_name    = "deductions-core"
 
 gocd_cidr = "10.1.0.0/16"
 
 mhs_cidr_newbits=8
-
-deductions_public_cidr            = "10.40.0.0/16"
-deductions_public_public_subnets  = ["10.40.1.0/24", "10.40.2.0/24"]
-deductions_public_private_subnets = ["10.40.101.0/24", "10.40.102.0/24"]
-deductions_public_azs             = ["eu-west-2a", "eu-west-2b"]
 
 deductions_private_cidr              = "10.20.0.0/16"
 deductions_private_public_subnets    = ["10.20.101.0/24", "10.20.102.0/24"]
