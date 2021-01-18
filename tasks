@@ -166,9 +166,17 @@ function get_aws_value {
   echo $json | jq -r ".Parameter.Value"
 }
 
+function generate_deductions_vpn_ssh_key {
+  generate_ssh_key "/repo/user-input/ssh-id-rsa" "modules/ssh"
+}
+
+function generate_opentest_ssh_key {
+  generate_ssh_key "/repo/user-input/opentest-ssh-id-rsa" "modules/mhs/cluster-network/opentest/ssh"
+}
+
 function generate_ssh_key {
-  secret_id="/repo/user-input/ssh-id-rsa"
-  ssh_directory=modules/ssh
+  secret_id=$1
+  ssh_directory=$2
   mkdir -p ${ssh_directory}/
   if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
     #TODO check aws authentication
@@ -196,7 +204,8 @@ command="$1"
 case "${command}" in
   _ssh_key)
       check_env
-      generate_ssh_key
+      generate_deductions_vpn_ssh_key
+      generate_opentest_ssh_key
       ;;
   ssh_key)
       dojo "./tasks _ssh_key"

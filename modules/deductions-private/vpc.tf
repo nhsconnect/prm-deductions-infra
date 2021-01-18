@@ -23,17 +23,6 @@ module "vpc" {
     }
 }
 
-resource "aws_ssm_parameter" "public_rtb" {
-    name = "/repo/${var.environment}/output/${var.repo_name}/tf-deductions-private-public-rtb"
-    type = "String"
-    value = module.vpc.public_route_table_ids[0]
-
-    tags = {
-        CreatedBy   = var.repo_name
-        Environment = var.environment
-    }
-}
-
 resource "aws_route" "private_private_to_core" {
     route_table_id            = module.vpc.private_route_table_ids[0]
     destination_cidr_block    = var.deductions_core_cidr
@@ -48,6 +37,12 @@ resource "aws_route" "private_public_to_core" {
 
 resource "aws_route" "private_private_to_mhs" {
     route_table_id            = module.vpc.private_route_table_ids[0]
+    destination_cidr_block    = var.mhs_vpc_cidr_block
+    vpc_peering_connection_id = var.mhs_vpc_peering_connection_id
+}
+
+resource "aws_route" "private_public_to_mhs" {
+    route_table_id            = module.vpc.public_route_table_ids[0]
     destination_cidr_block    = var.mhs_vpc_cidr_block
     vpc_peering_connection_id = var.mhs_vpc_peering_connection_id
 }
