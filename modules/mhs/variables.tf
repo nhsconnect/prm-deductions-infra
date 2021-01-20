@@ -32,3 +32,4 @@ variable "internet_private_cidr_block" {}
 variable "deductions_private_vpc_id" {}
 variable "cluster_name" {}
 variable "mhs_public_cidr_block" {}
+variable "mhs_cluster_domain_name" {}

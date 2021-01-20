@@ -57,9 +57,10 @@ module "repo" {
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = local.repo_mhs_private_cidr_blocks
   internet_private_cidr_block = local.repo_internet_private_cidr_block
-  deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_public_cidr_block = local.repo_mhs_public_cidr_block
   spine_cidr_block = var.spine_cidr_block
+  deductions_private_vpc_id = local.deductions_private_vpc_id
+  mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
 }
 
 module "test-harness" {
@@ -78,9 +79,10 @@ module "test-harness" {
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = local.test_harness_mhs_private_cidr_blocks
   internet_private_cidr_block = local.test_harness_internet_private_cidr_block
-  deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_public_cidr_block = local.test_harness_mhs_public_cidr_block
   spine_cidr_block = var.spine_cidr_block
+  deductions_private_vpc_id = local.deductions_private_vpc_id
+  mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
 }
 
 module "deductions-private" {

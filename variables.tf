@@ -187,7 +187,8 @@ variable "spine_cidr_block" {}
 variable "mhs_cidr_newbits" {
   description = "Defines the size of the subnets"
 }
-
+variable "test_harness_mhs_cluster_domain_name" {}
+variable "repo_mhs_cluster_domain_name" {}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
 
