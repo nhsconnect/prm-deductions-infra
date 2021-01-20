@@ -13,16 +13,72 @@ terraform {
   }
 }
 
-module "mhs" {
+locals {
+  repo_cidr_block = cidrsubnets(var.mhs_vpc_cidr_block, 1, 1)[0]
+  test_harness_cidr_block = cidrsubnets(var.mhs_vpc_cidr_block, 1, 1)[1]
+
+  repo_mhs_private_cidr_blocks = cidrsubnets(var.deploy_mhs_test_harness ? local.repo_cidr_block : var.mhs_vpc_cidr_block, 2, 2, 2)
+  repo_internet_private_cidr_block = cidrsubnets(var.deploy_mhs_test_harness ? local.repo_cidr_block : var.mhs_vpc_cidr_block, 2, 2, 2, 4, 4)[3]
+  repo_mhs_public_cidr_block = cidrsubnets(var.deploy_mhs_test_harness ? local.repo_cidr_block : var.mhs_vpc_cidr_block, 2, 2, 2, 4, 4)[4]
+
+  test_harness_mhs_private_cidr_blocks = cidrsubnets(local.test_harness_cidr_block, 2, 2, 2)
+  test_harness_internet_private_cidr_block = cidrsubnets(local.test_harness_cidr_block, 2, 2, 2, 4, 4)[3]
+  test_harness_mhs_public_cidr_block = cidrsubnets(local.test_harness_cidr_block, 2, 2, 2, 4, 4)[4]
+  //  in dev environment the following subnets are created: [
+  // repo_mhs_private_subnets:     "10.34.0.0/19",
+  //                               "10.34.32.0/19",
+  //                               "10.34.64.0/19",
+  // repo_internet_private_subnet: "10.34.96.0/21",
+  // mhs_public_subnet:            "10.34.104.0/21",
+  //]
+
+  // in test environment the following subnets are created : >  cidrsubnets("10.239.68.128/25", 2, 2, 2, 4, 4)
+  //[
+  // repo_mhs_private_subnets         "10.239.68.128/27",
+  //                                  "10.239.68.160/27",
+  //                                  "10.239.68.192/27",
+  //  repo_internet_private_subnet:   "10.239.68.224/29",
+  //  mhs_public_subnet:              "10.239.68.232/29",
+  //]
+}
+
+module "repo" {
   source    = "./modules/mhs/"
   environment    = var.environment
-  mhs_vpc_cidr_block = var.mhs_vpc_cidr_block
+  mhs_vpc_cidr_block = local.repo_cidr_block
   repo_name = var.repo_name
-  cidr_newbits= var.mhs_cidr_newbits
-  deploy_mhs_test_harness = var.deploy_mhs_test_harness
+  cluster_name = "repo"
   deploy_opentest = var.deploy_opentest
   deductions_private_cidr = var.deductions_private_cidr
-  deductions_private_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
+  dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
+  dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
+  dns_forward_zone          = var.dns_forward_zone
+  region = var.region
+  unbound_image_version = var.unbound_image_version
+  mhs_private_cidr_blocks = local.repo_mhs_private_cidr_blocks
+  internet_private_cidr_block = local.repo_internet_private_cidr_block
+  deductions_private_vpc_id = local.deductions_private_vpc_id
+  mhs_public_cidr_block = local.repo_mhs_public_cidr_block
+}
+
+module "test-harness" {
+  source    = "./modules/mhs/"
+  environment    = var.environment
+  mhs_vpc_cidr_block = local.test_harness_cidr_block
+  repo_name = var.repo_name
+  cluster_name = "test-harness"
+  count = var.deploy_mhs_test_harness ? 1 : 0
+  deploy_opentest = var.deploy_opentest
+  deductions_private_cidr = var.deductions_private_cidr
+  dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
+  dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
+  dns_forward_zone          = var.dns_forward_zone
+  region = var.region
+  unbound_image_version = var.unbound_image_version
+  mhs_private_cidr_blocks = local.test_harness_mhs_private_cidr_blocks
+  internet_private_cidr_block = local.test_harness_internet_private_cidr_block
+  deductions_private_vpc_id = local.deductions_private_vpc_id
+  mhs_public_cidr_block = local.test_harness_mhs_public_cidr_block
 }
 
 module "deductions-private" {
@@ -41,7 +97,8 @@ module "deductions-private" {
 
   gocd_cidr            = var.gocd_cidr
   deductions_core_cidr = var.deductions_core_cidr
-  mhs_vpc_cidr_block             = var.mhs_vpc_cidr_block
+  repo_mhs_vpc_cidr_block     = local.repo_cidr_block
+  test_harness_mhs_vpc_cidr_block = local.test_harness_cidr_block
 
   broker_name                    = var.broker_name
   deployment_mode                = var.deployment_mode
@@ -64,7 +121,8 @@ module "deductions-private" {
   state_db_instance_class    = var.state_db_instance_class
 
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
-  mhs_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
+  repo_mhs_vpc_peering_connection_id = module.repo.private_mhs_vpc_peering_id
+  test_harness_mhs_vpc_peering_connection_id = join(",", module.test-harness.*.private_mhs_vpc_peering_id)
 }
 
 module "deductions-core" {
@@ -95,7 +153,6 @@ module "utils" {
 locals {
   deductions_core_vpc_id    = module.deductions-core.vpc_id
   deductions_private_vpc_id = module.deductions-private.vpc_id
-  mhs_vpc_id = module.mhs.vpc_id
 
   deductions_core_private_subnets_route_table_id    = module.deductions-core.private_subnets_route_table_id
   deductions_private_private_subnets_route_table_id = module.deductions-private.private_subnets_route_table_id

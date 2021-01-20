@@ -165,5 +165,7 @@ variable "state_db_instance_class" {}
 variable "vpn_client_subnet" {}
 
 variable "core_private_vpc_peering_connection_id" {}
-variable "mhs_vpc_cidr_block" {}
-variable "mhs_vpc_peering_connection_id" {}
+variable "repo_mhs_vpc_cidr_block" {}
+variable "test_harness_mhs_vpc_cidr_block" {}
+variable "repo_mhs_vpc_peering_connection_id" {}
+variable "test_harness_mhs_vpc_peering_connection_id" {}

@@ -12,7 +12,7 @@ resource "aws_vpc" "mhs_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${var.environment}-mhs-vpc"
+    Name = "${var.environment}-${var.cluster_name}-mhs-vpc"
     Environment = var.environment
     CreatedBy = var.repo_name
   }

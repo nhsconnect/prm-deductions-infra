@@ -35,14 +35,26 @@ resource "aws_route" "private_public_to_core" {
     vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
 }
 
-resource "aws_route" "private_private_to_mhs" {
+resource "aws_route" "private_private_to_mhs_repo" {
     route_table_id            = module.vpc.private_route_table_ids[0]
-    destination_cidr_block    = var.mhs_vpc_cidr_block
-    vpc_peering_connection_id = var.mhs_vpc_peering_connection_id
+    destination_cidr_block    = var.repo_mhs_vpc_cidr_block
+    vpc_peering_connection_id = var.repo_mhs_vpc_peering_connection_id
 }
 
-resource "aws_route" "private_public_to_mhs" {
+resource "aws_route" "private_private_to_mhs_test_harness" {
+    route_table_id            = module.vpc.private_route_table_ids[0]
+    destination_cidr_block    = var.test_harness_mhs_vpc_cidr_block
+    vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id
+}
+
+resource "aws_route" "private_public_to_mhs_repo" {
     route_table_id            = module.vpc.public_route_table_ids[0]
-    destination_cidr_block    = var.mhs_vpc_cidr_block
-    vpc_peering_connection_id = var.mhs_vpc_peering_connection_id
+    destination_cidr_block    = var.repo_mhs_vpc_cidr_block
+    vpc_peering_connection_id = var.repo_mhs_vpc_peering_connection_id
+}
+
+resource "aws_route" "private_public_to_mhs_test_harness" {
+    route_table_id            = module.vpc.public_route_table_ids[0]
+    destination_cidr_block    = var.test_harness_mhs_vpc_cidr_block
+    vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id
 }

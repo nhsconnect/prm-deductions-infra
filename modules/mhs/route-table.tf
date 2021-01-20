@@ -1,7 +1,7 @@
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.mhs_vpc.id
   tags = {
-    Name = "${var.environment}-public-route-table"
+    Name = "${var.environment}-${var.cluster_name}-public-route-table"
     Environment = var.environment
     CreatedBy = var.repo_name
   }

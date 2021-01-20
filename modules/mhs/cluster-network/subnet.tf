@@ -14,7 +14,7 @@ resource "aws_subnet" "mhs_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "${var.environment}-${var.cluster_name}-mhs-subnet-${data.aws_availability_zones.all.names[count.index]}"
+    Name = "${var.environment}-${var.cluster_name}-mhs-private-subnet-${data.aws_availability_zones.all.names[count.index]}"
     Environment = var.environment
     CreatedBy = var.repo_name
   }

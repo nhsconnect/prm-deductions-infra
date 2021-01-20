@@ -79,14 +79,24 @@ resource "aws_security_group_rule" "ingress_worker_amqp_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
 }
 
-resource "aws_security_group_rule" "ingress_mhs" {
+resource "aws_security_group_rule" "repo_ingress_mhs" {
   type                = "ingress"
   security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access to queues from MHS VPC"
+  description         = "Access to queues from repo MHS VPC"
   protocol            = "tcp"
   from_port           = "5671"
   to_port             = "5671"
-  cidr_blocks         = [var.mhs_vpc_cidr_block]
+  cidr_blocks         = [var.repo_mhs_vpc_cidr_block]
+}
+
+resource "aws_security_group_rule" "test_harness_ingress_mhs" {
+    type                = "ingress"
+    security_group_id   = aws_security_group.mq_sg.id
+    description         = "Access to queues from test harness MHS VPC"
+    protocol            = "tcp"
+    from_port           = "5671"
+    to_port             = "5671"
+    cidr_blocks         = [var.test_harness_mhs_vpc_cidr_block]
 }
 
 resource "aws_security_group_rule" "egress_all" {

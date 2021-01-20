@@ -318,5 +318,6 @@ latest.zip
 /client-config
 /modules/ssh/*
 /modules/mhs/cluster-network/opentest/ssh/*
+/modules/mhs/cluster-network/dns/ssh/*
 /ansible/group_vars/dev.yml
 /ansible/group_vars/test.yml

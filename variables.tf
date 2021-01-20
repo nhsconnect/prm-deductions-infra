@@ -188,3 +188,8 @@ variable "mhs_cidr_newbits" {
 
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
+
+variable "dns_forward_zone" {}
+variable "dns_hscn_forward_server_1" {}
+variable "dns_hscn_forward_server_2" {}
+variable "unbound_image_version" {}
