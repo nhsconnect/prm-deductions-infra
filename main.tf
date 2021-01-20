@@ -59,6 +59,7 @@ module "repo" {
   internet_private_cidr_block = local.repo_internet_private_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_public_cidr_block = local.repo_mhs_public_cidr_block
+  spine_cidr_block = var.spine_cidr_block
 }
 
 module "test-harness" {
@@ -79,6 +80,7 @@ module "test-harness" {
   internet_private_cidr_block = local.test_harness_internet_private_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_public_cidr_block = local.test_harness_mhs_public_cidr_block
+  spine_cidr_block = var.spine_cidr_block
 }
 
 module "deductions-private" {

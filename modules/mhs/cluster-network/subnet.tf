@@ -1,7 +1,6 @@
 # Create a private subnet in each availability zone in the region.
 resource "aws_subnet" "mhs_subnet" {
   count = 3
-
   vpc_id = var.mhs_vpc_id
   availability_zone = data.aws_availability_zones.all.names[count.index]
 
@@ -10,7 +9,6 @@ resource "aws_subnet" "mhs_subnet" {
   # etc.
   # see https://www.terraform.io/docs/configuration/functions/cidrsubnet.html
   cidr_block = var.mhs_subnets[count.index]
-
   map_public_ip_on_launch = false
 
   tags = {
