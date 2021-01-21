@@ -182,12 +182,12 @@ variable "mhs_vpc_cidr_block" {
   description = "The CIDR block to use for the MHS VPC that is created. Should be a /16 block. Note that this cidr block must not overlap with the cidr blocks of the VPCs that the MHS VPC is to be peered with."
 }
 
-variable "spine_cidr_block" {}
+variable "spine_cidr_block" { default = "" }
 
 variable "mhs_cidr_newbits" {
   description = "Defines the size of the subnets"
 }
-variable "test_harness_mhs_cluster_domain_name" {}
+variable "test_harness_mhs_cluster_domain_name" { default = "" }
 variable "repo_mhs_cluster_domain_name" {}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}

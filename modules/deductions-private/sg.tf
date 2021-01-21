@@ -90,6 +90,7 @@ resource "aws_security_group_rule" "repo_ingress_mhs" {
 }
 
 resource "aws_security_group_rule" "test_harness_ingress_mhs" {
+    count = var.test_harness_mhs_vpc_cidr_block != "" ? 1 : 0
     type                = "ingress"
     security_group_id   = aws_security_group.mq_sg.id
     description         = "Access to queues from test harness MHS VPC"

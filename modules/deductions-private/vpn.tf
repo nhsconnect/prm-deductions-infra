@@ -87,7 +87,7 @@ resource "aws_ec2_client_vpn_authorization_rule" "gocd_vpc" {
 }
 
 resource "aws_ec2_client_vpn_route" "repo_mhs_vpc" {
-  description = "mhs vpc"
+  description = "repo mhs vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.repo_mhs_vpc_cidr_block
   target_vpc_subnet_id   = module.vpc.public_subnets[0]
@@ -101,7 +101,8 @@ resource "aws_ec2_client_vpn_authorization_rule" "repo_mhs_vpc" {
 }
 
 resource "aws_ec2_client_vpn_route" "test_harness_mhs_vpc" {
-  description = "mhs vpc"
+  count = var.test_harness_mhs_vpc_cidr_block != "" ? 1 : 0
+  description = "test harness mhs vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.test_harness_mhs_vpc_cidr_block
   target_vpc_subnet_id   = module.vpc.public_subnets[0]
@@ -109,6 +110,7 @@ resource "aws_ec2_client_vpn_route" "test_harness_mhs_vpc" {
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "test_harness_mhs_vpc" {
+  count = var.test_harness_mhs_vpc_cidr_block != "" ? 1 : 0
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   target_network_cidr    = var.test_harness_mhs_vpc_cidr_block
   authorize_all_groups   = true
