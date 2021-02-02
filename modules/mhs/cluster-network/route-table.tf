@@ -7,6 +7,7 @@ resource "aws_route_table" "mhs" {
   }
 }
 
+
 resource "aws_route" "deductions_private" {
   route_table_id            = aws_route_table.mhs.id
   destination_cidr_block    = var.deductions_private_cidr
@@ -14,7 +15,15 @@ resource "aws_route" "deductions_private" {
 }
 
 resource "aws_route" "spine" {
+  count = var.deploy_opentest ? 1 : 0
   route_table_id            = aws_route_table.mhs.id
   destination_cidr_block    = var.spine_cidr_block
   instance_id = join(",", module.opentest.*.vpn_instance_id)
+}
+
+resource "aws_route" "spine_hscn" {
+  count = var.deploy_opentest ? 0 : 1
+  route_table_id            = aws_route_table.mhs.id
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id = var.hscn_gateway_id
 }

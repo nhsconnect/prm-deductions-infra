@@ -42,6 +42,7 @@ resource "aws_route" "private_private_to_mhs_repo" {
 }
 
 resource "aws_route" "private_private_to_mhs_test_harness" {
+    count                     = var.deploy_mhs_test_harness ? 1 : 0
     route_table_id            = module.vpc.private_route_table_ids[0]
     destination_cidr_block    = var.test_harness_mhs_vpc_cidr_block
     vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id
@@ -54,6 +55,7 @@ resource "aws_route" "private_public_to_mhs_repo" {
 }
 
 resource "aws_route" "private_public_to_mhs_test_harness" {
+    count                     = var.deploy_mhs_test_harness ? 1 : 0
     route_table_id            = module.vpc.public_route_table_ids[0]
     destination_cidr_block    = var.test_harness_mhs_vpc_cidr_block
     vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id

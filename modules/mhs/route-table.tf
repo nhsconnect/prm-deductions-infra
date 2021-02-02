@@ -8,7 +8,9 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public_internet" {
+  # FIXME: Remove conditional creation
+  count = var.deploy_opentest ? 1 : 0
   route_table_id = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.internet.id
+  gateway_id = aws_internet_gateway.internet[count.index].id
 }

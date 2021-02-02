@@ -49,5 +49,5 @@ deploy_opentest = false
 dns_forward_zone = "ncrs.nhs.uk"
 dns_hscn_forward_server_1 = "155.231.231.1"
 dns_hscn_forward_server_2 = "155.231.231.2"
-
+hscn_gateway_id = "vgw-0ed5add471169ed85"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
