@@ -5,6 +5,10 @@ set -Eeo pipefail
 export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
 
+if [ -z "${DNS_IMAGE_TAG}" ]; then
+  DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
+fi
+
 function check_env {
   if [[ -z "${NHS_ENVIRONMENT}" ]]; then
     echo "Must set NHS_ENVIRONMENT"
@@ -19,9 +23,9 @@ function tf_plan {
   terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan"
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1

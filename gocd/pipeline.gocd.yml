@@ -35,6 +35,9 @@ pipelines:
     materials:
       git:
         type: configrepo
+      docker_dns_images:
+        pipeline: mhs-dns-images
+        stage: test
     stages:
       - deploy_dev:
           clean_workspace: true
