@@ -3,19 +3,25 @@ resource "aws_security_group" "dns-sg" {
     description = "DNS server access in MHS VPC"
     vpc_id      = var.mhs_vpc_id
 
-    # DNS traffic
+    # DNS traffic, also allow from all local networks so that we can test DNS from deductions-private
     ingress {
         protocol    = "tcp"
         from_port   = 53
         to_port     = 53
-        cidr_blocks = [var.allowed_cidr]
+        cidr_blocks = [
+          var.allowed_cidr,
+          "10.0.0.0/8"
+        ]
     }
 
     ingress {
         protocol    = "udp"
         from_port   = 53
         to_port     = 53
-        cidr_blocks = [var.allowed_cidr]
+        cidr_blocks = [
+          var.allowed_cidr,
+          "10.0.0.0/8"
+        ]
     }
 
     # For debugging

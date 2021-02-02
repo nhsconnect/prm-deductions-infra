@@ -321,3 +321,4 @@ latest.zip
 /modules/mhs/cluster-network/dns/ssh/*
 /ansible/group_vars/dev.yml
 /ansible/group_vars/test.yml
+/retry

@@ -243,6 +243,39 @@ case "${command}" in
       check_env
       dojo "./tasks _tf_apply"
       ;;
+  _wait_for_dns)
+      check_env
+      cluster_name=$2
+      if [ -z $cluster_name ]; then
+        echo "Please specify cluster name to verify"
+      fi
+      AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
+      DNS_SERVER_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-0")
+      DNS_SERVER_1=$(echo "${DNS_SERVER_1}" | awk -F "," '{print $1}')
+      DNS_SERVER_2=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-1")
+      DNS_SERVER_2=$(echo "${DNS_SERVER_2}" | awk -F "," '{print $1}')
+      echo "Waiting for DNS servers ${DNS_SERVER_1} and ${DNS_SERVER_2} to be ready"
+
+      rm -f ./retry
+      curl https://raw.githubusercontent.com/kadwanev/retry/master/retry -o ./retry
+      chmod +x retry
+
+      SLEEP_TIME=1
+      DIG_TIMEOUT=1
+      TRIES=60
+      ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} | grep 'Got answer'"
+      ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} | grep 'Got answer'"
+
+      if [ "${NHS_ENVIRONMENT}" == "test" ]; then
+        echo "Querying for private domain on HSCN network: nww.int.spine2.ncrs.nhs.uk"
+        dig nww.int.spine2.ncrs.nhs.uk @${DNS_SERVER_1} | grep 'Got answer'
+        dig nww.int.spine2.ncrs.nhs.uk @${DNS_SERVER_2} | grep 'Got answer'
+        echo "OK. Received reply for an HSCN domain"
+      fi
+      ;;
+  wait_for_dns)
+      dojo "./tasks _wait_for_dns $2"
+      ;;
   _create_secrets)
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-password"

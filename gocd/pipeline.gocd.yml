@@ -45,6 +45,30 @@ pipelines:
             NHS_ENVIRONMENT: dev
           jobs:
             apply: *apply_job
+      - wait_dns_dev:
+          environment_variables:
+            NHS_ENVIRONMENT: dev
+          jobs:
+            repo:
+              resources:
+                - dev
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks wait_for_dns repo
+            test_harness:
+              resources:
+                - dev
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks wait_for_dns test-harness
       - check_dev:
           clean_workspace: true
           environment_variables:
@@ -77,6 +101,20 @@ pipelines:
             NHS_ENVIRONMENT: test
           jobs:
             apply: *apply_job
+      - wait_dns_test:
+          environment_variables:
+            NHS_ENVIRONMENT: test
+          jobs:
+            repo:
+              resources:
+                - test
+                - deductions-private # Agent runs in deductions private
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks wait_for_dns repo
       - check_test:
           clean_workspace: true
           environment_variables:
