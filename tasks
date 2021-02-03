@@ -9,6 +9,11 @@ if [ -z "${DNS_IMAGE_TAG}" ]; then
   DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
 fi
 
+if [ -z "${DNS_IMAGE_TAG}" ]; then
+  echo "DNS image tag has to be set"
+  exit 1
+fi
+
 function check_env {
   if [[ -z "${NHS_ENVIRONMENT}" ]]; then
     echo "Must set NHS_ENVIRONMENT"
