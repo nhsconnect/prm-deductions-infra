@@ -107,3 +107,27 @@ resource "aws_ssm_parameter" "stomp-endpoint-1" {
     Environment = var.environment
   }
 }
+
+resource "aws_ssm_parameter" "openwire-endpoint-0" {
+  name        = "/repo/${var.environment}/output/${var.repo_name}/openwire-endpoint-0"
+  description = "OpenWire endpoint to MQ broker. Index: 0"
+  type        = "String"
+  value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.0
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_ssm_parameter" "openwire-endpoint-1" {
+  name        = "/repo/${var.environment}/output/${var.repo_name}/openwire-endpoint-1"
+  description = "OpenWire endpoint to MQ broker. Index: 1"
+  type        = "String"
+  value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.0
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
