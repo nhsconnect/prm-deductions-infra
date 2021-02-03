@@ -50,6 +50,7 @@ module "repo" {
   repo_name = var.repo_name
   cluster_name = "repo"
   deploy_opentest = var.deploy_opentest
+  deploy_public_subnet = var.deploy_mhs_public_subnet
   deductions_private_cidr = var.deductions_private_cidr
   dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
   dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
@@ -73,6 +74,7 @@ module "test-harness" {
   cluster_name = "test-harness"
   count = var.deploy_mhs_test_harness ? 1 : 0
   deploy_opentest = var.deploy_opentest
+  deploy_public_subnet = var.deploy_mhs_public_subnet
   deductions_private_cidr = var.deductions_private_cidr
   dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
   dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2

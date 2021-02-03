@@ -1,4 +1,5 @@
 resource "aws_subnet" "mhs_public" {
+  count = var.deploy_public_subnet ? 1 : 0
   vpc_id = aws_vpc.mhs_vpc.id
   availability_zone = data.aws_availability_zones.all.names[0]
   cidr_block = var.mhs_public_cidr_block
@@ -12,6 +13,7 @@ resource "aws_subnet" "mhs_public" {
 }
 
 resource "aws_route_table_association" "mhs_public" {
-  subnet_id      = aws_subnet.mhs_public.id
-  route_table_id = aws_route_table.public.id
+  count = var.deploy_public_subnet ? 1 : 0
+  subnet_id      = aws_subnet.mhs_public[count.index].id
+  route_table_id = aws_route_table.public[count.index].id
 }

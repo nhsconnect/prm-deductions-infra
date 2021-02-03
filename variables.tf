@@ -191,7 +191,7 @@ variable "test_harness_mhs_cluster_domain_name" { default = "" }
 variable "repo_mhs_cluster_domain_name" {}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
-
+variable "deploy_mhs_public_subnet" {}
 variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}

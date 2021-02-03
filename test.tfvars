@@ -45,6 +45,7 @@ mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD
 
 deploy_mhs_test_harness = false
 deploy_opentest = false
+deploy_mhs_public_subnet = false
 
 dns_forward_zone = "ncrs.nhs.uk"
 dns_hscn_forward_server_1 = "155.231.231.1"

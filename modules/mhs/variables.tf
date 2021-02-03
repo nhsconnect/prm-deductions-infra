@@ -22,6 +22,7 @@ variable "repo_name" {
 
 variable "deductions_private_cidr" {}
 variable "deploy_opentest" {}
+variable "deploy_public_subnet" {}
 
 variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}

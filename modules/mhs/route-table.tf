@@ -1,4 +1,5 @@
 resource "aws_route_table" "public" {
+  count = var.deploy_public_subnet ? 1 : 0
   vpc_id = aws_vpc.mhs_vpc.id
   tags = {
     Name = "${var.environment}-${var.cluster_name}-public-route-table"
@@ -8,9 +9,8 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public_internet" {
-  # FIXME: Remove conditional creation
-  count = var.deploy_opentest ? 1 : 0
-  route_table_id = aws_route_table.public.id
+  count = var.deploy_public_subnet ? 1 : 0
+  route_table_id = aws_route_table.public[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id = aws_internet_gateway.internet[count.index].id
 }
