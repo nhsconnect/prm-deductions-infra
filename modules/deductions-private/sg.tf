@@ -69,6 +69,16 @@ resource "aws_security_group_rule" "ingress_worker_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
 }
 
+resource "aws_security_group_rule" "ingress_worker_gocd_agent" {
+    type                = "ingress"
+    security_group_id   = aws_security_group.mq_sg.id
+    description         = "Access to AMQ from gocd agent running e2e tests"
+    protocol            = "tcp"
+    from_port           = "61614"
+    to_port             = "61614"
+    source_security_group_id     = module.gocd.agent_sg_id
+}
+
 resource "aws_security_group_rule" "ingress_worker_amqp_ecs_tasks" {
   type                = "ingress"
   security_group_id   = aws_security_group.mq_sg.id
