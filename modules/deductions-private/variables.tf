@@ -29,8 +29,6 @@ variable "gocd_cidr" {}
 
 variable "deductions_core_cidr" {}
 
-variable "allowed_public_ips" {}
-
 variable "public_subnets" {
   type = list
 }

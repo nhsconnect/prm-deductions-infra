@@ -102,8 +102,6 @@ module "deductions-private" {
   azs              = var.deductions_private_azs
   private_zone_id  = aws_route53_zone.private.zone_id
 
-  allowed_public_ips = local.allowed_public_ips
-
 
   gocd_cidr            = var.gocd_cidr
   deductions_core_cidr = var.deductions_core_cidr
@@ -150,7 +148,6 @@ module "deductions-core" {
 
   allowed_cidr       = var.deductions_private_cidr
   private_zone_id    = aws_route53_zone.private.zone_id
-  allowed_public_ips = local.allowed_public_ips
 
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
 }

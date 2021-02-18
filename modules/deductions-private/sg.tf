@@ -326,21 +326,6 @@ resource "aws_security_group" "deductions-private-alb-sg" {
     description = "controls access to the ALB"
     vpc_id      = module.vpc.vpc_id
 
-    ingress {
-        description = "Allow Whitelisted Traffic to access PDS Adaptor ALB"
-        protocol    = "tcp"
-        from_port   = 80
-        to_port     = 80
-        cidr_blocks = var.allowed_public_ips
-    }
-
-    ingress {
-        protocol    = "tcp"
-        from_port   = 443
-        to_port     = 443
-        cidr_blocks = var.allowed_public_ips
-    }
-
     egress {
         description = "Allow All Outbound"
         from_port   = 0
