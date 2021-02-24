@@ -10,11 +10,22 @@ resource "aws_rds_cluster" "gp_to_repo_db_cluster" {
     apply_immediately       = true
     db_subnet_group_name    = aws_db_subnet_group.gp_to_repo_db_cluster_subnet_group.name
     skip_final_snapshot = true
+    storage_encrypted       = true
+    kms_key_id              = aws_kms_key.gp_to_repo_key.arn
 
     tags = {
       CreatedBy   = var.repo_name
       Environment = var.environment
     }
+}
+
+resource "aws_kms_key" "gp_to_repo_key" {
+  description             = "Gp To Repo KMS key in ${var.environment} environment"
+  tags = {
+    Name = "${var.environment}-gp-to-repo-db"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_ssm_parameter" "gp_to_repo_rds_endpoint" {
@@ -64,8 +75,19 @@ resource "aws_rds_cluster" "repo_to_gp_db_cluster" {
   apply_immediately       = true
   db_subnet_group_name    = aws_db_subnet_group.repo_to_gp_db_cluster_subnet_group.name
   skip_final_snapshot = true
+  storage_encrypted       = true
+  kms_key_id              = aws_kms_key.repo_to_gp_key.arn
 
   tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_kms_key" "repo_to_gp_key" {
+  description             = "Repo To Gp KMS key in ${var.environment} environment"
+  tags = {
+    Name = "${var.environment}-repo-to-gp-db"
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
