@@ -10,11 +10,22 @@ resource "aws_rds_cluster" "db-cluster" {
     apply_immediately       = true
     db_subnet_group_name    = aws_db_subnet_group.db-cluster-subnet-group.name
     skip_final_snapshot = true
+    storage_encrypted       = true
+    kms_key_id              = aws_kms_key.ehr-repo-key.arn
 
     tags = {
       CreatedBy   = var.repo_name
       Environment = var.environment
     }
+}
+
+resource "aws_kms_key" "ehr-repo-key" {
+  description             = "EHR repository KMS key in ${var.environment} environment"
+  tags = {
+    Name = "${var.environment}-ehr-repo-db"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
 }
 
 resource "aws_ssm_parameter" "rds_endpoint" {
