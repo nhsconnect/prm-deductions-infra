@@ -116,3 +116,48 @@ Each VPN endpoint has its own server certificate signed by above CA. The operati
 NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt
 ```
 It is part of a pipeline that deploys each environment.
+
+
+# Useful CloudWatch Logs Insights Queries for Repository Codebases
+They will be also stored in a Repo folder in CloudWatch Insights. More information here:  https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_Insights-Saving-Queries.html
+
+###Tabular Views - enable to see service in the separate CloudWatch column:
+
+`fields @timestamp, @message, service`<br/>
+`| filter @message not like /(H|h)ealth/`<br/>
+`| sort @timestamp desc`
+
+
+###Filter by severity levels - useful if we would like to see all the errors:
+
+`fields @timestamp, @message, service`<br/>
+`| filter @message not like /(H|h)ealth/`<br/>
+`| filter @message like /(ERROR|error|Error)/`<br/>
+`| filter @message like /500/`<br/>
+`| sort @timestamp desc`
+
+###Dev - non-compliant messages
+
+`fields @timestamp, @message, @logStream`<br/>
+`| filter not ispresent(service) or not ispresent(environment) or not ispresent(level)`<br/>
+`| sort @timestamp desc`
+
+###Log streams by non-compliance
+
+`fields @timestamp, @message, @logStream`<br/>
+`| filter not ispresent(service) or not ispresent(environment) or not ispresent(level)`<br/>
+`| stats count(*) by @logStream`
+
+###Test - All level messages above DEBUG
+
+`fields @timestamp, level, service, @message`<br/>
+`| filter level != 'DEBUG'`<br/>
+`| filter @message not like /(H|h)ealth/`<br/>
+`| sort @timestamp desc`
+
+###Test - Interactions with queue raw-inbound
+
+`fields @timestamp, @message, service, correlationId`<br/>
+`| filter queue = 'raw-inbound'`<br/>
+`| sort @timestamp desc`
+ 
