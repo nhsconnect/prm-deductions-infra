@@ -161,6 +161,8 @@ module "utils" {
 locals {
   deductions_core_vpc_id    = module.deductions-core.vpc_id
   deductions_private_vpc_id = module.deductions-private.vpc_id
+  repo_mhs_vpc_id = module.repo.vpc_id
+  test_harness_mhs_vpc_id = join(",", module.test-harness.*.vpc_id)
 
   deductions_core_private_subnets_route_table_id    = module.deductions-core.private_subnets_route_table_id
   deductions_private_private_subnets_route_table_id = module.deductions-private.private_subnets_route_table_id
