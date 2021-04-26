@@ -20,3 +20,4 @@ resource "aws_ssm_parameter" "private_zone_id" {
     Environment = var.environment
   }
 }
+
