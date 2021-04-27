@@ -21,42 +21,42 @@ resource "aws_ssm_parameter" "private_zone_id" {
   }
 }
 
-resource "aws_route53_zone" "environment_private_with_test_harness" {
-  count = var.deploy_mhs_test_harness ? 1 : 0
-  name = "${var.environment}.non-prod.patient-deductions.nhs.uk"
-  vpc {
-    vpc_id = local.deductions_core_vpc_id
-  }
-  vpc {
-    vpc_id = local.deductions_private_vpc_id
-  }
-  vpc {
-    vpc_id = local.repo_mhs_vpc_id
-  }
-  vpc {
-    vpc_id = local.test_harness_mhs_vpc_id
-  }
-}
-
-
 resource "aws_route53_zone" "environment_private" {
-  count = var.deploy_mhs_test_harness ? 0 : 1
   name = "${var.environment}.non-prod.patient-deductions.nhs.uk"
-  vpc {
-    vpc_id = local.deductions_core_vpc_id
-  }
+  # NOTE: The aws_route53_zone vpc argument accepts multiple configuration
+  #       blocks. The below usage of the single vpc configuration, the
+  #       lifecycle configuration, and the aws_route53_zone_association
+  #       resource is to associate with test harness conditionally
   vpc {
     vpc_id = local.deductions_private_vpc_id
   }
-  vpc {
-    vpc_id = local.repo_mhs_vpc_id
+
+  lifecycle {
+    ignore_changes = [vpc]
   }
 }
+
+resource "aws_route53_zone_association" "core" {
+  zone_id = aws_route53_zone.environment_private.zone_id
+  vpc_id = local.deductions_core_vpc_id
+}
+
+resource "aws_route53_zone_association" "repo_mhs" {
+  zone_id = aws_route53_zone.environment_private.zone_id
+  vpc_id = local.repo_mhs_vpc_id
+}
+
+resource "aws_route53_zone_association" "test_harness_mhs" {
+  count = var.deploy_mhs_test_harness ? 1 : 0
+  zone_id = aws_route53_zone.environment_private.zone_id
+  vpc_id = local.test_harness_mhs_vpc_id
+}
+
 
 resource "aws_ssm_parameter" "environment_private_zone_id" {
   name =  "/repo/${var.environment}/output/${var.repo_name}/environment-private-zone-id"
   type  = "String"
-  value = var.deploy_mhs_test_harness ? join(",", aws_route53_zone.environment_private_with_test_harness.*.zone_id) : join(",", aws_route53_zone.environment_private.*.zone_id)
+  value = aws_route53_zone.environment_private.zone_id
 
   tags = {
     CreatedBy   = var.repo_name
