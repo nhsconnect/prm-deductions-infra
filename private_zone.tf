@@ -52,7 +52,6 @@ resource "aws_route53_zone_association" "test_harness_mhs" {
   vpc_id = local.test_harness_mhs_vpc_id
 }
 
-
 resource "aws_ssm_parameter" "environment_private_zone_id" {
   name =  "/repo/${var.environment}/output/${var.repo_name}/environment-private-zone-id"
   type  = "String"
