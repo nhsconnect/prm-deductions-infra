@@ -59,16 +59,6 @@ resource "aws_security_group_rule" "ingress_amqp_ecs_tasks" {
   source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
 }
 
-resource "aws_security_group_rule" "ingress_worker_ecs_tasks" {
-  type                = "ingress"
-  security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access to AMQ from gp2gp worker ECS Task"
-  protocol            = "tcp"
-  from_port           = "61614"
-  to_port             = "61614"
-  source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
-}
-
 resource "aws_security_group_rule" "ingress_worker_gocd_agent" {
     type                = "ingress"
     security_group_id   = aws_security_group.mq_sg.id
@@ -77,16 +67,6 @@ resource "aws_security_group_rule" "ingress_worker_gocd_agent" {
     from_port           = "61614"
     to_port             = "61614"
     source_security_group_id     = module.gocd.agent_sg_id
-}
-
-resource "aws_security_group_rule" "ingress_worker_amqp_ecs_tasks" {
-  type                = "ingress"
-  security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access to AMQ from gp2gp worker ECS Task"
-  protocol            = "tcp"
-  from_port           = "5671"
-  to_port             = "5671"
-  source_security_group_id     = aws_security_group.gp2gp-worker-ecs-task-sg.id
 }
 
 resource "aws_security_group_rule" "ingress_message_handler_openwire_ecs_tasks" {
@@ -278,25 +258,6 @@ resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-gp2gp-adaptor-ecs-task-sg"
-        CreatedBy   = var.repo_name
-        Environment = var.environment
-    }
-}
-
-resource "aws_security_group" "gp2gp-worker-ecs-task-sg" {
-    name        = "${var.environment}-gp2gp-worker-ecs-task-sg"
-    vpc_id      = module.vpc.vpc_id
-
-    egress {
-        description = "Allow All Outbound"
-        protocol    = "-1"
-        from_port   = 0
-        to_port     = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-        Name = "${var.environment}-gp2gp-worker-ecs-task-sg"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }

@@ -93,16 +93,6 @@ resource "aws_ssm_parameter" "deductions_private_gp2gp_adaptor_sg_id" {
   }
 }
 
-resource "aws_ssm_parameter" "deductions_private_gp2gp_worker_sg_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-gp2gp-worker-sg-id"
-  type = "String"
-  value = aws_security_group.gp2gp-worker-ecs-task-sg.id
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
 resource "aws_ssm_parameter" "deductions_private_gp2gp_message_handler_sg_id" {
   name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-gp2gp-message-handler-sg-id"
   type = "String"
