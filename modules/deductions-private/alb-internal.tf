@@ -47,7 +47,7 @@ resource "aws_alb_listener" "int-alb-listener-https" {
 
 resource aws_ssm_parameter "int-alb-listener-https-arn" {
   name = "/repo/${var.environment}/output/${var.repo_name}/int-alb-listener-https-arn"
-  value = aws_alb_listener.int-alb-listener.arn
+  value = aws_alb_listener.int-alb-listener-https.arn
   type = "String"
 
   tags = {
