@@ -11,11 +11,6 @@ output "dns_server_1" {
   value = module.deductions-private.dns_server_1
 }
 
-# Deductions Core Outputs
-output "deductions_core_ecs_cluster_id" {
-  value       = module.deductions-core.deductions_core_ecs_cluster_id
-}
-
 output "deductions_core_private_subnets" {
   value       = module.deductions-core.deductions_core_private_subnets
 }

@@ -18,15 +18,7 @@ variable "component_name" {
   default     = "deductions-core"
 }
 
-variable "ehr_deregistration_delay" {
-  default = 30
-}
-
-variable "environment_public_dns_zone" {}
-
 variable "cidr" {}
-
-variable "allowed_cidr" {}
 
 variable "public_subnets" {
   type = list
