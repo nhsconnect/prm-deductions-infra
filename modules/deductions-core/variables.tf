@@ -22,8 +22,6 @@ variable "ehr_deregistration_delay" {
   default = 30
 }
 
-variable "private_zone_id" {}
-
 variable "environment_public_dns_zone" {}
 
 variable "cidr" {}

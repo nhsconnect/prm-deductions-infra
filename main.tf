@@ -148,7 +148,6 @@ module "deductions-core" {
   environment_public_dns_zone = aws_route53_zone.environment_public
 
   allowed_cidr       = var.deductions_private_cidr
-  private_zone_id    = aws_route53_zone.private.zone_id
 
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
 }
