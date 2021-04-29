@@ -317,14 +317,6 @@ case "${command}" in
   generate_vpn_client_crt)
       dojo "./tasks _generate_vpn_client_crt $2"
       ;;
-  sanity_check)
-      dojo "./tasks _sanity_check"
-      ;;
-  _sanity_check)
-      check_env
-      nslookup ${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk
-      curl -i --fail "http://${NHS_ENVIRONMENT}.alb.patient-deductions.nhs.uk"
-      ;;
   _detect_active_mq)
       account_id=$(aws sts get-caller-identity | jq -r .Account)
       MQ_ENDPOINT_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-0")

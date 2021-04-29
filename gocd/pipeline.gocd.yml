@@ -74,16 +74,6 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: dev
           jobs:
-            test:
-              resources:
-                - dev
-                - deductions-private # Agent runs in deductions private
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks sanity_check
             active_mq:
               resources:
                 - dev
@@ -120,16 +110,6 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: test
           jobs:
-            test:
-              resources:
-                - test
-                - deductions-private # Agent runs in deductions private
-              tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks sanity_check
             active_mq:
               resources:
                 - test
