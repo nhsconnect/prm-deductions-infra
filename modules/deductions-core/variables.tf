@@ -24,6 +24,8 @@ variable "ehr_deregistration_delay" {
 
 variable "private_zone_id" {}
 
+variable "environment_public_dns_zone" {}
+
 variable "cidr" {}
 
 variable "allowed_cidr" {}

@@ -145,6 +145,7 @@ module "deductions-core" {
   private_subnets  = var.deductions_core_private_subnets
   database_subnets = var.deductions_core_database_subnets
   azs              = var.deductions_core_azs
+  environment_public_dns_zone = aws_route53_zone.environment_public
 
   allowed_cidr       = var.deductions_private_cidr
   private_zone_id    = aws_route53_zone.private.zone_id

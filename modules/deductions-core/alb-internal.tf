@@ -32,7 +32,7 @@ resource "aws_alb_listener" "int-alb-listener-https" {
   protocol          = "HTTPS"
 
   ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = aws_acm_certificate_validation.certificate-validation.certificate_arn
+  certificate_arn = aws_acm_certificate_validation.ehr-repo-cert-validation.certificate_arn
 
   default_action {
     type = "fixed-response"
