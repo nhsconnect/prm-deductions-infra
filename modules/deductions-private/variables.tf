@@ -168,3 +168,4 @@ variable "test_harness_mhs_vpc_cidr_block" {}
 variable "repo_mhs_vpc_peering_connection_id" {}
 variable "test_harness_mhs_vpc_peering_connection_id" {}
 variable "deploy_mhs_test_harness" {}
+variable "environment_public_zone" {}
