@@ -22,7 +22,7 @@ resource "aws_acm_certificate" "generic-component-cert" {
 }
 
 resource "aws_acm_certificate" "mq-admin-cert" {
-  domain_name       = "${var.environment}.mq-admin.patient-deductions.nhs.uk"
+  domain_name       = "mq-admin.${var.environment_public_zone.name}"
 
   validation_method = "DNS"
 

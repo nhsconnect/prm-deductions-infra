@@ -72,7 +72,7 @@ resource "aws_alb_listener_rule" "mq-int-alb-http-listener-rule" {
 
   condition {
     host_header {
-      values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+      values = ["mq-admin.${var.environment_public_zone.name}"]
     }
   }
 }
@@ -88,7 +88,7 @@ resource "aws_alb_listener_rule" "mq-int-alb-https-listener-rule" {
 
   condition {
     host_header {
-      values = ["${var.environment}.mq-admin.patient-deductions.nhs.uk"]
+      values = ["mq-admin.${var.environment_public_zone.name}"]
     }
   }
 }
