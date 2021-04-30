@@ -31,3 +31,13 @@ resource "aws_ssm_parameter" "deductions_core_private_subnets" {
     Environment = var.environment
   }
 }
+
+resource "aws_ssm_parameter" "deductions_core_database_subnets" {
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core-database-subnets"
+  type = "String"
+  value = join(",", module.vpc.database_subnets)
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
