@@ -93,7 +93,7 @@ resource "aws_route53_record" "mq-admin-cert-validation-record" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.aws_ssm_parameter.root_zone_id.value
+  zone_id         = var.environment_public_zone.zone_id
 }
 
 resource "aws_acm_certificate_validation" "mq-admin-cert-validation" {
