@@ -32,7 +32,7 @@ resource "aws_alb_listener" "int-alb-listener-https" {
   protocol          = "HTTPS"
 
   ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = aws_acm_certificate_validation.gp2gp-adaptor-cert-validation.certificate_arn
+  certificate_arn = aws_acm_certificate_validation.deductions-private-default-cert-validation.certificate_arn
 
   default_action {
     type = "fixed-response"
@@ -127,4 +127,9 @@ resource "aws_alb_target_group_attachment" "mq-attachment" {
 resource "aws_lb_listener_certificate" "mq-admin-int-listener-cert" {
   listener_arn    = aws_alb_listener.int-alb-listener-https.arn
   certificate_arn = aws_acm_certificate_validation.mq-admin-cert-validation.certificate_arn
+}
+
+resource "aws_lb_listener_certificate" "gp2gp-adaptor-int-listener-cert" {
+  listener_arn    = aws_alb_listener.int-alb-listener-https.arn
+  certificate_arn = aws_acm_certificate_validation.gp2gp-adaptor-cert-validation.certificate_arn
 }
