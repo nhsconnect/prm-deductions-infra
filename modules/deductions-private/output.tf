@@ -43,16 +43,6 @@ resource "aws_ssm_parameter" "deductions_private_ecs_cluster_id" {
   }
 }
 
-resource "aws_ssm_parameter" "deductions_private_gen_comp_sg_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-gen-comp-sg-id"
-  type = "String"
-  value = aws_security_group.generic-comp-ecs-task-sg.id
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
 resource "aws_ssm_parameter" "deductions_private_gp_to_repo_sg_id" {
   name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-gp-to-repo-sg-id"
   type = "String"

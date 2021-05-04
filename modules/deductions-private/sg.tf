@@ -110,57 +110,6 @@ resource "aws_security_group_rule" "egress_all" {
   cidr_blocks         = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group" "generic-comp-ecs-task-sg" {
-    name        = "${var.environment}-generic-comp-ecs-task-sg"
-    vpc_id      = module.vpc.vpc_id
-
-    ingress {
-        description     = "Allow traffic from ALB to Generic Component Task"
-        protocol        = "tcp"
-        from_port       = "3000"
-        to_port         = "3000"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from ALB to to Generic Component Task"
-        protocol        = "tcp"
-        from_port       = "80"
-        to_port         = "80"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from Internal ALB to Generic Component Task"
-        protocol        = "tcp"
-        from_port       = "3000"
-        to_port         = "3000"
-        security_groups = [aws_security_group.private-alb-internal-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from Internal ALB to Generic Component Task"
-        protocol        = "tcp"
-        from_port       = "80"
-        to_port         = "80"
-        security_groups = [aws_security_group.private-alb-internal-sg.id]
-    }
-
-    egress {
-        description = "Allow All Outbound"
-        protocol    = "-1"
-        from_port   = 0
-        to_port     = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-        Name = "${var.environment}-generic-comp-ecs-task-sg"
-        CreatedBy   = var.repo_name
-        Environment = var.environment
-    }
-}
-
 resource "aws_security_group" "administration-portal-ecs-task-sg" {
     name        = "${var.environment}-administration-portal-ecs-task-sg"
     vpc_id      = module.vpc.vpc_id
