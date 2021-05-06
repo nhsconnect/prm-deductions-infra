@@ -133,7 +133,7 @@ function create_secret_ssm_param {
   secret_id="$1"
   value="$2"
   set +e
-  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $secret_id | jq -r ".Parameter.Value"
+  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $secret_id | jq -r ".Parameter.Value" > /dev/null
   if [[ $? == 0 ]]; then
     echo "Secret at $secret_id already exists"
   else
@@ -157,7 +157,7 @@ function create_ssm_param {
   value_id="$1"
   value="$2"
   set +e
-  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $value_id | jq -r ".Parameter.Value"
+  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $value_id | jq -r ".Parameter.Value" 1
   if [[ $? == 0 ]]; then
     echo "Value at $value_id already exists"
   else
@@ -306,6 +306,7 @@ case "${command}" in
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-password"
+
       account_id=$(aws sts get-caller-identity | jq -r .Account)
       ;;
   create_secrets)
