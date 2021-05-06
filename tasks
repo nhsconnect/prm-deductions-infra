@@ -296,8 +296,6 @@ case "${command}" in
       dojo "./tasks _wait_for_dns $2"
       ;;
   _create_secrets)
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-username"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/db-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-password"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-username"
