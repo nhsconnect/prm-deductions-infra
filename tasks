@@ -157,7 +157,7 @@ function create_ssm_param {
   value_id="$1"
   value="$2"
   set +e
-  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $value_id | jq -r ".Parameter.Value" 1
+  aws ssm get-parameter --region $AWS_DEFAULT_REGION --name $value_id | jq -r ".Parameter.Value"
   if [[ $? == 0 ]]; then
     echo "Value at $value_id already exists"
   else
