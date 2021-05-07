@@ -153,6 +153,11 @@ function generate_secret_ssm_param {
   create_secret_ssm_param $1 $value
 }
 
+function generate_username_ssm_param {
+  value=$(< /dev/urandom tr -dc a-z | head -c12)
+  create_secret_ssm_param "$1" "$value"
+}
+
 function create_ssm_param {
   value_id="$1"
   value="$2"
@@ -296,16 +301,14 @@ case "${command}" in
       dojo "./tasks _wait_for_dns $2"
       ;;
   _create_secrets)
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-username"
+      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-password"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-username"
+      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-password"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
+      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
+      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-password"
-
-      account_id=$(aws sts get-caller-identity | jq -r .Account)
       ;;
   create_secrets)
       # Needs to run only once, when adding new environment
@@ -331,7 +334,6 @@ case "${command}" in
       dojo "./tasks _generate_vpn_client_crt $2"
       ;;
   _detect_active_mq)
-      account_id=$(aws sts get-caller-identity | jq -r .Account)
       MQ_ENDPOINT_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-0")
       MQ_ENDPOINT_2=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-1")
       MQ_HOST_1=$(echo $MQ_ENDPOINT_1 | sed 's#amqp+ssl://##' | sed 's#:5671##')
