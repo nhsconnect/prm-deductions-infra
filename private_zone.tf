@@ -41,6 +41,11 @@ resource "aws_route53_zone_association" "core" {
   vpc_id = local.deductions_core_vpc_id
 }
 
+resource "aws_route53_zone_association" "gocd" {
+  zone_id = aws_route53_zone.environment_private.zone_id
+  vpc_id = data.aws_ssm_parameter.gocd_vpc.value
+}
+
 resource "aws_route53_zone_association" "repo_mhs" {
   zone_id = aws_route53_zone.environment_private.zone_id
   vpc_id = local.repo_mhs_vpc_id
@@ -61,4 +66,8 @@ resource "aws_ssm_parameter" "environment_private_zone_id" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+data "aws_ssm_parameter" "gocd_vpc" {
+  name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
 }
