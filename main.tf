@@ -141,11 +141,13 @@ module "deductions-core" {
 
   cidr             = var.deductions_core_cidr
   deductions_private_cidr = var.deductions_private_cidr
+  gocd_cidr        = var.gocd_cidr
   public_subnets   = var.deductions_core_public_subnets
   private_subnets  = var.deductions_core_private_subnets
   database_subnets = var.deductions_core_database_subnets
   azs              = var.deductions_core_azs
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
+  transit_gateway_id = aws_ec2_transit_gateway.main.id
 }
 
 module "utils" {

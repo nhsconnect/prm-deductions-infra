@@ -70,6 +70,10 @@ variable "deductions_core_azs" {
 
 variable "gocd_cidr" {}
 
+variable "gocd_environment" {
+  default     = "prod"
+}
+
 # deductions-public mq variables
 variable "broker_name" {
   type = string

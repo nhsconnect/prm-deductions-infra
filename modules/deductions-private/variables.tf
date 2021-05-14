@@ -14,7 +14,6 @@ variable "repo_name" {
 }
 
 variable "gocd_environment" {
-  type        = string
   default     = "prod"
 }
 

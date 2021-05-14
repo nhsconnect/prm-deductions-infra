@@ -36,8 +36,9 @@ variable "azs" {
   type = list
 }
 
-variable "deductions_private_cidr" {
-  type = string
-}
+variable "deductions_private_cidr" {}
+variable "gocd_cidr" {}
 
 variable "core_private_vpc_peering_connection_id" {}
+
+variable "transit_gateway_id" {}
