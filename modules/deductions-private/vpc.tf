@@ -60,3 +60,27 @@ resource "aws_route" "private_public_to_mhs_test_harness" {
     destination_cidr_block    = var.test_harness_mhs_vpc_cidr_block
     vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id
 }
+
+resource "aws_ec2_transit_gateway_vpc_attachment" "deductions_private_vpc" {
+    subnet_ids         = module.vpc.public_subnets
+    transit_gateway_id = var.transit_gateway_id
+    vpc_id             = module.vpc.vpc_id
+
+    tags = {
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+        Name = "${var.environment}-deductions-private-vpc"
+    }
+}
+
+resource "aws_route" "deductions_private_private_to_gocd" {
+    route_table_id            = module.vpc.private_route_table_ids[0]
+    destination_cidr_block    = var.gocd_cidr
+    transit_gateway_id        = var.transit_gateway_id
+}
+
+resource "aws_route" "deductions_private_public_to_gocd" {
+    route_table_id            = module.vpc.public_route_table_ids[0]
+    destination_cidr_block    = var.gocd_cidr
+    transit_gateway_id        = var.transit_gateway_id
+}

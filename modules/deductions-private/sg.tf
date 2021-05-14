@@ -174,7 +174,7 @@ resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
     }
 
     ingress {
-        description     = "Allow traffic from ALB to to GP2GP Task"
+        description     = "Allow traffic from ALB to GP2GP Task"
         protocol        = "tcp"
         from_port       = "80"
         to_port         = "80"
@@ -370,7 +370,8 @@ resource "aws_security_group" "private-alb-internal-sg" {
         protocol    = "tcp"
         from_port   = 443
         to_port     = 443
-        cidr_blocks = [var.cidr]
+        // TODO: Move to a separate, GoCD dedicated security group
+        cidr_blocks = [var.cidr, data.aws_ssm_parameter.gocd_cidr_block.value]
     }
 
     egress {
@@ -466,4 +467,8 @@ resource "aws_security_group" "repo-to-gp-db-sg" {
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
+}
+
+data "aws_ssm_parameter" "gocd_cidr_block" {
+    name = "/repo/prod/output/prm-gocd-infra/gocd-cidr-block"
 }

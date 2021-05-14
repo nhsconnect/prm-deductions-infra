@@ -132,6 +132,7 @@ module "deductions-private" {
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
   repo_mhs_vpc_peering_connection_id = module.repo.private_mhs_vpc_peering_id
   test_harness_mhs_vpc_peering_connection_id = join(",", module.test-harness.*.private_mhs_vpc_peering_id)
+  transit_gateway_id = aws_ec2_transit_gateway.main.id
 }
 
 module "deductions-core" {

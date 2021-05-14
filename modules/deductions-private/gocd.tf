@@ -12,62 +12,17 @@ module "gocd" {
     agent_count = 1
 }
 
-data "aws_ssm_parameter" "gocd_vpc" {
-  name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
-}
-
 data "aws_ssm_parameter" "gocd_zone_id" {
   name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route53-zone-id"
 }
 
-data "aws_ssm_parameter" "gocd_cidr_block" {
-  name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-cidr-block"
-}
-
 locals {
-  gocd_vpc = data.aws_ssm_parameter.gocd_vpc.value
   gocd_zone_id = data.aws_ssm_parameter.gocd_zone_id.value
-  gocd_cidr_block = data.aws_ssm_parameter.gocd_cidr_block.value
-  public_subnet_route_table = module.vpc.public_route_table_ids[0]
 }
 
-# VPC peering connection with GoCD server
-resource "aws_vpc_peering_connection" "gocd_peering_connection" {
-  peer_vpc_id = local.gocd_vpc
-  vpc_id = module.vpc.vpc_id
-  auto_accept = true
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
-
-  requester {
-    allow_remote_vpc_dns_resolution = true
-  }
-
-  tags = {
-    Name = "deductions-private-gocd-peering-connection"
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
 
 data "aws_ssm_parameter" "route_table_id" {
   name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
-}
-
-# Add a route to the deductions-private VPC in the gocd VPC route table
-resource "aws_route" "gocd_to_deductions_private_route" {
-  route_table_id = data.aws_ssm_parameter.route_table_id.value
-  destination_cidr_block = var.cidr
-  vpc_peering_connection_id = aws_vpc_peering_connection.gocd_peering_connection.id
-}
-
-# Add a route to the gocd VPC in the deductions_private VPC route table
-resource "aws_route" "deductions_private_to_gocd_route" {
-  route_table_id = local.public_subnet_route_table
-  destination_cidr_block = local.gocd_cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.gocd_peering_connection.id
 }
 
 # Allow DNS resolution of the domain names defined in gocd VPC in deductions_private vpc
