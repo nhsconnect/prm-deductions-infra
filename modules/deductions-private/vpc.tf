@@ -62,7 +62,7 @@ resource "aws_route" "private_public_to_mhs_test_harness" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "deductions_private_vpc" {
-    subnet_ids         = module.vpc.public_subnets
+    subnet_ids         = module.vpc.private_subnets
     transit_gateway_id = var.transit_gateway_id
     vpc_id             = module.vpc.vpc_id
 

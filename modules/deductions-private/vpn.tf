@@ -60,9 +60,9 @@ resource "aws_security_group" "vpn" {
     }
 }
 
-resource "aws_ec2_client_vpn_network_association" "public_subnet" {
+resource "aws_ec2_client_vpn_network_association" "private_subnet" {
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
-  subnet_id              = module.vpc.public_subnets[0]
+  subnet_id              = module.vpc.private_subnets[0]
   security_groups        = [ aws_security_group.vpn.id ]
 }
 
@@ -76,8 +76,8 @@ resource "aws_ec2_client_vpn_route" "gocd_vpc" {
   description = "GoCD vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.gocd_cidr
-  target_vpc_subnet_id   = module.vpc.public_subnets[0]
-  depends_on = [aws_ec2_client_vpn_network_association.public_subnet]
+  target_vpc_subnet_id   = module.vpc.private_subnets[0]
+  depends_on = [aws_ec2_client_vpn_network_association.private_subnet]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "gocd_vpc" {
@@ -90,8 +90,8 @@ resource "aws_ec2_client_vpn_route" "repo_mhs_vpc" {
   description = "repo mhs vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.repo_mhs_vpc_cidr_block
-  target_vpc_subnet_id   = module.vpc.public_subnets[0]
-  depends_on = [aws_ec2_client_vpn_network_association.public_subnet]
+  target_vpc_subnet_id   = module.vpc.private_subnets[0]
+  depends_on = [aws_ec2_client_vpn_network_association.private_subnet]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "repo_mhs_vpc" {
@@ -105,8 +105,8 @@ resource "aws_ec2_client_vpn_route" "test_harness_mhs_vpc" {
   description = "test harness mhs vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.test_harness_mhs_vpc_cidr_block
-  target_vpc_subnet_id   = module.vpc.public_subnets[0]
-  depends_on = [aws_ec2_client_vpn_network_association.public_subnet]
+  target_vpc_subnet_id   = module.vpc.private_subnets[0]
+  depends_on = [aws_ec2_client_vpn_network_association.private_subnet]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "test_harness_mhs_vpc" {
@@ -120,8 +120,8 @@ resource "aws_ec2_client_vpn_route" "deductions_core_vpc" {
   description = "deductions core vpc"
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   destination_cidr_block = var.deductions_core_cidr
-  target_vpc_subnet_id   = module.vpc.public_subnets[0]
-  depends_on = [aws_ec2_client_vpn_network_association.public_subnet]
+  target_vpc_subnet_id   = module.vpc.private_subnets[0]
+  depends_on = [aws_ec2_client_vpn_network_association.private_subnet]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "deductions_core_vpc" {
