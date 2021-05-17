@@ -17,3 +17,15 @@ resource "aws_vpc" "mhs_vpc" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ec2_transit_gateway_vpc_attachment" "mhs_vpc" {
+  subnet_ids         = module.cluster.subnet_ids
+  transit_gateway_id = var.transit_gateway_id
+  vpc_id             = local.mhs_vpc_id
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+    Name = "${var.environment}-mhs-vpc"
+  }
+}

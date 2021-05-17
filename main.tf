@@ -64,6 +64,8 @@ module "repo" {
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
   hscn_gateway_id = var.hscn_gateway_id
+  transit_gateway_id = aws_ec2_transit_gateway.main.id
+  gocd_cidr            = var.gocd_cidr
 }
 
 module "test-harness" {
@@ -88,6 +90,8 @@ module "test-harness" {
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
   hscn_gateway_id = var.hscn_gateway_id
+  transit_gateway_id = aws_ec2_transit_gateway.main.id
+  gocd_cidr            = var.gocd_cidr
 }
 
 module "deductions-private" {

@@ -35,3 +35,5 @@ variable "cluster_name" {}
 variable "mhs_public_cidr_block" {}
 variable "mhs_cluster_domain_name" {}
 variable "hscn_gateway_id" {}
+variable "transit_gateway_id" {}
+variable "gocd_cidr" {}

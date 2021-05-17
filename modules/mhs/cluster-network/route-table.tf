@@ -7,6 +7,12 @@ resource "aws_route_table" "mhs" {
   }
 }
 
+resource "aws_route" "mhs_to_gocd" {
+  route_table_id            = aws_route_table.mhs.id
+  destination_cidr_block    = var.gocd_cidr
+  transit_gateway_id        = var.transit_gateway_id
+}
+
 
 resource "aws_route" "deductions_private" {
   route_table_id            = aws_route_table.mhs.id

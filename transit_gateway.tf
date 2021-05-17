@@ -33,6 +33,12 @@ resource "aws_route" "gocd_to_deductions_private" {
   transit_gateway_id        = aws_ec2_transit_gateway.main.id
 }
 
+resource "aws_route" "gocd_to_mhs" {
+  route_table_id            = data.aws_ssm_parameter.gocd_route_table_id.value
+  destination_cidr_block    = var.mhs_vpc_cidr_block
+  transit_gateway_id        = aws_ec2_transit_gateway.main.id
+}
+
 data "aws_ssm_parameter" "gocd_route_table_id" {
   name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
 }
