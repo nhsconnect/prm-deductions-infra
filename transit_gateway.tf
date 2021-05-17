@@ -9,6 +9,8 @@ resource "aws_ec2_transit_gateway" "main" {
 }
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "gocd_vpc" {
+  // Only attach gocd vpc once as it only has one environment
+  count = var.deploy_opentest ? 1 : 0
   // TODO: get gocd subnet id dynamically
   subnet_ids         = ["subnet-08e512213a8c987cb"]
   transit_gateway_id = aws_ec2_transit_gateway.main.id
