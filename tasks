@@ -335,31 +335,6 @@ case "${command}" in
   generate_vpn_client_crt)
       dojo "./tasks _generate_vpn_client_crt $2"
       ;;
-  _detect_active_mq)
-      MQ_ENDPOINT_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-0")
-      MQ_ENDPOINT_2=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-1")
-      MQ_HOST_1=$(echo $MQ_ENDPOINT_1 | sed 's#amqp+ssl://##' | sed 's#:5671##')
-      MQ_HOST_2=$(echo $MQ_ENDPOINT_2 | sed 's#amqp+ssl://##' | sed 's#:5671##')
-      if nc -zvw3 $MQ_HOST_1 5671; then
-        MQ_ENDPOINT_ACTIVE=$MQ_ENDPOINT_1
-      elif nc -zvw3 $MQ_HOST_2 5671; then
-        MQ_ENDPOINT_ACTIVE=$MQ_ENDPOINT_2
-      else
-        echo 'No MQ endpoint is reachable'
-        exit 3;
-      fi
-      aws ssm put-parameter \
-       --region "${AWS_DEFAULT_REGION}" \
-       --name "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-active" \
-       --type String \
-       --overwrite \
-       --value "$MQ_ENDPOINT_ACTIVE"
-      echo "Stored active MQ endpoint at /repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/amqp-endpoint-active"
-      ;;
-  detect_active_mq)
-      check_env
-      dojo "./tasks _detect_active_mq"
-      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1
