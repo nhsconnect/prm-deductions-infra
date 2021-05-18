@@ -61,8 +61,7 @@ pipelines:
           jobs:
             repo:
               resources:
-                - dev
-                - deductions-private # Agent runs in deductions private
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -71,8 +70,7 @@ pipelines:
                       - ./tasks wait_for_dns repo
             test_harness:
               resources:
-                - dev
-                - deductions-private # Agent runs in deductions private
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -86,8 +84,7 @@ pipelines:
           jobs:
             active_mq:
               resources:
-                - dev
-                - deductions-private # Agent runs in deductions private
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -107,8 +104,7 @@ pipelines:
           jobs:
             repo:
               resources:
-                - test
-                - deductions-private # Agent runs in deductions private
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
@@ -122,8 +118,7 @@ pipelines:
           jobs:
             active_mq:
               resources:
-                - test
-                - deductions-private # Agent runs in deductions private
+                - docker
               tasks:
                 - exec:
                     command: /bin/bash
