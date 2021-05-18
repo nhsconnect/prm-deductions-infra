@@ -64,7 +64,6 @@ module "repo" {
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
   hscn_gateway_id = var.hscn_gateway_id
-  transit_gateway_id = aws_ec2_transit_gateway.main.id
   gocd_cidr            = var.gocd_cidr
 }
 
@@ -90,7 +89,6 @@ module "test-harness" {
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
   hscn_gateway_id = var.hscn_gateway_id
-  transit_gateway_id = aws_ec2_transit_gateway.main.id
   gocd_cidr            = var.gocd_cidr
 }
 
@@ -136,7 +134,6 @@ module "deductions-private" {
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
   repo_mhs_vpc_peering_connection_id = module.repo.private_mhs_vpc_peering_id
   test_harness_mhs_vpc_peering_connection_id = join(",", module.test-harness.*.private_mhs_vpc_peering_id)
-  transit_gateway_id = aws_ec2_transit_gateway.main.id
 }
 
 module "deductions-core" {
@@ -152,7 +149,6 @@ module "deductions-core" {
   database_subnets = var.deductions_core_database_subnets
   azs              = var.deductions_core_azs
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
-  transit_gateway_id = aws_ec2_transit_gateway.main.id
   gocd_environment = "prod"
 }
 

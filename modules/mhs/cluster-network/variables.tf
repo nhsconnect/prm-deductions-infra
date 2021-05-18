@@ -28,4 +28,4 @@ variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
 variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
-variable "transit_gateway_id" {}
+variable "gocd_environment" {}

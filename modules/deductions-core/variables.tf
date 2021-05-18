@@ -41,6 +41,4 @@ variable "gocd_cidr" {}
 
 variable "core_private_vpc_peering_connection_id" {}
 
-variable "transit_gateway_id" {}
-
 variable "gocd_environment" {}
