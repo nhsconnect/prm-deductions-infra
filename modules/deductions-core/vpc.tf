@@ -29,20 +29,42 @@ resource "aws_route" "core_to_private" {
     vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
 }
 
-resource "aws_ec2_transit_gateway_vpc_attachment" "core_vpc" {
-    subnet_ids         = module.vpc.private_subnets
-    transit_gateway_id = var.transit_gateway_id
-    vpc_id             = module.vpc.vpc_id
+resource "aws_vpc_peering_connection" "core_to_gocd" {
+    peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
+    vpc_id = module.vpc.vpc_id
+    auto_accept = true
+
+    accepter {
+        allow_remote_vpc_dns_resolution = true
+    }
+
+    requester {
+        allow_remote_vpc_dns_resolution = true
+    }
 
     tags = {
+        Name = "${var.environment}-deductions-core-gocd-peering"
         CreatedBy   = var.repo_name
         Environment = var.environment
-        Name = "${var.environment}-deductions-core-vpc"
     }
 }
 
 resource "aws_route" "core_to_gocd" {
     route_table_id            = module.vpc.private_route_table_ids[0]
     destination_cidr_block    = var.gocd_cidr
-    transit_gateway_id        = var.transit_gateway_id
+    vpc_peering_connection_id = aws_vpc_peering_connection.core_to_gocd.id
+}
+
+resource "aws_route" "gocd_to_core" {
+    route_table_id            = data.aws_ssm_parameter.gocd_route_table_id.value
+    destination_cidr_block    = var.cidr
+    vpc_peering_connection_id = aws_vpc_peering_connection.core_to_gocd.id
+}
+
+data "aws_ssm_parameter" "gocd_vpc" {
+    name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
+}
+
+data "aws_ssm_parameter" "gocd_route_table_id" {
+    name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
 }

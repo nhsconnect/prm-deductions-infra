@@ -21,12 +21,6 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "gocd_vpc" {
   }
 }
 
-resource "aws_route" "gocd_to_deductions_core" {
-  route_table_id            = data.aws_ssm_parameter.gocd_route_table_id.value
-  destination_cidr_block    = var.deductions_core_cidr
-  transit_gateway_id        = aws_ec2_transit_gateway.main.id
-}
-
 resource "aws_route" "gocd_to_deductions_private" {
   route_table_id            = data.aws_ssm_parameter.gocd_route_table_id.value
   destination_cidr_block    = var.deductions_private_cidr

@@ -153,6 +153,7 @@ module "deductions-core" {
   azs              = var.deductions_core_azs
   core_private_vpc_peering_connection_id = aws_vpc_peering_connection.core_private.id
   transit_gateway_id = aws_ec2_transit_gateway.main.id
+  gocd_environment = "prod"
 }
 
 module "utils" {
