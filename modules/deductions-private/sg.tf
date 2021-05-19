@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "ingress_worker_gocd_agent" {
     protocol            = "tcp"
     from_port           = "61614"
     to_port             = "61614"
-    source_security_group_id     = module.gocd.agent_sg_id
+    cidr_blocks         = [var.gocd_cidr]
 }
 
 resource "aws_security_group_rule" "ingress_message_handler_openwire_ecs_tasks" {
@@ -371,7 +371,7 @@ resource "aws_security_group" "private-alb-internal-sg" {
         from_port   = 443
         to_port     = 443
         // TODO: Move to a separate, GoCD dedicated security group
-        cidr_blocks = [var.cidr, data.aws_ssm_parameter.gocd_cidr_block.value]
+        cidr_blocks = [var.cidr, var.gocd_cidr]
     }
 
     egress {
@@ -467,8 +467,4 @@ resource "aws_security_group" "repo-to-gp-db-sg" {
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
-}
-
-data "aws_ssm_parameter" "gocd_cidr_block" {
-    name = "/repo/prod/output/prm-gocd-infra/gocd-cidr-block"
 }

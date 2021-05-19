@@ -106,3 +106,13 @@ data "aws_ssm_parameter" "gocd_vpc" {
 data "aws_ssm_parameter" "gocd_route_table_id" {
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
 }
+
+# Allow DNS resolution of the domain names defined in gocd VPC in deductions_private vpc
+resource "aws_route53_zone_association" "deductions_private_hosted_zone_gocd_vpc_association" {
+    zone_id = data.aws_ssm_parameter.gocd_zone_id.value
+    vpc_id = module.vpc.vpc_id
+}
+
+data "aws_ssm_parameter" "gocd_zone_id" {
+    name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route53-zone-id"
+}
