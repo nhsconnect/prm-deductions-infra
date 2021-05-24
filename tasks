@@ -10,6 +10,14 @@ if [ -z "${DNS_IMAGE_TAG}" ]; then
   DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
 fi
 
+AWS_HELPERS_FILE="utils/aws-helpers"
+
+mkdir -p utils
+if [[ ! -f $AWS_HELPERS_FILE ]];then
+  wget --quiet -O $AWS_HELPERS_FILE https://raw.githubusercontent.com/nhsconnect/prm-deductions-support-infra/master/utils/aws-helpers
+fi
+source $AWS_HELPERS_FILE
+
 function check_env {
   if [[ -z "${NHS_ENVIRONMENT}" ]]; then
     echo "Must set NHS_ENVIRONMENT"
@@ -49,13 +57,14 @@ function tf_plan {
 
 function tf_init_cross_account {
   check_env
+  [ $NHS_ENVIRONMENT == "ci" ] && bucket_env_infix="" || bucket_env_infix="$NHS_ENVIRONMENT-"
 
   cd "${SCRIPT_DIR}/terraform-cross-account/"
 
   terraform init -reconfigure \
     -backend-config key="${NHS_SERVICE}-cross-account-${NHS_ENVIRONMENT}/terraform.tfstate" \
-    -backend-config bucket="prm-deductions-terraform-state" \
-    -backend-config dynamodb_table="prm-deductions-terraform-table" \
+    -backend-config bucket="prm-deductions-${bucket_env_infix}terraform-state" \
+    -backend-config dynamodb_table="prm-deductions-${bucket_env_infix}terraform-table" \
     -backend-config region=${AWS_DEFAULT_REGION}
 }
 
@@ -296,6 +305,7 @@ case "${command}" in
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
+      _assume-ci-agent-role $NHS_ENVIRONMENT
       tf_plan_cross_account "$2"
       ;;
   tf_plan_cross_account)
@@ -310,6 +320,7 @@ case "${command}" in
       dojo "./tasks _tf_plan_certs $2"
       ;;
   _tf_apply_cross_account)
+      _assume-ci-agent-role $NHS_ENVIRONMENT
       tf_apply_cross_account
       ;;
   tf_apply_cross_account)

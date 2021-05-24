@@ -66,6 +66,23 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks tf_apply_cross_account
+      - deploy_dev_ecr:
+          clean_workspace: true
+          resources:
+            - docker
+          environment_variables:
+            NHS_ENVIRONMENT: dev
+          tasks:
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks tf_plan_cross_account create
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks tf_apply_cross_account
       - deploy_dev:
           clean_workspace: true
           environment_variables:
