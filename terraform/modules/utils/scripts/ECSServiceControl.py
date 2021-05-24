@@ -2,7 +2,7 @@ import boto3
 import os
 import json
 
-def toggleServices(services, cluster, client):        
+def toggleServices(services, cluster, client):
     for service in services:
         if "tags" in service:
             desiredCount = getDesiredCount(service["tags"])
@@ -15,14 +15,14 @@ def toggleServices(services, cluster, client):
                         cluster=cluster,
                         service=service["serviceName"],
                         desiredCount=desiredCount
-                        )
+                    )
 
 
 def getDesiredCount(tags):
     for tag in tags:
-        if (tag["key"]=="Environment" and tag["value"] == "dev"): 
+        if (tag["key"]=="Environment" and tag["value"] == "dev"):
             return int(os.environ['DESIRED_COUNT_DEV'])
-        elif (tag["key"]=="Environment" and tag["value"] == "test"): 
+        elif (tag["key"]=="Environment" and tag["value"] == "test"):
             return int(os.environ['DESIRED_COUNT_TEST'])
         else:
             pass

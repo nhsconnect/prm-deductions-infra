@@ -4,6 +4,7 @@ set -Eeo pipefail
 
 export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [ -z "${DNS_IMAGE_TAG}" ]; then
   DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
@@ -28,6 +29,8 @@ function tf_plan {
 
   TARGET=""
 
+  cd "${SCRIPT_DIR}/terraform/"
+
   if [[ "${certs}" == "true" ]]; then
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
   fi
@@ -46,6 +49,7 @@ function tf_plan {
 
 function tf_apply {
   check_env
+  cd "${SCRIPT_DIR}/terraform/"
   terraform init -reconfigure -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   terraform apply nhs_deployment.tfplan
@@ -190,15 +194,15 @@ function get_aws_value {
 }
 
 function generate_deductions_vpn_ssh_key {
-  generate_ssh_key "/repo/user-input/ssh-id-rsa" "modules/ssh"
+  generate_ssh_key "/repo/user-input/ssh-id-rsa" "terraform/modules/ssh"
 }
 
 function generate_opentest_ssh_key {
-  generate_ssh_key "/repo/user-input/opentest-ssh-id-rsa" "modules/mhs/cluster-network/opentest/ssh"
+  generate_ssh_key "/repo/user-input/opentest-ssh-id-rsa" "terraform/modules/mhs/cluster-network/opentest/ssh"
 }
 
 function generate_dns_ssh_key {
-  generate_ssh_key "/repo/user-input/dns-ssh-id-rsa" "modules/mhs/cluster-network/dns/ssh"
+  generate_ssh_key "/repo/user-input/dns-ssh-id-rsa" "terraform/modules/mhs/cluster-network/dns/ssh"
 }
 
 function generate_ssh_key {

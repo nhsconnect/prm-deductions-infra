@@ -5,7 +5,7 @@ common:
       - docker
     artifacts:
       - build:
-          source: tf-out.json
+          source: terraform/tf-out.json
     tasks:
       - exec:
           command: /bin/bash

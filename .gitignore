@@ -33,14 +33,6 @@ output.json
 .idea/**/gradle.xml
 .idea/**/libraries
 
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-
 # CMake
 cmake-build-*/
 
@@ -73,14 +65,6 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
-
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
 
 # Sonarlint plugin
 .idea/sonarlint
@@ -241,7 +225,6 @@ dmypy.json
 [Ll]ib
 [Ll]ib64
 [Ll]ocal
-[Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
 
@@ -301,24 +284,20 @@ tags
 # End of https://www.gitignore.io/api/vim,macos,python,intellij,terraform
 
 graph.svg
-/node_modules/
 /.vscode/
 
 #Codebuild pipeline trigger artefact
 latest.zip
 
-**/node_modules
-**/node_modules/*
-
 *.pfx
 *.pem
-/nhs_deployment.tfplan
+*/nhs_deployment.tfplan
 /tf-out.json
 /easy-rsa
 /client-config
-/modules/ssh/*
-/modules/mhs/cluster-network/opentest/ssh/*
-/modules/mhs/cluster-network/dns/ssh/*
+/terraform/modules/ssh/*
+/terraform/modules/mhs/cluster-network/opentest/ssh/*
+/terraform/modules/mhs/cluster-network/dns/ssh/*
 /ansible/group_vars/dev.yml
 /ansible/group_vars/test.yml
 /retry
