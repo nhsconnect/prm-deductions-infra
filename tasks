@@ -47,12 +47,49 @@ function tf_plan {
   fi
 }
 
+function tf_init_cross_account {
+  check_env
+
+  cd "${SCRIPT_DIR}/terraform-cross-account/"
+
+  terraform init -reconfigure \
+    -backend-config key="${NHS_SERVICE}-cross-account-${NHS_ENVIRONMENT}/terraform.tfstate" \
+    -backend-config bucket="prm-deductions-terraform-state" \
+    -backend-config dynamodb_table="prm-deductions-terraform-table" \
+    -backend-config region=${AWS_DEFAULT_REGION}
+}
+
+function tf_plan_cross_account {
+  check_env
+  operation=$1
+
+  tf_init_cross_account
+  terraform get # modules
+  if [[ "${operation}" == "create" ]]; then
+    terraform plan -out="nhs_deployment_cross_account.tfplan"
+  elif [[ "${operation}" == "destroy" ]]; then
+    terraform plan -out="nhs_deployment_cross_account.tfplan" -destroy
+  else
+    echo "Unknown operation (should be create or destroy), got: ${operation}"
+    exit 1
+  fi
+}
+
 function tf_apply {
   check_env
   cd "${SCRIPT_DIR}/terraform/"
   terraform init -reconfigure -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   terraform apply nhs_deployment.tfplan
+  terraform output -json > tf-out.json
+}
+
+function tf_apply_cross_account {
+  check_env
+
+  tf_init_cross_account
+  terraform get # modules
+  terraform apply nhs_deployment_cross_account.tfplan
   terraform output -json > tf-out.json
 }
 
@@ -258,12 +295,26 @@ case "${command}" in
       check_env
       dojo "./tasks _tf_plan $2"
       ;;
+  _tf_plan_cross_account)
+      tf_plan_cross_account "$2"
+      ;;
+  tf_plan_cross_account)
+      check_env
+      dojo "./tasks _tf_plan_cross_account $2"
+      ;;
   _tf_plan_certs)
       tf_plan "$2" true
       ;;
   tf_plan_certs)
       check_env
       dojo "./tasks _tf_plan_certs $2"
+      ;;
+  _tf_apply_cross_account)
+      tf_apply_cross_account
+      ;;
+  tf_apply_cross_account)
+      check_env
+      dojo "./tasks _tf_apply_cross_account"
       ;;
   _tf_apply)
       ./tasks _ssh_key

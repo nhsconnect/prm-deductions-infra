@@ -292,7 +292,8 @@ latest.zip
 *.pfx
 *.pem
 */nhs_deployment.tfplan
-/tf-out.json
+*/nhs_deployment_cross_account.tfplan
+*/tf-out.json
 /easy-rsa
 /client-config
 /terraform/modules/ssh/*

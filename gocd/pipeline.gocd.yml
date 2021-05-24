@@ -49,6 +49,23 @@ pipelines:
         pipeline: mhs-dns-images
         stage: test
     stages:
+      - deploy_ci:
+          clean_workspace: true
+          resources:
+            - docker
+          environment_variables:
+            NHS_ENVIRONMENT: ci
+          tasks:
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks tf_plan_cross_account create
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks tf_apply_cross_account
       - deploy_dev:
           clean_workspace: true
           environment_variables:
