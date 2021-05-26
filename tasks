@@ -305,7 +305,7 @@ case "${command}" in
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
-      _assume-ci-agent-role $NHS_ENVIRONMENT
+      _assume_ci_agent_role $NHS_ENVIRONMENT
       tf_plan_cross_account "$2"
       ;;
   tf_plan_cross_account)
@@ -320,7 +320,7 @@ case "${command}" in
       dojo "./tasks _tf_plan_certs $2"
       ;;
   _tf_apply_cross_account)
-      _assume-ci-agent-role $NHS_ENVIRONMENT
+      _assume_ci_agent_role $NHS_ENVIRONMENT
       tf_apply_cross_account
       ;;
   tf_apply_cross_account)
