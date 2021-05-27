@@ -4,7 +4,7 @@ set -Eeo pipefail
 
 export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+DEDUCTIONS_INFRA_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [ -z "${DNS_IMAGE_TAG}" ]; then
   DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
@@ -37,7 +37,7 @@ function tf_plan {
 
   TARGET=""
 
-  cd "${SCRIPT_DIR}/terraform/"
+  cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
 
   if [[ "${certs}" == "true" ]]; then
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
@@ -59,7 +59,7 @@ function tf_init_cross_account {
   check_env
   [ $NHS_ENVIRONMENT == "ci" ] && bucket_env_infix="" || bucket_env_infix="$NHS_ENVIRONMENT-"
 
-  cd "${SCRIPT_DIR}/terraform-cross-account/"
+  cd "${DEDUCTIONS_INFRA_DIR}/terraform-cross-account/"
 
   terraform init -reconfigure \
     -backend-config key="${NHS_SERVICE}-cross-account-${NHS_ENVIRONMENT}/terraform.tfstate" \
@@ -86,7 +86,7 @@ function tf_plan_cross_account {
 
 function tf_apply {
   check_env
-  cd "${SCRIPT_DIR}/terraform/"
+  cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
   terraform init -reconfigure -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
   terraform get # modules
   terraform apply nhs_deployment.tfplan
