@@ -11,10 +11,10 @@ if [ -z "${DNS_IMAGE_TAG}" ]; then
 fi
 
 AWS_HELPERS_FILE="utils/aws-helpers"
-
+AWS_HELPERS_VERSION=0.1.1
 mkdir -p utils
 if [[ ! -f $AWS_HELPERS_FILE ]];then
-  wget --quiet -O $AWS_HELPERS_FILE https://raw.githubusercontent.com/nhsconnect/prm-deductions-support-infra/master/utils/aws-helpers
+  wget --quiet -O $AWS_HELPERS_FILE https://github.com/nhsconnect/prm-deductions-support-infra/releases/download/${AWS_HELPERS_VERSION}/aws-helpers
 fi
 chmod +x $AWS_HELPERS_FILE
 source $AWS_HELPERS_FILE
