@@ -1,5 +1,9 @@
 module "cluster" {
   source    = "./cluster-network"
+  providers = {
+    aws = aws
+    aws.ci = aws.ci
+  }
   environment    = var.environment
   repo_name = var.repo_name
   mhs_vpc_id = local.mhs_vpc_id

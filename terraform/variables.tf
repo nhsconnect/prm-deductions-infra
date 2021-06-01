@@ -204,3 +204,11 @@ variable "unbound_image_version" {}
 variable "hscn_gateway_id" {
   default = ""
 }
+
+variable "common_account_role" {
+  type = string
+}
+
+variable "common_account_id" {
+  type = string
+}

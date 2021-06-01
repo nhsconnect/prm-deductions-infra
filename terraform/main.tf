@@ -1,14 +1,19 @@
 provider "aws" {
   profile = "default"
-  version = "~> 3.0"
   region  = var.region
+}
+
+provider "aws" {
+  alias = "ci"
+  region  = var.region
+  assume_role {
+    role_arn     = "arn:aws:iam::${var.common_account_id}:role/${var.common_account_role}"
+    session_name = "common-dev-cross-account"
+  }
 }
 
 terraform {
   backend "s3" {
-    bucket  = "prm-deductions-terraform-state"
-    key     = "infra/terraform.tfstate"
-    region  = "eu-west-2"
     encrypt = true
   }
 }
@@ -45,6 +50,10 @@ locals {
 
 module "repo" {
   source    = "./modules/mhs/"
+  providers = {
+    aws = aws
+    aws.ci = aws.ci
+  }
   environment    = var.environment
   mhs_vpc_cidr_block = local.repo_cidr_block
   repo_name = var.repo_name
@@ -69,11 +78,15 @@ module "repo" {
 
 module "test-harness" {
   source    = "./modules/mhs/"
+  providers = {
+    aws = aws
+    aws.ci = aws.ci
+  }
+  count = var.deploy_mhs_test_harness ? 1 : 0
   environment    = var.environment
   mhs_vpc_cidr_block = local.second_half_mhs_cidr_block
   repo_name = var.repo_name
   cluster_name = "test-harness"
-  count = var.deploy_mhs_test_harness ? 1 : 0
   deploy_opentest = var.deploy_opentest
   deploy_public_subnet = var.deploy_mhs_public_subnet
   deductions_private_cidr = var.deductions_private_cidr
@@ -94,6 +107,10 @@ module "test-harness" {
 
 module "deductions-private" {
   source         = "./modules/deductions-private/"
+  providers = {
+    aws = aws
+    aws.ci = aws.ci
+  }
   environment    = var.environment
   cidr           = var.deductions_private_cidr
   component_name = var.deductions_private_component_name
@@ -138,6 +155,10 @@ module "deductions-private" {
 
 module "deductions-core" {
   source         = "./modules/deductions-core/"
+  providers = {
+    aws = aws
+    aws.ci = aws.ci
+  }
   environment    = var.environment
   component_name = var.deductions_core_component_name
 

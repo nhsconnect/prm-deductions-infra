@@ -100,10 +100,12 @@ resource "aws_route" "gocd_to_private" {
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
+    provider = aws.ci
     name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
 }
 
 data "aws_ssm_parameter" "gocd_route_table_id" {
+    provider = aws.ci
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
 }
 
@@ -114,5 +116,6 @@ resource "aws_route53_zone_association" "deductions_private_hosted_zone_gocd_vpc
 }
 
 data "aws_ssm_parameter" "gocd_zone_id" {
+    provider = aws.ci
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route53-zone-id"
 }

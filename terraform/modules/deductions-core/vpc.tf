@@ -62,9 +62,11 @@ resource "aws_route" "gocd_to_core" {
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
+    provider = aws.ci
     name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
 }
 
 data "aws_ssm_parameter" "gocd_route_table_id" {
+    provider = aws.ci
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
 }

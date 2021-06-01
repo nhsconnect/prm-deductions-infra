@@ -7,6 +7,7 @@ resource "aws_route53_zone" "environment_public" {
 }
 
 data "aws_ssm_parameter" "non_prod_public_zone" {
+  provider = aws.ci
   name = "/repo/output/prm-deductions-base-infra/non-prod-public-zone-id"
 }
 

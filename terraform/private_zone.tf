@@ -69,5 +69,6 @@ resource "aws_ssm_parameter" "environment_private_zone_id" {
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
+  provider = aws.ci
   name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
 }

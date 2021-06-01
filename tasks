@@ -34,6 +34,20 @@ function check_env {
   fi
 }
 
+function tf_init {
+  check_env
+  #  Condition [ $NHS_ENVIRONMENT == "test" ] is required as test environment infrastructure is deployed in CI AWS account
+  [ $NHS_ENVIRONMENT == "ci" ] || [ $NHS_ENVIRONMENT == "test" ] && bucket_env_infix="" || bucket_env_infix="$NHS_ENVIRONMENT-"
+
+  cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
+
+  terraform init -reconfigure \
+    -backend-config key="${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate" \
+    -backend-config bucket="prm-deductions-${bucket_env_infix}terraform-state" \
+    -backend-config dynamodb_table="prm-deductions-${bucket_env_infix}terraform-table" \
+    -backend-config region=${AWS_DEFAULT_REGION}
+}
+
 function tf_plan {
   check_env
   operation=$1
@@ -52,7 +66,7 @@ function tf_plan {
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
   fi
 
-  terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
+  tf_init
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
     terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
@@ -62,6 +76,14 @@ function tf_plan {
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
   fi
+}
+
+function tf_apply {
+  check_env
+  tf_init
+  terraform get # modules
+  terraform apply nhs_deployment.tfplan
+  terraform output -json > tf-out.json
 }
 
 function tf_init_cross_account {
@@ -91,15 +113,6 @@ function tf_plan_cross_account {
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
   fi
-}
-
-function tf_apply {
-  check_env
-  cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
-  terraform init -reconfigure -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
-  terraform get # modules
-  terraform apply nhs_deployment.tfplan
-  terraform output -json > tf-out.json
 }
 
 function tf_apply_cross_account {
