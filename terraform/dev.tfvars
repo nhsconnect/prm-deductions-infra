@@ -47,8 +47,9 @@ mhs_vpc_cidr_block = "10.34.0.0/16" # Must not conflict with other networks
 spine_cidr_block = "192.168.128.0/24"
 
 deploy_mhs_test_harness = true
-deploy_opentest = true
 deploy_mhs_public_subnet = true
+deploy_opentest = false
+deploy_gocd_vpc_deductions_private_dns_zone = false
 
 dns_forward_zone = "opentest.hscic.gov.uk"
 dns_hscn_forward_server_1 = "192.168.128.30"

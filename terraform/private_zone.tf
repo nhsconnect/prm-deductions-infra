@@ -42,6 +42,7 @@ resource "aws_route53_zone_association" "core" {
 }
 
 resource "aws_route53_zone_association" "gocd" {
+  count = var.deploy_gocd_vpc_deductions_private_dns_zone ? 1 : 0
   zone_id = aws_route53_zone.environment_private.zone_id
   vpc_id = data.aws_ssm_parameter.gocd_vpc.value
 }
