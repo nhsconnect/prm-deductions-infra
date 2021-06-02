@@ -5,3 +5,5 @@ variable "repo_name" {
 variable "region" {
   default = "eu-west-2"
 }
+
+variable "provision_ci_account" {}

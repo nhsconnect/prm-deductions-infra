@@ -84,9 +84,9 @@ function tf_plan_cross_account {
   tf_init_cross_account
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -out="nhs_deployment_cross_account.tfplan"
+    terraform plan -out="nhs_deployment_cross_account.tfplan" -var-file=${NHS_ENVIRONMENT}.tfvars
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -out="nhs_deployment_cross_account.tfplan" -destroy
+    terraform plan -out="nhs_deployment_cross_account.tfplan" -var-file=${NHS_ENVIRONMENT}.tfvars -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
