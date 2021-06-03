@@ -66,12 +66,14 @@ function tf_plan {
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
   fi
 
+  COMMON_ACCOUNT_ID=$(_get_aws_ssm_secret "/repo/ci/user-input/external/aws-account-id")
+
   tf_init
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
@@ -131,9 +133,9 @@ function setup_vpn_ca {
   cd easy-rsa/easyrsa3
   echo yes | ./easyrsa init-pki
   cd pki
-  echo "$(get_aws_value "/repo/user-input/vpn-ca-crt")" > ca.crt
-  echo "$(get_aws_value "/repo/user-input/vpn-ca-key")" > private/ca.key
-  echo "$(get_aws_value "/repo/user-input/vpn-ca-serial")" > serial
+  echo "$(_get_aws_ssm_secret "/repo/user-input/vpn-ca-crt")" > ca.crt
+  echo "$(_get_aws_ssm_secret "/repo/user-input/vpn-ca-key")" > private/ca.key
+  echo "$(_get_aws_ssm_secret "/repo/user-input/vpn-ca-serial")" > serial
   touch index.txt
   touch index.txt.attr
   mkdir -p certs_by_serial
@@ -185,7 +187,7 @@ function generate_vpn_client_crt {
   client_crt="$(cat pki/issued/$crt_id.crt)"
   client_key="$(cat pki/private/$crt_id.key)"
 
-  client_vpn_endpoint_id=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/client-vpn-endpoint-id")
+  client_vpn_endpoint_id=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/client-vpn-endpoint-id")
   config="$(aws ec2 export-client-vpn-client-configuration --client-vpn-endpoint-id $client_vpn_endpoint_id | jq -r ".ClientConfiguration")"
 
   cd ../..
@@ -249,16 +251,6 @@ function create_ssm_param {
      --overwrite \
      --value "$value"
   fi
-}
-
-function get_aws_value {
-  secret_id=$1
-  json=$(aws ssm get-parameter --with-decryption --region $AWS_DEFAULT_REGION --name $secret_id)
-  if [ $? != 0 ]; then
-    >&2 echo "Failed to obtain SSM value: $secret_id"
-    exit 5
-  fi
-  echo $json | jq -r ".Parameter.Value"
 }
 
 function generate_deductions_vpn_ssh_key {
@@ -368,9 +360,9 @@ case "${command}" in
         echo "Please specify cluster name to verify"
       fi
       AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
-      DNS_SERVER_1=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-0")
+      DNS_SERVER_1=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-0")
       DNS_SERVER_1=$(echo "${DNS_SERVER_1}" | awk -F "," '{print $1}')
-      DNS_SERVER_2=$(get_aws_value "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-1")
+      DNS_SERVER_2=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-1")
       DNS_SERVER_2=$(echo "${DNS_SERVER_2}" | awk -F "," '{print $1}')
       echo "Waiting for DNS servers ${DNS_SERVER_1} and ${DNS_SERVER_2} to be ready"
 

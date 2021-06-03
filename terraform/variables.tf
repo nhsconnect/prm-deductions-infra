@@ -201,15 +201,7 @@ variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
 variable "deploy_gocd_vpc_deductions_private_dns_zone" {}
-
 variable "hscn_gateway_id" {
   default = ""
 }
-
-variable "common_account_role" {
-  type = string
-}
-
-variable "common_account_id" {
-  type = string
-}
+variable "common_account_id" {}

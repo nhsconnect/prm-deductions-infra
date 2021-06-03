@@ -7,7 +7,7 @@ provider "aws" {
   alias = "ci"
   region  = var.region
   assume_role {
-    role_arn     = "arn:aws:iam::${var.common_account_id}:role/${var.common_account_role}"
+    role_arn     = "arn:aws:iam::${var.common_account_id}:role/RepoAdmin"
     session_name = "common-dev-cross-account"
   }
 }
