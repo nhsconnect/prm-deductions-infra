@@ -54,3 +54,5 @@ deploy_gocd_vpc_deductions_private_dns_zone = false
 dns_forward_zone = "opentest.hscic.gov.uk"
 dns_hscn_forward_server_1 = "192.168.128.30"
 dns_hscn_forward_server_2 = "192.168.128.30"
+
+deploy_cross_account_vpc_peering = true

@@ -205,3 +205,4 @@ variable "hscn_gateway_id" {
   default = ""
 }
 variable "common_account_id" {}
+variable "deploy_cross_account_vpc_peering"{}

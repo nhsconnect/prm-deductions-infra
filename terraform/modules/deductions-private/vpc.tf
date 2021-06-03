@@ -61,25 +61,42 @@ resource "aws_route" "private_public_to_mhs_test_harness" {
     vpc_peering_connection_id = var.test_harness_mhs_vpc_peering_connection_id
 }
 
+data "aws_caller_identity" "ci" {
+    provider = aws.ci
+}
+
 resource "aws_vpc_peering_connection" "private_to_gocd" {
     peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
     vpc_id = module.vpc.vpc_id
     auto_accept = true
-
-    accepter {
-        allow_remote_vpc_dns_resolution = true
-    }
+    peer_owner_id = data.aws_caller_identity.ci.account_id
 
     requester {
         allow_remote_vpc_dns_resolution = true
     }
 
     tags = {
+        Side = "Requester"
         Name = "${var.environment}-deductions-private-gocd-peering"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
 }
+
+resource "aws_vpc_peering_connection_accepter" "private_to_gocd" {
+    provider                  = aws.ci
+    count = var.deploy_cross_account_vpc_peering ? 1 : 0
+    vpc_peering_connection_id = aws_vpc_peering_connection.private_to_gocd.id
+    auto_accept               = true
+
+    tags = {
+        Side = "Accepter"
+        Name = "${var.environment}-deductions-private-to-gocd-peering-connection-accepter"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
+}
+
 
 resource "aws_route" "private_private_to_gocd" {
     route_table_id            = module.vpc.private_route_table_ids[0]

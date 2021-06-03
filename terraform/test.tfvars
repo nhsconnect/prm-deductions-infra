@@ -53,3 +53,5 @@ dns_hscn_forward_server_1 = "155.231.231.1"
 dns_hscn_forward_server_2 = "155.231.231.2"
 hscn_gateway_id = "vgw-0ed5add471169ed85"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
+
+deploy_cross_account_vpc_peering = false

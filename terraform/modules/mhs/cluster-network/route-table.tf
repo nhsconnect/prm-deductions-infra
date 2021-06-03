@@ -27,21 +27,37 @@ resource "aws_route" "spine_hscn" {
   gateway_id = var.hscn_gateway_id
 }
 
+data "aws_caller_identity" "ci" {
+  provider = aws.ci
+}
+
 resource "aws_vpc_peering_connection" "mhs_to_gocd" {
   peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
   vpc_id = var.mhs_vpc_id
   auto_accept = true
-
-  accepter {
-    allow_remote_vpc_dns_resolution = true
-  }
+  peer_owner_id = data.aws_caller_identity.ci.account_id
 
   requester {
     allow_remote_vpc_dns_resolution = true
   }
 
   tags = {
+    Side = "Requester"
     Name = "${var.environment}-mhs-${var.cluster_name}-gocd-peering"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_vpc_peering_connection_accepter" "deductions_to_gocd" {
+  provider                  = aws.ci
+  count = var.deploy_cross_account_vpc_peering ? 1 : 0
+  vpc_peering_connection_id = aws_vpc_peering_connection.mhs_to_gocd.id
+  auto_accept               = true
+
+  tags = {
+    Side = "Accepter"
+    Name = "${var.environment}-mhs-${var.cluster_name}-gocd-peering-connection-accepter"
     CreatedBy   = var.repo_name
     Environment = var.environment
   }

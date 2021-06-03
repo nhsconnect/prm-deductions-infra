@@ -42,3 +42,5 @@ variable "gocd_cidr" {}
 variable "core_private_vpc_peering_connection_id" {}
 
 variable "gocd_environment" {}
+
+variable "deploy_cross_account_vpc_peering"{}

@@ -24,4 +24,5 @@ module "cluster" {
   hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr = var.gocd_cidr
   gocd_environment = "prod"
+  deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
 }

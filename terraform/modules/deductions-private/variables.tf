@@ -165,3 +165,5 @@ variable "test_harness_mhs_vpc_peering_connection_id" {}
 variable "deploy_mhs_test_harness" {}
 variable "environment_public_zone" {}
 variable "environment_private_zone" {}
+
+variable "deploy_cross_account_vpc_peering"{}

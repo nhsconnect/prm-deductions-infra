@@ -29,21 +29,37 @@ resource "aws_route" "core_to_private" {
     vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
 }
 
+data "aws_caller_identity" "ci" {
+    provider = aws.ci
+}
+
 resource "aws_vpc_peering_connection" "core_to_gocd" {
     peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
     vpc_id = module.vpc.vpc_id
     auto_accept = true
-
-    accepter {
-        allow_remote_vpc_dns_resolution = true
-    }
+    peer_owner_id = data.aws_caller_identity.ci.account_id
 
     requester {
         allow_remote_vpc_dns_resolution = true
     }
 
     tags = {
+        Side = "Requester"
         Name = "${var.environment}-deductions-core-gocd-peering"
+        CreatedBy   = var.repo_name
+        Environment = var.environment
+    }
+}
+
+resource "aws_vpc_peering_connection_accepter" "core_to_gocd" {
+    provider                  = aws.ci
+    count = var.deploy_cross_account_vpc_peering ? 1 : 0
+    vpc_peering_connection_id = aws_vpc_peering_connection.core_to_gocd.id
+    auto_accept               = true
+
+    tags = {
+        Side = "Accepter"
+        Name = "${var.environment}-deductions-core-gocd-peering-connection-accepter"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }

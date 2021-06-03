@@ -29,3 +29,4 @@ variable "unbound_image_version" {}
 variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
 variable "gocd_environment" {}
+variable "deploy_cross_account_vpc_peering"{}
