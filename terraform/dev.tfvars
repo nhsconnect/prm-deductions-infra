@@ -49,10 +49,11 @@ spine_cidr_block = "192.168.128.0/24"
 deploy_mhs_test_harness = true
 deploy_mhs_public_subnet = true
 deploy_opentest = false
+deploy_hscn = false
 deploy_gocd_vpc_deductions_private_dns_zone = false
+deploy_cross_account_vpc_peering = true
 
 dns_forward_zone = "opentest.hscic.gov.uk"
 dns_hscn_forward_server_1 = "192.168.128.30"
 dns_hscn_forward_server_2 = "192.168.128.30"
 
-deploy_cross_account_vpc_peering = true

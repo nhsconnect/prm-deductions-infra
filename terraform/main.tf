@@ -75,6 +75,7 @@ module "repo" {
   hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
+  deploy_hscn = var.deploy_hscn
 }
 
 module "test-harness" {
@@ -105,6 +106,7 @@ module "test-harness" {
   hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
+  deploy_hscn = var.deploy_hscn
 }
 
 module "deductions-private" {

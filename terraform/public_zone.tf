@@ -12,6 +12,7 @@ data "aws_ssm_parameter" "non_prod_public_zone" {
 }
 
 resource "aws_route53_record" "environment_ns" {
+  provider = aws.ci
   name = "${var.environment}.non-prod.patient-deductions.nhs.uk"
   ttl = 30
   type = "NS"

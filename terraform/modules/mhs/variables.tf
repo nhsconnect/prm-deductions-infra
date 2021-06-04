@@ -21,9 +21,6 @@ variable "repo_name" {
 }
 
 variable "deductions_private_cidr" {}
-variable "deploy_opentest" {}
-variable "deploy_public_subnet" {}
-
 variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
@@ -36,4 +33,8 @@ variable "mhs_public_cidr_block" {}
 variable "mhs_cluster_domain_name" {}
 variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
+
+variable "deploy_opentest" {}
+variable "deploy_public_subnet" {}
 variable "deploy_cross_account_vpc_peering"{}
+variable "deploy_hscn" {}

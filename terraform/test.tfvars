@@ -45,8 +45,10 @@ mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD
 
 deploy_mhs_test_harness = false
 deploy_opentest = false
+deploy_hscn = true
 deploy_mhs_public_subnet = false
 deploy_gocd_vpc_deductions_private_dns_zone = true
+deploy_cross_account_vpc_peering = false
 
 dns_forward_zone = "ncrs.nhs.uk"
 dns_hscn_forward_server_1 = "155.231.231.1"
@@ -54,4 +56,3 @@ dns_hscn_forward_server_2 = "155.231.231.2"
 hscn_gateway_id = "vgw-0ed5add471169ed85"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
-deploy_cross_account_vpc_peering = false

@@ -68,12 +68,8 @@ data "aws_caller_identity" "ci" {
 resource "aws_vpc_peering_connection" "private_to_gocd" {
     peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
     vpc_id = module.vpc.vpc_id
-    auto_accept = true
     peer_owner_id = data.aws_caller_identity.ci.account_id
-
-    requester {
-        allow_remote_vpc_dns_resolution = true
-    }
+    peer_region = var.region
 
     tags = {
         Side = "Requester"
@@ -111,6 +107,7 @@ resource "aws_route" "private_public_to_gocd" {
 }
 
 resource "aws_route" "gocd_to_private" {
+    provider = aws.ci
     route_table_id            = data.aws_ssm_parameter.gocd_route_table_id.value
     destination_cidr_block    = var.cidr
     vpc_peering_connection_id = aws_vpc_peering_connection.private_to_gocd.id

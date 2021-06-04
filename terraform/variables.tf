@@ -193,16 +193,18 @@ variable "mhs_cidr_newbits" {
 }
 variable "test_harness_mhs_cluster_domain_name" { default = "" }
 variable "repo_mhs_cluster_domain_name" {}
-variable "deploy_mhs_test_harness" {}
-variable "deploy_opentest" {}
-variable "deploy_mhs_public_subnet" {}
+
 variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
-variable "deploy_gocd_vpc_deductions_private_dns_zone" {}
 variable "hscn_gateway_id" {
   default = ""
 }
 variable "common_account_id" {}
 variable "deploy_cross_account_vpc_peering"{}
+variable "deploy_mhs_test_harness" {}
+variable "deploy_mhs_public_subnet" {}
+variable "deploy_opentest" {}
+variable "deploy_hscn" {}
+variable "deploy_gocd_vpc_deductions_private_dns_zone" {}
