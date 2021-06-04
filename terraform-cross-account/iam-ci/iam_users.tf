@@ -1,10 +1,13 @@
+data "aws_caller_identity" "ci_account" {}
+
 data "aws_iam_policy_document" "trust_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/RepoAdmin"
+        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/RepoAdmin",         # dev environment (in dev account)
+        "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/NHSDAdminRole",  # test environment (in ci account)
         # more accounts will follow for other environments...
       ]
     }
