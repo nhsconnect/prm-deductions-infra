@@ -129,6 +129,12 @@ resource "aws_route53_zone_association" "deductions_private_hosted_zone_gocd_vpc
     vpc_id = module.vpc.vpc_id
 }
 
+resource "aws_route53_vpc_association_authorization" "deductions_private_hosted_zone_gocd_vpc" {
+    provider = aws.ci
+    vpc_id = module.vpc.vpc_id
+    zone_id = data.aws_ssm_parameter.gocd_zone_id.value
+}
+
 data "aws_ssm_parameter" "gocd_zone_id" {
     provider = aws.ci
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route53-zone-id"
