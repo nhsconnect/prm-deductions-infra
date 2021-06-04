@@ -11,7 +11,7 @@ if [ -z "${DNS_IMAGE_TAG}" ]; then
 fi
 
 AWS_HELPERS_FILE="utils/aws-helpers"
-AWS_HELPERS_VERSION=0.1.2
+AWS_HELPERS_VERSION=0.2.0
 mkdir -p utils
 if [[ ! -f $AWS_HELPERS_FILE ]];then
   wget --quiet -O $AWS_HELPERS_FILE https://github.com/nhsconnect/prm-deductions-support-infra/releases/download/${AWS_HELPERS_VERSION}/aws-helpers
@@ -314,7 +314,7 @@ case "${command}" in
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
-      #TODO: _assume_ci_agent_role $NHS_ENVIRONMENT
+      _assume_environment_role $NHS_ENVIRONMENT
       tf_plan_cross_account "$2"
       ;;
   tf_plan_cross_account)
@@ -329,7 +329,7 @@ case "${command}" in
       dojo "./tasks _tf_plan_certs $2"
       ;;
   _tf_apply_cross_account)
-      #TODO: _assume_ci_agent_role $NHS_ENVIRONMENT
+      _assume_environment_role $NHS_ENVIRONMENT
       tf_apply_cross_account
       ;;
   tf_apply_cross_account)
