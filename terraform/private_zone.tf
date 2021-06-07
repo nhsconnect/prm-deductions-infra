@@ -41,8 +41,14 @@ resource "aws_route53_zone_association" "core" {
   vpc_id = local.deductions_core_vpc_id
 }
 
+resource "aws_route53_vpc_association_authorization" "environment_zone_gocd_vpc" {
+  count = var.deploy_cross_account_vpc_peering ? 1 : 0
+  vpc_id = data.aws_ssm_parameter.gocd_vpc.value
+  zone_id = aws_route53_zone.environment_private.zone_id
+}
+
 resource "aws_route53_zone_association" "gocd" {
-  count = var.deploy_gocd_vpc_deductions_private_dns_zone ? 1 : 0
+  provider = aws.ci
   zone_id = aws_route53_zone.environment_private.zone_id
   vpc_id = data.aws_ssm_parameter.gocd_vpc.value
 }

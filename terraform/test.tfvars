@@ -47,7 +47,6 @@ deploy_mhs_test_harness = false
 deploy_opentest = false
 deploy_hscn = true
 deploy_mhs_public_subnet = false
-deploy_gocd_vpc_deductions_private_dns_zone = true
 deploy_cross_account_vpc_peering = false
 
 dns_forward_zone = "ncrs.nhs.uk"

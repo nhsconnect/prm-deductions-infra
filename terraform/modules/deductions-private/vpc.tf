@@ -130,6 +130,7 @@ resource "aws_route53_zone_association" "deductions_private_hosted_zone_gocd_vpc
 }
 
 resource "aws_route53_vpc_association_authorization" "deductions_private_hosted_zone_gocd_vpc" {
+    count = var.deploy_cross_account_vpc_peering ? 1 : 0
     provider = aws.ci
     vpc_id = module.vpc.vpc_id
     zone_id = data.aws_ssm_parameter.gocd_zone_id.value

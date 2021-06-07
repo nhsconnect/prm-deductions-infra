@@ -207,4 +207,3 @@ variable "deploy_mhs_test_harness" {}
 variable "deploy_mhs_public_subnet" {}
 variable "deploy_opentest" {}
 variable "deploy_hscn" {}
-variable "deploy_gocd_vpc_deductions_private_dns_zone" {}
