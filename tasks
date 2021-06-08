@@ -370,6 +370,7 @@ case "${command}" in
       if [ -z $cluster_name ]; then
         echo "Please specify cluster name to verify"
       fi
+      _assume_environment_role $NHS_ENVIRONMENT
       AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
       DNS_SERVER_1=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-0")
       DNS_SERVER_1=$(echo "${DNS_SERVER_1}" | awk -F "," '{print $1}')
