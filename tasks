@@ -311,6 +311,7 @@ case "${command}" in
       dojo "./tasks _tf"
       ;;
   _tf_plan)
+      _assume_environment_role $NHS_ENVIRONMENT
       ./tasks _ssh_key
       tf_plan "$2"
       ;;
@@ -327,6 +328,7 @@ case "${command}" in
       dojo "./tasks _tf_plan_cross_account $2"
       ;;
   _tf_plan_certs)
+      _assume_environment_role $NHS_ENVIRONMENT
       tf_plan "$2" true
       ;;
   tf_plan_certs)
@@ -342,6 +344,7 @@ case "${command}" in
       dojo "./tasks _tf_apply_cross_account"
       ;;
   _tf_apply)
+      _assume_environment_role $NHS_ENVIRONMENT
       ./tasks _ssh_key
       tf_apply
       ;;
