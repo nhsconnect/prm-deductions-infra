@@ -202,6 +202,7 @@ variable "hscn_gateway_id" {
   default = ""
 }
 variable "common_account_id" {}
+variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_mhs_public_subnet" {}

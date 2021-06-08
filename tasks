@@ -66,14 +66,22 @@ function tf_plan {
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
   fi
 
+  aws_account_arn=$(aws sts get-caller-identity | jq -r .Arn)
+
+  if [[ $aws_account_arn =~ "gocd_agent-prod" || $aws_account_arn =~ "repository-ci-agent" ]]; then
+    COMMON_ACCOUNT_ROLE="repository-ci-agent"
+  else
+    COMMON_ACCOUNT_ROLE="RepoAdmin"
+  fi
+
   COMMON_ACCOUNT_ID=$(_get_aws_ssm_secret "/repo/ci/user-input/external/aws-account-id")
 
   tf_init
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
+    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
