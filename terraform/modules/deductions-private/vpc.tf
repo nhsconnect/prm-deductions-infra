@@ -70,6 +70,7 @@ resource "aws_vpc_peering_connection" "private_to_gocd" {
     vpc_id = module.vpc.vpc_id
     peer_owner_id = data.aws_caller_identity.ci.account_id
     peer_region = var.region
+    auto_accept = var.deploy_cross_account_vpc_peering ? false : true
 
     tags = {
         Side = "Requester"

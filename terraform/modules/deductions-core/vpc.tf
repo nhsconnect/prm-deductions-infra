@@ -38,6 +38,7 @@ resource "aws_vpc_peering_connection" "core_to_gocd" {
     peer_vpc_id = data.aws_ssm_parameter.gocd_vpc.value
     peer_owner_id = data.aws_caller_identity.ci.account_id
     peer_region = var.region
+    auto_accept = var.deploy_cross_account_vpc_peering ? false : true
 
     tags = {
         Side = "Requester"
