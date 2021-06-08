@@ -14,7 +14,7 @@ resource "aws_route" "deductions_private" {
 }
 
 resource "aws_route" "spine" {
-  count = var.deploy_hscn ? 1 : 0
+  count = var.deploy_opentest ? 1 : 0
   route_table_id            = aws_route_table.mhs.id
   destination_cidr_block    = var.spine_cidr_block
   instance_id = join(",", module.opentest.*.vpn_instance_id)
