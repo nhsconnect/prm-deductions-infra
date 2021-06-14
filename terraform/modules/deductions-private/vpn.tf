@@ -45,19 +45,17 @@ resource "aws_security_group" "vpn" {
     description = "Client VPN in ${var.environment} env"
     vpc_id      = module.vpc.vpc_id
 
-    egress {
-        description = "Allow All Outbound"
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
     tags = {
         Name = "${var.environment}-vpn-sg"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
+}
+
+resource "aws_ssm_parameter" "vpn_sg_id" {
+  name = "/repo/${var.environment}/output/${var.repo_name}/vpn-sg-id"
+  type = "String"
+  value = aws_security_group.vpn.id
 }
 
 resource "aws_ec2_client_vpn_network_association" "private_subnet" {
