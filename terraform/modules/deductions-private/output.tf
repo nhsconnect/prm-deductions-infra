@@ -136,7 +136,7 @@ resource "aws_ssm_parameter" "deductions_private_alb_internal_id" {
 
 resource "aws_ssm_parameter" "deductions_private_database_subnets" {
   name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-database-subnets"
-  type = "StringList"
+  type = "String"
   value = module.vpc.database_subnets
   tags = {
     CreatedBy   = var.repo_name
