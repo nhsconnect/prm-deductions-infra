@@ -303,6 +303,7 @@ command="$1"
 case "${command}" in
   _ssh_key)
       check_env
+      #FIXME: should be in dev account _assume_environment_role $NHS_ENVIRONMENT
       generate_deductions_vpn_ssh_key
       generate_opentest_ssh_key
       generate_dns_ssh_key
@@ -426,9 +427,11 @@ case "${command}" in
       dojo "./tasks _generate_vpn_server_crt"
       ;;
   _generate_vpn_client_crt)
+      _assume_environment_role $NHS_ENVIRONMENT
       generate_vpn_client_crt "$2"
       ;;
   generate_vpn_client_crt)
+      check_env
       dojo "./tasks _generate_vpn_client_crt $2"
       ;;
   *)

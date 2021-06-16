@@ -39,26 +39,6 @@ resource "aws_security_group_rule" "ingress_int_alb_to_mq_admin" {
      source_security_group_id    = aws_security_group.vpn.id
  }
 
-resource "aws_security_group_rule" "ingress_ecs_tasks" {
-  type                = "ingress"
-  security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access to Deductions Private ECS Tasks"
-  protocol            = "tcp"
-  from_port           = "61614"
-  to_port             = "61614"
-  source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
-}
-
-resource "aws_security_group_rule" "ingress_amqp_ecs_tasks" {
-  type                = "ingress"
-  security_group_id   = aws_security_group.mq_sg.id
-  description         = "Access for Deductions Private ECS Tasks"
-  protocol            = "tcp"
-  from_port           = "5671"
-  to_port             = "5671"
-  source_security_group_id     = aws_security_group.gp2gp-adaptor-ecs-task-sg.id
-}
-
 resource "aws_security_group_rule" "ingress_worker_gocd_agent" {
     type                = "ingress"
     security_group_id   = aws_security_group.mq_sg.id
@@ -156,57 +136,6 @@ resource "aws_security_group" "administration-portal-ecs-task-sg" {
 
     tags = {
         Name = "${var.environment}-administration-portal-ecs-task-sg"
-        CreatedBy   = var.repo_name
-        Environment = var.environment
-    }
-}
-
-resource "aws_security_group" "gp2gp-adaptor-ecs-task-sg" {
-    name        = "${var.environment}-gp2gp-adaptor-ecs-task-sg"
-    vpc_id      = module.vpc.vpc_id
-
-    ingress {
-        description     = "Allow traffic from ALB to GP2GP Adaptor Task"
-        protocol        = "tcp"
-        from_port       = "3000"
-        to_port         = "3000"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from ALB to GP2GP Task"
-        protocol        = "tcp"
-        from_port       = "80"
-        to_port         = "80"
-        security_groups = [aws_security_group.deductions-private-alb-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from Internal ALB to GP2GP Adaptor Task"
-        protocol        = "tcp"
-        from_port       = "3000"
-        to_port         = "3000"
-        security_groups = [aws_security_group.private-alb-internal-sg.id]
-    }
-
-    ingress {
-        description     = "Allow traffic from Internal ALB to to GP2GP Task"
-        protocol        = "tcp"
-        from_port       = "80"
-        to_port         = "80"
-        security_groups = [aws_security_group.private-alb-internal-sg.id]
-    }
-
-    egress {
-        description = "Allow All Outbound"
-        protocol    = "-1"
-        from_port   = 0
-        to_port     = 0
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    tags = {
-        Name = "${var.environment}-gp2gp-adaptor-ecs-task-sg"
         CreatedBy   = var.repo_name
         Environment = var.environment
     }
