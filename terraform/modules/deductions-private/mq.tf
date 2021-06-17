@@ -7,7 +7,7 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   auto_minor_version_upgrade = var.auto_minor_version_upgrade
   apply_immediately          = var.apply_immediately
   publicly_accessible        = "false"
-  security_groups            = [aws_security_group.mq_sg.id]
+  security_groups            = [aws_security_group.service_to_mq.id, aws_security_group.vpn_to_mq.id, aws_security_group.gocd_to_mq.id]
   subnet_ids                 = module.vpc.private_subnets
 
   logs {
@@ -127,6 +127,109 @@ resource "aws_ssm_parameter" "openwire-endpoint-1" {
   value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.0
 
   tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+
+resource "aws_security_group" "service_to_mq" {
+  name        = "${var.environment}-service-to-${var.component_name}"
+  description = "controls access from repo services to AMQ"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Allow traffic from Internal ALB to AMQ"
+    protocol            = "tcp"
+    from_port           = "8162"
+    to_port             = "8162"
+    security_groups = [aws_security_group.vpn_to_mq_admin.id]
+  }
+
+  egress {
+    description = "Allow All Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-service-to-${var.component_name}-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_ssm_parameter" "service_to_mq" {
+  name = "/repo/${var.environment}/output/${var.repo_name}/service-to-mq-admin-sg-id"
+  type = "String"
+  value = aws_security_group.service_to_mq.id
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "vpn_to_mq" {
+  name        = "${var.environment}-vpn-to-${var.component_name}"
+  description = "controls access from VPN to AMQ"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    protocol = "tcp"
+    from_port = "61614"
+    to_port = "61614"
+    description = "Allow traffic from VPN to MQ through STOMP"
+    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = "5671"
+    to_port         = "5671"
+    description = "Allow traffic from VPN to MQ through AMQP"
+    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+  }
+
+  egress {
+    description = "Allow All Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-vpn-to-${var.component_name}-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "gocd_to_mq" {
+  name        = "${var.environment}-gocd-to-${var.component_name}"
+  description = "controls access from gocd to AMQ"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    protocol = "tcp"
+    from_port = "61614"
+    to_port = "61614"
+    description = "Allow traffic from gocd to MQ through STOMP"
+    security_groups = [data.aws_ssm_parameter.gocd_sg_id.value]
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = "5671"
+    to_port         = "5671"
+    description = "Allow traffic from gocd to MQ through AMQP"
+    security_groups = [data.aws_ssm_parameter.gocd_sg_id.value]
+  }
+
+  tags = {
+    Name = "${var.environment}-gocd-to-${var.component_name}-sg"
     CreatedBy   = var.repo_name
     Environment = var.environment
   }

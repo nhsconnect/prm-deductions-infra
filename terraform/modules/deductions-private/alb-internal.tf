@@ -1,7 +1,7 @@
 resource "aws_alb" "alb-internal" {
-  name            = "${var.environment}-${var.component_name}-alb-int"
+  name            = "${var.environment}-mq-admin-alb"
   subnets         = module.vpc.private_subnets
-  security_groups = [aws_security_group.private-alb-internal-sg.id]
+  security_groups = [aws_security_group.vpn_to_mq_admin.id]
   internal        = true
 
   tags = {
@@ -32,7 +32,7 @@ resource "aws_alb_listener" "int-alb-listener-https" {
   protocol          = "HTTPS"
 
   ssl_policy      = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn = aws_acm_certificate_validation.deductions-private-default-cert-validation.certificate_arn
+  certificate_arn = aws_acm_certificate_validation.mq-admin-cert-validation.certificate_arn
 
   default_action {
     type = "fixed-response"
@@ -124,7 +124,38 @@ resource "aws_alb_target_group_attachment" "mq-attachment" {
     port             = 8162
 }
 
-resource "aws_lb_listener_certificate" "mq-admin-int-listener-cert" {
-  listener_arn    = aws_alb_listener.int-alb-listener-https.arn
-  certificate_arn = aws_acm_certificate_validation.mq-admin-cert-validation.certificate_arn
+resource "aws_security_group" "vpn_to_mq_admin" {
+  name        = "${var.environment}-vpn-to-${var.component_name}"
+  description = "controls access from vpn to mq admin"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description = "Allow vpn to access mq admin ALB"
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+  }
+
+  egress {
+    description = "Allow All Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-vpn-to-${var.component_name}-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+data "aws_ssm_parameter" "vpn_sg_id" {
+  name = "/repo/${var.environment}/output/prm-deductions-infra/vpn-sg-id"
+}
+
+data "aws_ssm_parameter" "gocd_sg_id" {
+  name = "/repo/${var.environment}/user-input/external/gocd-agent-sg-id"
 }
