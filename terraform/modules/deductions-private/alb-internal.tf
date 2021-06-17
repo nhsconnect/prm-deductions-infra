@@ -125,7 +125,7 @@ resource "aws_alb_target_group_attachment" "mq-attachment" {
 }
 
 resource "aws_security_group" "vpn_to_mq_admin" {
-  name        = "${var.environment}-vpn-to-${var.component_name}"
+  name        = "${var.environment}-vpn-to-mq-admin"
   description = "controls access from vpn to mq admin"
   vpc_id      = module.vpc.vpc_id
 

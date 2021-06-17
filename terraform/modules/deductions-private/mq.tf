@@ -134,7 +134,7 @@ resource "aws_ssm_parameter" "openwire-endpoint-1" {
 
 
 resource "aws_security_group" "service_to_mq" {
-  name        = "${var.environment}-service-to-${var.component_name}"
+  name        = "${var.environment}-service-to-mq"
   description = "controls access from repo services to AMQ"
   vpc_id      = module.vpc.vpc_id
 
@@ -172,7 +172,7 @@ resource "aws_ssm_parameter" "service_to_mq" {
 }
 
 resource "aws_security_group" "vpn_to_mq" {
-  name        = "${var.environment}-vpn-to-${var.component_name}"
+  name        = "${var.environment}-vpn-to-mq"
   description = "controls access from VPN to AMQ"
   vpc_id      = module.vpc.vpc_id
 
@@ -208,7 +208,7 @@ resource "aws_security_group" "vpn_to_mq" {
 }
 
 resource "aws_security_group" "gocd_to_mq" {
-  name        = "${var.environment}-gocd-to-${var.component_name}"
+  name        = "${var.environment}-gocd-to-mq"
   description = "controls access from gocd to AMQ"
   vpc_id      = module.vpc.vpc_id
 
