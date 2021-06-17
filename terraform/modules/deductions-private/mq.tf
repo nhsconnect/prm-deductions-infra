@@ -162,7 +162,7 @@ resource "aws_security_group" "service_to_mq" {
 }
 
 resource "aws_ssm_parameter" "service_to_mq" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/service-to-mq-admin-sg-id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/service-to-mq-sg-id"
   type = "String"
   value = aws_security_group.service_to_mq.id
   tags = {
