@@ -434,6 +434,15 @@ case "${command}" in
       check_env
       dojo "./tasks _generate_vpn_client_crt $2"
       ;;
+  _test_keys)
+      cd key-rotation-and-generation
+      npm install
+      npm run test
+      ;;
+  test_keys)
+      check_env
+      dojo -c Dojofile-node "./tasks _test_keys"
+      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1

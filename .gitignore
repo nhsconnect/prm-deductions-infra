@@ -303,3 +303,5 @@ latest.zip
 /ansible/group_vars/test.yml
 /retry
 /utils/*
+
+/key-rotation-and-generation/node_modules

@@ -1,0 +1,15 @@
+{
+  "name": "key-rotation-and-generation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest __tests__/index.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.18.0",
+    "jest": "^27.0.4"
+  }
+}
