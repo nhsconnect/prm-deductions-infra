@@ -7,7 +7,7 @@ pipelines:
       git:
         type: configrepo
     stages:
-      - dev_keys:
+      - rotate_and_generate_dev_keys:
           clean_workspace: true
           resources:
             - docker
@@ -19,7 +19,7 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks test_keys
-      - test_keys:
+      - rotate_and_generate_test_keys:
           clean_workspace: true
           resources:
             - docker

@@ -441,6 +441,7 @@ case "${command}" in
       ;;
   test_keys)
       check_env
+      _assume_environment_role $NHS_ENVIRONMENT
       dojo -c Dojofile-node "./tasks _test_keys"
       ;;
   *)
