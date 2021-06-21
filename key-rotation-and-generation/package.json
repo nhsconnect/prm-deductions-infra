@@ -11,5 +11,12 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.18.0",
     "jest": "^27.0.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.5",
+    "@babel/node": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.5"
   }
 }

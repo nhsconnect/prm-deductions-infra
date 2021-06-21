@@ -1,14 +1,7 @@
-const { SSMClient, GetParameterCommand } = require("@aws-sdk/client-ssm");
+import { getParam } from "./ssm-client";
+import { initializeConfig } from "./config";
 
-const client = new SSMClient({ region: "eu-west-2" });
-
-const getParam = async (parameterName) => {
-  try {
-    const command = new GetParameterCommand({ Name: parameterName });
-    return await client.send(command);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-module.exports = { getParam };
+export const generateApiKeys = async () => {
+  const ssmPath = `/repo/${initializeConfig().nhsEnvironment}/user-input/service-api-keys`;
+  await getParam(ssmPath);
+}

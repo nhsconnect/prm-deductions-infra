@@ -1,12 +1,16 @@
-const { getParam } = require('../index');
+import { generateApiKeys } from "../index";
+import { getParam } from "../ssm-client";
+import { initializeConfig } from "../config";
+
+jest.mock('../ssm-client');
+jest.mock('../config');
 
 describe('Key Rotation and Generation', () => {
-  it('should retrieve url value from ssm', async () => {
-    const parameterPath = `/repo/${process.env.NHS_ENVIRONMENT}/output/prm-deductions-gp2gp-adaptor/service-url`
-    const expectedParameterValue = `https://gp2gp-adaptor.${process.env.NHS_ENVIRONMENT}.non-prod.patient-deductions.nhs.uk`;
-    const res = await getParam(parameterPath);
+  it('generateApiKeys should call getParam', async () => {
+    initializeConfig.mockReturnValueOnce({ nhsEnvironment: 'nhs-environment' });
+    await generateApiKeys();
 
-    expect(res.Parameter.Value).toBe(expectedParameterValue)
-  })
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/service-api-keys')
+  });
 })
 
