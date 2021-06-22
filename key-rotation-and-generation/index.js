@@ -19,4 +19,4 @@ export const generateApiKeys = async () => {
   }
 };
 
-generateApiKeys().catch(() => {});
+generateApiKeys().catch(err => console.log(err));
