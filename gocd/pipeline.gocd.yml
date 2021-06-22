@@ -45,6 +45,8 @@ pipelines:
     materials:
       git:
         type: configrepo
+        blacklist:
+          - key-rotation-and-generation/**/*.*
     stages:
       - deploy_ci:
           clean_workspace: true
@@ -87,6 +89,8 @@ pipelines:
     materials:
       git:
         type: configrepo
+        blacklist:
+          - key-rotation-and-generation/**/*.*
       docker_dns_images:
         pipeline: mhs-dns-images
         stage: test
