@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest __tests__/index.test.js --detectOpenHandles",
+    "test": "jest __tests__/ --detectOpenHandles",
     "generate:keys": "babel-node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-ecs": "^3.18.0",
     "@aws-sdk/client-ssm": "^3.18.0",
     "jest": "^27.0.4",
     "randomstring": "^1.2.1"

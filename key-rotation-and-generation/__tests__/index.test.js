@@ -3,10 +3,12 @@ import { generateApiKeys } from "../index";
 import { getParam, generateParam } from "../ssm-client";
 import { initializeConfig } from "../config";
 import { convertStringListToArray } from "../helpers";
+import { restartServices } from "../restart-services";
 
 jest.mock('../ssm-client');
 jest.mock('../config');
 jest.mock('../helpers');
+jest.mock('../restart-services');
 
 describe('Key Rotation and Generation - generateApiKeys', () => {
   initializeConfig.mockReturnValue({ nhsEnvironment: 'nhs-environment' });
@@ -36,6 +38,7 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
     expect(getParam).toHaveBeenCalledWith('/repo/env/api-keys/key')
     expect(getParam).toHaveBeenCalledWith('/repo/env/api-keys/key-1')
     expect(generateParam).not.toHaveBeenCalled();
+    expect(restartServices).toHaveBeenCalledWith([]);
   });
 
   it('should create new ssm parameter for api key if it is not found', async () => {
@@ -46,6 +49,7 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
     expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(apiKeysStringList);
     expect(generateParam).toHaveBeenCalledWith('/repo/env/api-keys/key-2');
+    expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key-2']);
   });
 
   it('should throw an error when cannot get list of api keys from ssm', async () => {
