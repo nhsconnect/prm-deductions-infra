@@ -1,5 +1,5 @@
-import {restartServices} from "../restart-services";
-import {restartECS} from "../ecs-client";
+import { restartServices } from "../restart-services";
+import { restartECS } from "../ecs-client";
 import { initializeConfig } from "../config";
 
 jest.mock('../ecs-client');

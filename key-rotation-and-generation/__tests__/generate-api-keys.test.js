@@ -1,5 +1,5 @@
 import { when } from "jest-when";
-import { generateApiKeys } from "../index";
+import { generateApiKeys } from "../generate-api-keys";
 import { getParam, generateParam } from "../ssm-client";
 import { initializeConfig } from "../config";
 import { convertStringListToArray } from "../helpers";
@@ -16,9 +16,7 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
 
   when(getParam)
     .calledWith('/repo/not-found/user-input/service-api-keys')
-    .mockImplementationOnce(() => {
-      throw new Error('cannot find list of api keys')
-    })
+    .mockResolvedValue(null)
     .calledWith('/repo/nhs-environment/user-input/service-api-keys')
     .mockResolvedValue(apiKeysStringList)
     .calledWith('/repo/env/api-keys/key')
@@ -27,6 +25,12 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
     .mockResolvedValue('key123')
     .calledWith('/repo/env/api-keys/key-2')
     .mockResolvedValue(null);
+
+  afterEach(() => {
+    convertStringListToArray.mockRestore();
+    generateParam.mockRestore();
+    restartServices.mockRestore();
+  })
 
   it('should not create new ssm parameter for api keys that already exist in ssm', async () => {
     convertStringListToArray.mockReturnValueOnce(['/repo/env/api-keys/key','/repo/env/api-keys/key-1']);
@@ -54,8 +58,16 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
 
   it('should throw an error when cannot get list of api keys from ssm', async () => {
     initializeConfig.mockReturnValueOnce({ nhsEnvironment: 'not-found' });
+    convertStringListToArray.mockImplementationOnce(() => {
+      throw new Error('some-error')
+    });
 
-    await expect(generateApiKeys()).rejects.toThrowError('cannot find list of api keys');
+    await generateApiKeys();
+
+    expect(getParam).toHaveBeenCalledWith('/repo/not-found/user-input/service-api-keys')
+    expect(convertStringListToArray).toHaveBeenCalledWith(null);
+    expect(generateParam).not.toHaveBeenCalled();
+    expect(restartServices).not.toHaveBeenCalled();
   });
 
 })
