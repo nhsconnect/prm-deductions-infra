@@ -1,4 +1,5 @@
-import { SSMClient, GetParameterCommand } from '@aws-sdk/client-ssm';
+import randomstring from "randomstring";
+import { SSMClient, GetParameterCommand, PutParameterCommand } from '@aws-sdk/client-ssm';
 
 const client = new SSMClient({ region: "eu-west-2" });
 
@@ -15,4 +16,8 @@ export const getParam = async (parameterName) => {
   }
 };
 
-export const generateParam = async () => {}
+export const generateParam = async (parameterName) => {
+  const keyValue = randomstring.generate();
+  const command = new PutParameterCommand({ Name: parameterName, Type: 'SecureString', Value: keyValue });
+  await client.send(command);
+}

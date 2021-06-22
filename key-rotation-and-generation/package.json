@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.18.0",
-    "jest": "^27.0.4"
+    "jest": "^27.0.4",
+    "randomstring": "^1.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.5",
