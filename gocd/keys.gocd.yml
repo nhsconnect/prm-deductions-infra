@@ -9,12 +9,10 @@ pipelines:
         whitelist:
           - key-rotation-and-generation/**/*.*
     stages:
-      - test_keys_dev:
+      - test_keys:
           clean_workspace: true
           resources:
             - docker
-          environment_variables:
-            NHS_ENVIRONMENT: dev
           tasks:
             - exec:
                 command: /bin/bash
@@ -33,18 +31,6 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks generate_keys
-      - test_keys_test:
-          clean_workspace: true
-          resources:
-            - docker
-          environment_variables:
-            NHS_ENVIRONMENT: test
-          tasks:
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - ./tasks test_keys
       - generate_keys_test:
           clean_workspace: true
           resources:
