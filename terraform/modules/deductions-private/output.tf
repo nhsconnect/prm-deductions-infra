@@ -1,8 +1,3 @@
-output "deductions_private_ecs_cluster_id" {
-  # OBSOLETE, please use SSM
-  value = aws_ecs_cluster.ecs-cluster.id
-}
-
 output "deductions_private_private_subnets" {
   # OBSOLETE, please use SSM
   value = module.vpc.private_subnets
@@ -32,26 +27,6 @@ output "public_subnets_route_table_id" {
 # output "deductions_private_alb_dns" {
 #   value = aws_alb.alb.dns_name
 # }
-
-resource "aws_ssm_parameter" "deductions_private_ecs_cluster_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-ecs-cluster-id"
-  type = "String"
-  value = aws_ecs_cluster.ecs-cluster.id
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
-resource "aws_ssm_parameter" "deductions_private_gp2gp_message_handler_sg_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-gp2gp-message-handler-sg-id"
-  type = "String"
-  value = aws_security_group.gp2gp-message-handler-ecs-task-sg.id
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
 
 resource "aws_ssm_parameter" "deductions_private_private_subnets" {
   name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-private-subnets"
