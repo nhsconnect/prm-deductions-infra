@@ -2,10 +2,10 @@
   "name": "key-rotation-and-generation",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "generate-keys/index.js",
   "scripts": {
-    "test": "jest __tests__/ --detectOpenHandles",
-    "generate:keys": "babel-node index.js"
+    "test": "jest \"test\\.js\" --detectOpenHandles",
+    "generate:keys": "babel-node generate-keys/index.js"
   },
   "author": "",
   "license": "ISC",

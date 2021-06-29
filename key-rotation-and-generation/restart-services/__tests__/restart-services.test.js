@@ -1,9 +1,9 @@
 import { restartServices } from "../restart-services";
-import { restartECS } from "../ecs-client";
-import { initializeConfig } from "../config";
+import { restartECS } from "../../aws-clients/ecs-client";
+import { initializeConfig } from "../../config";
 
-jest.mock('../ecs-client');
-jest.mock('../config');
+jest.mock('../../aws-clients/ecs-client');
+jest.mock('../../config');
 
 describe('Restart services', () => {
   initializeConfig.mockReturnValue({ nhsEnvironment: 'env' });

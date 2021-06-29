@@ -1,7 +1,7 @@
-import { generateParam, getParam } from "./ssm-client";
-import { initializeConfig } from "./config";
-import { convertStringListToArray } from "./helpers";
-import { restartServices } from "./restart-services";
+import { generateParam, getParam } from "../aws-clients/ssm-client";
+import { initializeConfig } from "../config";
+import { convertStringListToArray } from "../helpers";
+import { restartServices } from "../restart-services/restart-services";
 
 export const generateApiKeys = async () => {
   const { nhsEnvironment } = initializeConfig();

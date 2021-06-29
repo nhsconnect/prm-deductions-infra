@@ -1,5 +1,5 @@
 import { ECSClient, UpdateServiceCommand } from "@aws-sdk/client-ecs";
-import {initializeConfig} from "./config";
+import { initializeConfig } from "../config";
 
 const client = new ECSClient({ region: "eu-west-2" });
 

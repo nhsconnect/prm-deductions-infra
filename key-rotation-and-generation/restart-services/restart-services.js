@@ -1,5 +1,5 @@
-import { initializeConfig } from "./config";
-import { restartECS } from "./ecs-client";
+import { initializeConfig } from "../config";
+import { restartECS } from "../aws-clients/ecs-client";
 
 
 export const restartServices = async (apiKeys) => {

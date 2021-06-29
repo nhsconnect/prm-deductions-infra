@@ -1,14 +1,14 @@
 import { when } from "jest-when";
 import { generateApiKeys } from "../generate-api-keys";
-import { getParam, generateParam } from "../ssm-client";
-import { initializeConfig } from "../config";
-import { convertStringListToArray } from "../helpers";
-import { restartServices } from "../restart-services";
+import { getParam, generateParam } from "../../aws-clients/ssm-client";
+import { initializeConfig } from "../../config";
+import { convertStringListToArray } from "../../helpers";
+import { restartServices } from "../../restart-services/restart-services";
 
-jest.mock('../ssm-client');
-jest.mock('../config');
-jest.mock('../helpers');
-jest.mock('../restart-services');
+jest.mock('../../aws-clients/ssm-client');
+jest.mock('../../config');
+jest.mock('../../helpers');
+jest.mock('../../restart-services/restart-services');
 
 describe('Key Rotation and Generation - generateApiKeys', () => {
   initializeConfig.mockReturnValue({ nhsEnvironment: 'nhs-environment' });
