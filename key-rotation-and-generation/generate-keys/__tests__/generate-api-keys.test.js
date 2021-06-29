@@ -10,7 +10,7 @@ jest.mock('../../config');
 jest.mock('../../helpers');
 jest.mock('../../restart-services/restart-services');
 
-describe('Key Rotation and Generation - generateApiKeys', () => {
+describe('generateApiKeys', () => {
   initializeConfig.mockReturnValue({ nhsEnvironment: 'nhs-environment' });
   const apiKeysStringList = '/repo/env/api-keys/key,/repo/env/api-keys/key-1,/repo/env/api-keys/key-2';
 
@@ -69,6 +69,5 @@ describe('Key Rotation and Generation - generateApiKeys', () => {
     expect(generateParam).not.toHaveBeenCalled();
     expect(restartServices).not.toHaveBeenCalled();
   });
-
-})
+});
 

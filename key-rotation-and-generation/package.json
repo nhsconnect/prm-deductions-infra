@@ -5,7 +5,8 @@
   "main": "generate-keys/index.js",
   "scripts": {
     "test": "jest \"test\\.js\" --detectOpenHandles",
-    "generate:keys": "babel-node generate-keys/index.js"
+    "generate:keys": "babel-node generate-keys/index.js",
+    "rotate:keys": "babel-node rotate-keys/index.js"
   },
   "author": "",
   "license": "ISC",

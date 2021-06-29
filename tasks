@@ -452,6 +452,16 @@ case "${command}" in
       _assume_environment_role $NHS_ENVIRONMENT
       dojo -c Dojofile-node "./tasks _generate_keys"
       ;;
+  _rotate_keys)
+      cd key-rotation-and-generation
+      npm install
+      npm run rotate:keys
+      ;;
+  rotate_keys)
+      check_env
+      _assume_environment_role $NHS_ENVIRONMENT
+      dojo -c Dojofile-node "./tasks _rotate_keys"
+      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1

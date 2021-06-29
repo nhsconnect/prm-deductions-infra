@@ -1,5 +1,11 @@
 import randomstring from "randomstring";
-import { SSMClient, GetParameterCommand, PutParameterCommand } from '@aws-sdk/client-ssm';
+import {
+  GetParameterCommand,
+  GetParametersByPathCommand,
+  ListTagsForResourceCommand,
+  PutParameterCommand,
+  SSMClient
+} from '@aws-sdk/client-ssm';
 
 const client = new SSMClient({ region: "eu-west-2" });
 
@@ -24,3 +30,16 @@ export const generateParam = async (parameterName) => {
 
   console.log(`API Key generated for ${parameterName}`)
 }
+
+export const getParamsByPath = async (path) => {
+  const command = new GetParametersByPathCommand({ Path: path, Recursive: true });
+  const response = await client.send(command);
+  return response.Parameters.map(param => param.Name);
+};
+
+export const getRotateApiKeyTag = async (path) => {
+  const command = new ListTagsForResourceCommand({ ResourceId: path, ResourceType: 'Parameter' });
+  const response = await client.send(command);
+  const rotateApiKeyTag = response.TagList.filter(tag => tag.Key === 'RotateApiKey');
+  return rotateApiKeyTag.length !== 0;
+};
