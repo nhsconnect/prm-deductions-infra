@@ -6,9 +6,9 @@ export const restartServices = async (apiKeys) => {
   let servicesToRestart = []
   for (const key of apiKeys) {
     const services = key.split(`/repo/${initializeConfig().nhsEnvironment}/user-input/api-keys/`)[1];
-    const [ consumerService, producerService ] = services.split('/');
-    addToServicesToRestart(servicesToRestart, consumerService);
+    const [ producerService, consumerService ] = services.split('/');
     addToServicesToRestart(servicesToRestart, producerService);
+    addToServicesToRestart(servicesToRestart, consumerService);
   }
 
   for (const service of servicesToRestart) {
