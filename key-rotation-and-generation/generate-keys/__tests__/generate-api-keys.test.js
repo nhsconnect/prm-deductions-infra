@@ -1,6 +1,6 @@
 import { when } from "jest-when";
 import { generateApiKeys } from "../generate-api-keys";
-import { getParam, generateParam } from "../../aws-clients/ssm-client";
+import { getParam, generateApiKey } from "../../aws-clients/ssm-client";
 import { initializeConfig } from "../../config";
 import { convertStringListToArray } from "../../helpers";
 import { restartServices } from "../../restart-services/restart-services";
@@ -28,7 +28,7 @@ describe('generateApiKeys', () => {
 
   afterEach(() => {
     convertStringListToArray.mockRestore();
-    generateParam.mockRestore();
+    generateApiKey.mockRestore();
     restartServices.mockRestore();
   })
 
@@ -41,7 +41,7 @@ describe('generateApiKeys', () => {
     expect(convertStringListToArray).toHaveBeenCalledWith(apiKeysStringList);
     expect(getParam).toHaveBeenCalledWith('/repo/env/api-keys/key')
     expect(getParam).toHaveBeenCalledWith('/repo/env/api-keys/key-1')
-    expect(generateParam).not.toHaveBeenCalled();
+    expect(generateApiKey).not.toHaveBeenCalled();
     expect(restartServices).toHaveBeenCalledWith([]);
   });
 
@@ -52,7 +52,7 @@ describe('generateApiKeys', () => {
 
     expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(apiKeysStringList);
-    expect(generateParam).toHaveBeenCalledWith('/repo/env/api-keys/key-2');
+    expect(generateApiKey).toHaveBeenCalledWith('/repo/env/api-keys/key-2');
     expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key-2']);
   });
 
@@ -66,7 +66,7 @@ describe('generateApiKeys', () => {
 
     expect(getParam).toHaveBeenCalledWith('/repo/not-found/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(null);
-    expect(generateParam).not.toHaveBeenCalled();
+    expect(generateApiKey).not.toHaveBeenCalled();
     expect(restartServices).not.toHaveBeenCalled();
   });
 });

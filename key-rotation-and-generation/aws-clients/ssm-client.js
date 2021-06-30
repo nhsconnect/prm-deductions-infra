@@ -4,6 +4,7 @@ import {
   GetParametersByPathCommand,
   ListTagsForResourceCommand,
   PutParameterCommand,
+  RemoveTagsFromResourceCommand,
   SSMClient
 } from '@aws-sdk/client-ssm';
 
@@ -23,23 +24,36 @@ export const getParam = async (parameterName) => {
   }
 };
 
-export const generateParam = async (parameterName) => {
-  const keyValue = randomstring.generate();
-  const command = new PutParameterCommand({ Name: parameterName, Type: 'SecureString', Value: keyValue });
-  await client.send(command);
-
-  console.log(`API Key generated for ${parameterName}`)
-}
-
-export const getParamsByPath = async (path) => {
-  const command = new GetParametersByPathCommand({ Path: path, Recursive: true });
+export const getParamsByPath = async (ssmPath) => {
+  const command = new GetParametersByPathCommand({ Path: ssmPath, Recursive: true });
   const response = await client.send(command);
   return response.Parameters.map(param => param.Name);
 };
 
-export const getRotateApiKeyTag = async (path) => {
-  const command = new ListTagsForResourceCommand({ ResourceId: path, ResourceType: 'Parameter' });
+export const generateApiKey = async (parameterName) => {
+  const keyValue = randomstring.generate();
+  const command = new PutParameterCommand({ Name: parameterName, Type: 'SecureString', Value: keyValue });
+  await client.send(command);
+
+  console.log(`${parameterName} API Key has been generated`)
+}
+
+export const rotateApiKey = async (parameterName) => {
+  const keyValue = randomstring.generate();
+  const command = new PutParameterCommand({ Name: parameterName, Type: 'SecureString', Value: keyValue, Overwrite: true });
+  await client.send(command);
+
+  console.log(`${parameterName} API Key has been rotated`)
+}
+
+export const getRotateApiKeyTag = async (ssmPath) => {
+  const command = new ListTagsForResourceCommand({ ResourceId: ssmPath, ResourceType: 'Parameter' });
   const response = await client.send(command);
   const rotateApiKeyTag = response.TagList.filter(tag => tag.Key === 'RotateApiKey');
   return rotateApiKeyTag.length !== 0;
+};
+
+export const removeRotateApiKeyTag = async (ssmPath) => {
+  const command = new RemoveTagsFromResourceCommand({ ResourceId: ssmPath, ResourceType: 'Parameter', TagKeys: ['RotateApiKey'] });
+  await client.send(command);
 };
