@@ -8,6 +8,7 @@ pipelines:
         type: configrepo
         whitelist:
           - key-rotation-and-generation/**/*.*
+          - gocd/keys.gocd.yml
     stages:
       - unit_tests:
           clean_workspace: true
