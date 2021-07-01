@@ -1,13 +1,10 @@
 import { generateApiKey, getParam } from "../aws-clients/ssm-client";
-import { initializeConfig } from "../config";
-import { convertStringListToArray } from "../helpers";
+import { convertStringListToArray,convertUserListToUserListParamArray } from "../helpers";
 import { restartServices } from "../restart-services/restart-services";
 
 export const generateApiKeys = async (ssmPath, isService) => {
 
-  try {
-    const apiKeysString = await getParam(ssmPath);
-    const apiKeysArray = convertStringListToArray(apiKeysString)
+  async function generate(apiKeysArray) {
     let generatedApiKeys = []
     for (const apiKey of apiKeysArray) {
       const apiKeyValue = await getParam(apiKey);
@@ -16,7 +13,20 @@ export const generateApiKeys = async (ssmPath, isService) => {
         generatedApiKeys.push(apiKey)
       }
     }
-    await restartServices(generatedApiKeys);
+    return generatedApiKeys
+  }
+
+  try {
+    const apiKeysString = await getParam(ssmPath);
+    const apiKeysArray = convertStringListToArray(apiKeysString)
+    let restartServiceList=[]
+    if(!isService){
+      restartServiceList = generate(convertUserListToUserListParamArray(apiKeysArray))
+      await restartServices(restartServiceList);
+    }else {
+      restartServiceList = generate(apiKeysArray)
+      await restartServices(restartServiceList);
+    }
   } catch (err) {
     console.log(err);
   }
