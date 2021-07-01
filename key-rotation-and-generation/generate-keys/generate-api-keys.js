@@ -3,10 +3,9 @@ import { initializeConfig } from "../config";
 import { convertStringListToArray } from "../helpers";
 import { restartServices } from "../restart-services/restart-services";
 
-export const generateApiKeys = async () => {
-  const { nhsEnvironment } = initializeConfig();
+export const generateApiKeys = async (ssmPath, isService) => {
+
   try {
-    const ssmPath = `/repo/${nhsEnvironment}/user-input/service-api-keys`;
     const apiKeysString = await getParam(ssmPath);
     const apiKeysArray = convertStringListToArray(apiKeysString)
     let generatedApiKeys = []

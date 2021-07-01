@@ -445,7 +445,7 @@ case "${command}" in
   _generate_keys)
       cd key-rotation-and-generation
       npm install
-      npm run generate:keys
+      npm run generate:service-api-keys
       ;;
   generate_keys)
       check_env
