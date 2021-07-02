@@ -30,4 +30,18 @@ describe('Restart services', () => {
     expect(restartECS).not.toHaveBeenCalledWith('e2e-test')
     expect(restartECS).toHaveBeenCalledTimes(1)
   });
+
+  it('should call producer to be restarted for user api key rotation', async () => {
+    const apiKeys = ['/repo/env/user-input/api-keys/fake-repo/other-fake-repo',
+      '/repo/env/user-input/api-keys/fake-repo-1/api-key-user/al.pacino',
+      '/repo/env/user-input/api-keys/fake-repo-1/api-key-user/rob.deniro',
+      '/repo/env/user-input/api-keys/fake-repo-2/api-key-user/al.pacino']
+    await restartServices(apiKeys)
+
+    expect(restartECS).toHaveBeenCalledWith('fake-repo')
+    expect(restartECS).toHaveBeenCalledWith('other-fake-repo')
+    expect(restartECS).toHaveBeenCalledWith('fake-repo-1')
+    expect(restartECS).toHaveBeenCalledWith('fake-repo-2')
+    expect(restartECS).toHaveBeenCalledTimes(4)
+  });
 })
