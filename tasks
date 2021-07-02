@@ -455,7 +455,7 @@ case "${command}" in
   _rotate_keys)
       cd key-rotation-and-generation
       npm install
-      npm run rotate:keys
+      npm run rotate:service-api-keys
       ;;
   rotate_keys)
       check_env

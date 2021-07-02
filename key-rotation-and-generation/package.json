@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest \"test\\.js\" --detectOpenHandles",
     "generate:service-api-keys": "babel-node generate-keys/generate-service-api-keys.js",
-    "rotate:keys": "babel-node rotate-keys/index.js"
+    "rotate:service-api-keys": "babel-node rotate-keys/rotate-service-api-keys.js"
   },
   "author": "",
   "license": "ISC",

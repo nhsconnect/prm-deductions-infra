@@ -27,7 +27,7 @@ describe('rotateApiKeys', () => {
   it('should rotate api key when the parameter is tagged with RotateApiKey', async () => {
     getParamsByPath.mockResolvedValueOnce(['/repo/env/api-keys/key', '/repo/env/api-keys/key-1']);
 
-    await rotateApiKeys();
+    await rotateApiKeys(true);
 
     expect(getParamsByPath).toHaveBeenCalledWith('/repo/env/user-input/api-keys/');
     expect(getRotateApiKeyTag).toHaveBeenCalledWith('/repo/env/api-keys/key');
@@ -43,7 +43,7 @@ describe('rotateApiKeys', () => {
   it('should not rotate api keys when parameters are not tagged', async () => {
     getParamsByPath.mockResolvedValueOnce(['/repo/env/api-keys/key-1', '/repo/env/api-keys/key-2']);
 
-    await rotateApiKeys();
+    await rotateApiKeys(true);
 
     expect(getParamsByPath).toHaveBeenCalledWith('/repo/env/user-input/api-keys/');
     expect(getRotateApiKeyTag).toHaveBeenCalledWith('/repo/env/api-keys/key-1');

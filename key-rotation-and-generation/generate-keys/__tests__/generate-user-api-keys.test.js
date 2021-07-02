@@ -15,9 +15,9 @@ describe('generateUserApiKeys', () => {
         .mockResolvedValue(apiKeysStringList)
         .calledWith('/repo/nhs-environment/user-input/empty-repo-dev-list')
         .mockResolvedValue(null)
-        .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1')
+        .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/al.pacino1')
         .mockResolvedValue(null)
-        .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci')
+        .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/joe.pesci')
         .mockResolvedValue('key123');
 
 
@@ -25,13 +25,13 @@ describe('generateUserApiKeys', () => {
         await generateApiKeys(ssmPath, false, 'nhs-environment');
 
         expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/al.pacino1')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/rob.deniro')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/lady.gaga')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/joe.pesci')
-        expect(generateApiKey).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1');
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/lady.gaga')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci')
+        expect(generateApiKey).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/al.pacino1');
         expect(restartServices).toHaveBeenCalledWith(
-            expect.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1'])
+            expect.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/al.pacino1'])
         );
     });
 
@@ -39,13 +39,13 @@ describe('generateUserApiKeys', () => {
         await generateApiKeys(ssmPath, false, 'nhs-environment');
 
         expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/al.pacino1')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/rob.deniro')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/lady.gaga')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/joe.pesci')
-        expect(generateApiKey).not.toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci');
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/lady.gaga')
+        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci')
+        expect(generateApiKey).not.toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/joe.pesci');
         expect(restartServices).toHaveBeenCalledWith(
-            expect.not.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci']));
+            expect.not.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/joe.pesci']));
     });
 
     it('should throw and error when ssm has no value', async () => {
