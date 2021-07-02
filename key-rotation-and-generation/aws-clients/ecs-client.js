@@ -18,7 +18,7 @@ export const restartECS = async (serviceName) => {
 }
 
 const waitForServiceToRestart = async (service, cluster) => {
-  const describeServicesCommand = new DescribeServicesCommand({services: [service], cluster});
+  const describeServicesCommand = new DescribeServicesCommand({ services: [service], cluster });
 
   const RETRY_COUNT = 10;
   const POLLING_INTERVAL = 20000;
