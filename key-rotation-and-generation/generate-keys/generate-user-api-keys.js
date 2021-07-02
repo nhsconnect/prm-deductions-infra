@@ -1,3 +1,6 @@
 import { generateApiKeys } from "./generate-api-keys";
+import { initializeConfig } from "../config";
 
-generateApiKeys();
+const { nhsEnvironment } = initializeConfig();
+
+generateApiKeys(`/repo/${nhsEnvironment}/user-input/repo-dev-list`, false, nhsEnvironment);
