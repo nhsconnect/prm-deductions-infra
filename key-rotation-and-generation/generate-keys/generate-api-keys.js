@@ -16,6 +16,7 @@ export const generateApiKeys = async (ssmPath, isService, nhsEnvironment) => {
     }
   } catch (err) {
     console.log(err);
+    throw err
   }
 };
 

@@ -61,7 +61,8 @@ describe('generateApiKeys', () => {
 
     const wrongSsmPath = `/repo/not-found/user-input/service-api-keys`
 
-    await generateApiKeys(wrongSsmPath, true, 'not-found');
+    await expect(generateApiKeys(wrongSsmPath, true, 'not-found'))
+        .rejects.toEqual(new Error("some-error"))
 
     expect(getParam).toHaveBeenCalledWith('/repo/not-found/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(null);
