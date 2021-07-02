@@ -1,17 +1,14 @@
 import { when } from "jest-when";
 import { generateApiKeys } from "../generate-api-keys";
 import { getParam, generateApiKey } from "../../aws-clients/ssm-client";
-import { initializeConfig } from "../../config";
 import { convertStringListToArray } from "../../helpers";
 import { restartServices } from "../../restart-services/restart-services";
 
 jest.mock('../../aws-clients/ssm-client');
-jest.mock('../../config');
 jest.mock('../../helpers');
 jest.mock('../../restart-services/restart-services');
 
 describe('generateApiKeys', () => {
-  initializeConfig.mockReturnValue({ nhsEnvironment: 'nhs-environment' });
   const apiKeysStringList = '/repo/env/api-keys/key,/repo/env/api-keys/key-1,/repo/env/api-keys/key-2';
   const ssmPath = `/repo/nhs-environment/user-input/service-api-keys`
 
@@ -36,7 +33,7 @@ describe('generateApiKeys', () => {
   it('should not create new ssm parameter for api keys that already exist in ssm', async () => {
     convertStringListToArray.mockReturnValueOnce(['/repo/env/api-keys/key','/repo/env/api-keys/key-1']);
 
-    await generateApiKeys(ssmPath, true);
+    await generateApiKeys(ssmPath, true, 'nhs-environment');
 
     expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(apiKeysStringList);
@@ -49,7 +46,7 @@ describe('generateApiKeys', () => {
   it('should create new ssm parameter for api key if it is not found', async () => {
     convertStringListToArray.mockReturnValueOnce(['/repo/env/api-keys/key','/repo/env/api-keys/key-1','/repo/env/api-keys/key-2'])
 
-    await generateApiKeys(ssmPath, true);
+    await generateApiKeys(ssmPath, true, 'nhs-environment');
 
     expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(apiKeysStringList);
@@ -58,14 +55,13 @@ describe('generateApiKeys', () => {
   });
 
   it('should throw an error when cannot get list of api keys from ssm', async () => {
-    initializeConfig.mockReturnValueOnce({ nhsEnvironment: 'not-found' });
     convertStringListToArray.mockImplementationOnce(() => {
       throw new Error('some-error')
     });
 
     const wrongSsmPath = `/repo/not-found/user-input/service-api-keys`
 
-    await generateApiKeys(wrongSsmPath, true);
+    await generateApiKeys(wrongSsmPath, true, 'not-found');
 
     expect(getParam).toHaveBeenCalledWith('/repo/not-found/user-input/service-api-keys')
     expect(convertStringListToArray).toHaveBeenCalledWith(null);

@@ -1,4 +1,4 @@
-import {initializeConfig} from "./config";
+
 
 export const convertStringListToArray = (apiKeysString) => {
   if (!apiKeysString) {
@@ -8,9 +8,7 @@ export const convertStringListToArray = (apiKeysString) => {
   }
 }
 
-const nhsEnvironment  = 'nhs-environment'
-
-export const convertUserListToUserListParamArray = (userApiKeys) => {
+export const convertUserListToUserListParamArray = (userApiKeys, nhsEnvironment) => {
   if (userApiKeys.length === 0) {
     throw new Error('Message');
   } else {

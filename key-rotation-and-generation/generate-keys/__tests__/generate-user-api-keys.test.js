@@ -1,32 +1,50 @@
-import {initializeConfig} from "../../config";
-import {convertStringListToArray} from "../../helpers";
-import {generateApiKeys} from "../generate-api-keys";
-import {generateApiKey, getParam} from "../../aws-clients/ssm-client";
-import {restartServices} from "../../restart-services/restart-services";
-import {when} from "jest-when";
+import { generateApiKeys } from "../generate-api-keys";
+import { generateApiKey, getParam } from "../../aws-clients/ssm-client";
+import { restartServices } from "../../restart-services/restart-services";
+import { when } from "jest-when";
 
 jest.mock('../../aws-clients/ssm-client');
-jest.mock('../../config');
-jest.mock('../../helpers');
 jest.mock('../../restart-services/restart-services');
 
 describe('generateUserApiKeys', () => {
-    initializeConfig.mockReturnValue({nhsEnvironment: 'nhs-environment'});
-    const apiKeysStringList = 'al.pacino1,rob.deniro,lady.gaga,joe.pesci';
-    const ssmPath = `/repo/nhs-environment/user-input/repo-dev-list`
+  const apiKeysStringList = 'al.pacino1,rob.deniro,lady.gaga,joe.pesci';
+  const ssmPath = `/repo/nhs-environment/user-input/repo-dev-list`
 
-    when(getParam)
-        .calledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        .mockResolvedValue('al.pacino1,rob.deniro,lady.gaga,joe.pesci')
+  when(getParam)
+    .calledWith('/repo/nhs-environment/user-input/repo-dev-list')
+    .mockResolvedValue(apiKeysStringList)
+    .calledWith('/repo/nhs-environment/user-input/empty-repo-dev-list')
+    .mockResolvedValue(null)
+    .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1')
+    .mockResolvedValue(null)
+    .calledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci')
+    .mockResolvedValue('key123');
 
 
-    it('should not create new user-api-key ssm parameter that already exist in ssm', async () => {
-        await generateApiKeys(ssmPath, false);
+  it('should create new user-api-key ssm parameter for a key that does not exist', async () => {
+    await generateApiKeys(ssmPath, false, 'nhs-environment');
 
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/api-keys/repo-to-gp/al.pacino1')
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/api-keys/repo-to-gp/lady.gaga')
-        expect(generateApiKey).toHaveBeenCalled();
-        expect(restartServices).toHaveBeenCalledWith([]);
-    });
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/al.pacino1')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/rob.deniro')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/lady.gaga')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/joe.pesci')
+    expect(generateApiKey).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1');
+    expect(restartServices).toHaveBeenCalledWith(
+      expect.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/al.pacino1'])
+    );
+  });
+
+  it('should not create new user-api-key ssm parameter for a key that already exists', async () => {
+    await generateApiKeys(ssmPath, false, 'nhs-environment');
+
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/al.pacino1')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/rob.deniro')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/lady.gaga')
+    expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/joe.pesci')
+    expect(generateApiKey).not.toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci');
+    expect(restartServices).toHaveBeenCalledWith(
+      expect.not.arrayContaining(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/joe.pesci']));
+  });
 })
