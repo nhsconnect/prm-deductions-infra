@@ -1,6 +1,6 @@
 format_version: 4
 pipelines:
-  "prm-deductions-api-key-rotation-and-generation":
+  "prm-deductions-service-api-key-rotation-and-generation":
     group: deductions
     label_template: "${git[:8]}"
     materials:
@@ -8,7 +8,7 @@ pipelines:
         type: configrepo
         whitelist:
           - key-rotation-and-generation/**/*.*
-          - gocd/keys.gocd.yml
+          - gocd/service-keys.gocd.yml
     stages:
       - unit_tests:
           clean_workspace: true
@@ -35,7 +35,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks generate_keys
+                      - ./tasks generate_service_keys
             rotate_keys:
               resources:
                 - docker
@@ -46,7 +46,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks rotate_keys
+                      - ./tasks rotate_service_keys
       - test_env:
           clean_workspace: true
           jobs:
@@ -60,7 +60,7 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks generate_keys
+                      - ./tasks generate_service_keys
             rotate_keys:
               resources:
                 - docker
@@ -71,4 +71,4 @@ pipelines:
                     command: /bin/bash
                     arguments:
                       - -c
-                      - ./tasks rotate_keys
+                      - ./tasks rotate_service_keys

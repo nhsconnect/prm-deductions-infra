@@ -442,25 +442,35 @@ case "${command}" in
   test_keys)
       dojo -c Dojofile-node "./tasks _test_keys"
       ;;
-  _generate_keys)
+  _generate_service_keys)
       cd key-rotation-and-generation
       npm install
       npm run generate:service-api-keys
       ;;
-  generate_keys)
+  generate_service_keys)
       check_env
       _assume_environment_role $NHS_ENVIRONMENT
-      dojo -c Dojofile-node "./tasks _generate_keys"
+      dojo -c Dojofile-node "./tasks _generate_service_keys"
       ;;
-  _rotate_keys)
+  _generate_user_keys)
       cd key-rotation-and-generation
       npm install
-      npm run rotate:service-api-keys
+      npm run generate:user-api-keys
       ;;
-  rotate_keys)
+  generate_user_keys)
       check_env
       _assume_environment_role $NHS_ENVIRONMENT
-      dojo -c Dojofile-node "./tasks _rotate_keys"
+      dojo -c Dojofile-node "./tasks _generate_user_keys"
+      ;;
+  _rotate_user_keys)
+      cd key-rotation-and-generation
+      npm install
+      npm run rotate:user-api-keys
+      ;;
+  rotate_user_keys)
+      check_env
+      _assume_environment_role $NHS_ENVIRONMENT
+      dojo -c Dojofile-node "./tasks _rotate_user_keys"
       ;;
   *)
       echo "Invalid command: '${command}'"
