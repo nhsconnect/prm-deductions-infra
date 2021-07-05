@@ -22,6 +22,7 @@ describe('rotateApiKeys', () => {
     getRotateApiKeyTag.mockRestore();
     rotateApiKey.mockRestore();
     removeRotateApiKeyTag.mockRestore();
+    // restartServices.mockRestore();
   })
 
   it('should rotate api key when the parameter is tagged with RotateApiKey', async () => {
@@ -38,6 +39,7 @@ describe('rotateApiKeys', () => {
     expect(removeRotateApiKeyTag).toHaveBeenCalledWith('/repo/env/api-keys/key');
     expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key'])
     expect(restartServices).toHaveBeenCalledTimes(1)
+    expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key']);
   });
 
   it('should not rotate api keys when parameters are not tagged', async () => {
@@ -52,5 +54,23 @@ describe('rotateApiKeys', () => {
     expect(rotateApiKey).not.toHaveBeenCalled();
     expect(removeRotateApiKeyTag).not.toHaveBeenCalled();
     expect(restartServices).toHaveBeenCalledWith([]);
+  });
+
+  it('should only rotate service api keys, not user api keys when isService is true', async () => {
+    getParamsByPath.mockResolvedValueOnce(['/repo/env/api-keys/key', '/repo/env/api-keys/key-1', '/repo/env/api-keys/api-key-user/user', '/repo/env/api-keys/api-key-user/user-1']);
+
+    await rotateApiKeys(true);
+
+    expect(getParamsByPath).toHaveBeenCalledWith('/repo/env/user-input/api-keys/');
+    expect(getRotateApiKeyTag).not.toHaveBeenCalledWith('/repo/env/api-keys/api-key-user/user');
+    expect(getRotateApiKeyTag).not.toHaveBeenCalledWith('/repo/env/api-keys/api-key-user/user-1');
+    expect(getRotateApiKeyTag).toHaveBeenCalledWith('/repo/env/api-keys/key');
+    expect(getRotateApiKeyTag).toHaveBeenCalledWith('/repo/env/api-keys/key-1');
+
+    expect(rotateApiKey).not.toHaveBeenCalledWith('/repo/env/api-keys/api-key-user/user');
+    expect(removeRotateApiKeyTag).not.toHaveBeenCalledWith('/repo/env/api-keys/api-key-user/user');
+
+    expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key'])
+
   });
 });
