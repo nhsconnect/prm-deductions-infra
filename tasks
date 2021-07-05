@@ -462,6 +462,16 @@ case "${command}" in
       _assume_environment_role $NHS_ENVIRONMENT
       dojo -c Dojofile-node "./tasks _generate_user_keys"
       ;;
+  _rotate_service_keys)
+      cd key-rotation-and-generation
+      npm install
+      npm run rotate:service-api-keys
+      ;;
+  rotate_service_keys)
+      check_env
+      _assume_environment_role $NHS_ENVIRONMENT
+      dojo -c Dojofile-node "./tasks _rotate_service_keys"
+      ;;
   _rotate_user_keys)
       cd key-rotation-and-generation
       npm install
