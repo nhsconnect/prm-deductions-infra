@@ -42,6 +42,7 @@ describe('Restart services', () => {
     expect(restartECS).toHaveBeenCalledWith('other-fake-repo')
     expect(restartECS).toHaveBeenCalledWith('fake-repo-1')
     expect(restartECS).toHaveBeenCalledWith('fake-repo-2')
+    expect(restartECS).not.toHaveBeenCalledWith('api-key-user')
     expect(restartECS).toHaveBeenCalledTimes(4)
   });
 })

@@ -8,7 +8,7 @@ export const restartServices = async (apiKeys) => {
     const services = key.split(`/repo/${initializeConfig().nhsEnvironment}/user-input/api-keys/`)[1];
     const [ producerService, consumerService ] = services.split('/');
     addToServicesToRestart(servicesToRestart, producerService);
-    if(consumerService !== 'api-key-user'){
+    if(consumerService !== 'api-key-user' && consumerService !== 'e2e-test' ){
       addToServicesToRestart(servicesToRestart, consumerService);
     }
   }
@@ -19,9 +19,7 @@ export const restartServices = async (apiKeys) => {
 };
 
 function addToServicesToRestart(servicesToRestart, serviceName) {
-  if (!servicesToRestart.includes(serviceName) && serviceName !== 'e2e-test') {
-    if (!servicesToRestart.includes(serviceName)){
-      servicesToRestart.push(serviceName);
-    }
+  if (!servicesToRestart.includes(serviceName)) {
+    servicesToRestart.push(serviceName);
   }
 }
