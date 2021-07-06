@@ -42,6 +42,7 @@ state_db_engine_version    = "11.5"
 state_db_instance_class    = "db.t2.small"
 
 mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD
+mhs_vpc_additional_cidr_block = "10.239.68.0/25"
 
 deploy_mhs_test_harness = false
 deploy_opentest = false

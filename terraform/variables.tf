@@ -186,6 +186,11 @@ variable "mhs_vpc_cidr_block" {
   description = "The CIDR block to use for the MHS VPC that is created. Should be a /16 block. Note that this cidr block must not overlap with the cidr blocks of the VPCs that the MHS VPC is to be peered with."
 }
 
+variable "mhs_vpc_additional_cidr_block" {
+  type = string
+  description = "The additional CIDR block to use for MHS VPC"
+}
+
 variable "spine_cidr_block" { default = "" }
 
 variable "mhs_cidr_newbits" {

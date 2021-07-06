@@ -17,3 +17,9 @@ resource "aws_vpc" "mhs_vpc" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
+  count      = var.mhs_vpc_additional_cidr_block == "" ? 0 : 1
+  vpc_id     = aws_vpc.mhs_vpc.id
+  cidr_block = var.mhs_vpc_additional_cidr_block
+}

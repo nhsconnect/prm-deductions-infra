@@ -56,6 +56,7 @@ module "repo" {
   }
   environment    = var.environment
   mhs_vpc_cidr_block = local.repo_cidr_block
+  mhs_vpc_additional_cidr_block = var.mhs_vpc_additional_cidr_block
   repo_name = var.repo_name
   cluster_name = "repo"
   deploy_opentest = var.deploy_opentest
@@ -87,6 +88,7 @@ module "test-harness" {
   count = var.deploy_mhs_test_harness ? 1 : 0
   environment    = var.environment
   mhs_vpc_cidr_block = local.second_half_mhs_cidr_block
+  mhs_vpc_additional_cidr_block = var.mhs_vpc_additional_cidr_block
   repo_name = var.repo_name
   cluster_name = "test-harness"
   deploy_opentest = var.deploy_opentest
