@@ -10,14 +10,15 @@ jest.mock('../../config');
 
 describe('rotateApiKeys', () => {
     initializeConfig.mockReturnValue({nhsEnvironment: 'env'});
-    when(getRotateApiKeyTag)
-        .calledWith('/repo/env/api-keys/api-key-user/user')
-        .mockResolvedValue(true)
-        .calledWith('/repo/env/api-keys/api-key-user/user-1')
-        .mockResolvedValue(false)
-        .calledWith('/repo/env/api-keys/api-key-user/user-2')
-        .mockResolvedValue(false);
-
+    beforeEach(()=> {
+        when(getRotateApiKeyTag)
+            .calledWith('/repo/env/api-keys/api-key-user/user')
+            .mockResolvedValue(true)
+            .calledWith('/repo/env/api-keys/api-key-user/user-1')
+            .mockResolvedValue(false)
+            .calledWith('/repo/env/api-keys/api-key-user/user-2')
+            .mockResolvedValue(false);
+    })
     afterEach(() => {
         getRotateApiKeyTag.mockRestore();
         rotateApiKey.mockRestore();

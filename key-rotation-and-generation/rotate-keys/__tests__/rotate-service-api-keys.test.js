@@ -10,13 +10,16 @@ jest.mock('../../config');
 
 describe('rotateApiKeys', () => {
   initializeConfig.mockReturnValue({ nhsEnvironment: 'env'});
-  when(getRotateApiKeyTag)
-    .calledWith('/repo/env/api-keys/key')
-    .mockResolvedValue(true)
-    .calledWith('/repo/env/api-keys/key-1')
-    .mockResolvedValue(false)
-    .calledWith('/repo/env/api-keys/key-2')
-    .mockResolvedValue(false);
+
+  beforeEach(()=> {
+    when(getRotateApiKeyTag)
+        .calledWith('/repo/env/api-keys/key')
+        .mockResolvedValue(true)
+        .calledWith('/repo/env/api-keys/key-1')
+        .mockResolvedValue(false)
+        .calledWith('/repo/env/api-keys/key-2')
+        .mockResolvedValue(false);
+  })
 
   afterEach(() => {
     getRotateApiKeyTag.mockRestore();
@@ -56,9 +59,6 @@ describe('rotateApiKeys', () => {
 
   it('should only rotate service api keys, not user api keys when isService is true', async () => {
     getParamsByPath.mockResolvedValueOnce(['/repo/env/api-keys/key', '/repo/env/api-keys/key-1', '/repo/env/api-keys/api-key-user/user', '/repo/env/api-keys/api-key-user/user-1']);
-    when(getRotateApiKeyTag)
-        .calledWith('/repo/env/api-keys/key')
-        .mockResolvedValue(true)
     await rotateApiKeys(true);
 
     expect(getParamsByPath).toHaveBeenCalledWith('/repo/env/user-input/api-keys/');
@@ -71,6 +71,8 @@ describe('rotateApiKeys', () => {
     expect(removeRotateApiKeyTag).not.toHaveBeenCalledWith('/repo/env/api-keys/api-key-user/user');
 
     expect(restartServices).toHaveBeenCalledWith(['/repo/env/api-keys/key'])
+    expect(restartServices).toHaveBeenCalledTimes(1);
+
 
   });
 });
