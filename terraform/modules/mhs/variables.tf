@@ -35,12 +35,11 @@ variable "mhs_private_cidr_blocks" {}
 variable "internet_private_cidr_block" {}
 variable "deductions_private_vpc_id" {}
 variable "cluster_name" {}
-variable "mhs_public_cidr_block" {}
+variable "mhs_public_cidr_blocks" {}
 variable "mhs_cluster_domain_name" {}
 variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
 
 variable "deploy_opentest" {}
-variable "deploy_public_subnet" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_hscn" {}

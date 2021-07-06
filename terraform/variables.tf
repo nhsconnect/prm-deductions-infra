@@ -210,6 +210,7 @@ variable "common_account_id" {}
 variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
-variable "deploy_mhs_public_subnet" {}
 variable "deploy_opentest" {}
 variable "deploy_hscn" {}
+variable "mhs_repo_public_subnets" {}
+variable "mhs_test_harness_public_subnets" {}
