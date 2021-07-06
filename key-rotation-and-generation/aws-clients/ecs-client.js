@@ -1,11 +1,9 @@
 import {
   DescribeServicesCommand,
-  ECSClient,
   UpdateServiceCommand
 } from "@aws-sdk/client-ecs";
+import {ecsClient as client} from "./clients"
 import { initializeConfig } from "../config";
-
-const client = new ECSClient({ region: "eu-west-2" });
 
 export const restartECS = async (serviceName) => {
   const service = `${initializeConfig().nhsEnvironment}-${serviceName}-service`

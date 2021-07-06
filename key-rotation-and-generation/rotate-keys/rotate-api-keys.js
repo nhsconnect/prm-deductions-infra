@@ -18,6 +18,7 @@ export const rotateApiKeys = async (isService) => {
     await restartServices(rotatedApiKeys);
   } catch (e) {
     console.log(e);
+    throw e
   }
 };
 
@@ -31,5 +32,6 @@ async function rotation(apiKeysArray) {
       rotatedApiKeys.push(apiKey);
     }
   }
+  console.log(`Total keys rotated ${rotatedApiKeys.length}. Keys rotated: ${rotatedApiKeys}`)
   return rotatedApiKeys;
 }

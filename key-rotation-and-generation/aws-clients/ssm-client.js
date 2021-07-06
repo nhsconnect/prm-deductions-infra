@@ -1,14 +1,12 @@
 import randomstring from "randomstring";
+import {ssmClient as client} from "./clients"
 import {
   GetParameterCommand,
   GetParametersByPathCommand,
   ListTagsForResourceCommand,
   PutParameterCommand,
   RemoveTagsFromResourceCommand,
-  SSMClient
 } from '@aws-sdk/client-ssm';
-
-const client = new SSMClient({ region: "eu-west-2" });
 
 export const getParam = async (parameterName) => {
   const command = new GetParameterCommand({ Name: parameterName });
@@ -25,9 +23,23 @@ export const getParam = async (parameterName) => {
 };
 
 export const getParamsByPath = async (ssmPath) => {
+  console.log(`Getting first set of parameters for ssm path ${ssmPath}`)
   const command = new GetParametersByPathCommand({ Path: ssmPath, Recursive: true });
   const response = await client.send(command);
-  return response.Parameters.map(param => param.Name);
+
+  let results = response.Parameters.map(param => param.Name)
+  let nextToken = response.NextToken
+
+  while (nextToken) {
+    console.log(`NextToken is present getting next set of parameters for ssm path ${ssmPath} starting from result ${results.length}`)
+    const command = new GetParametersByPathCommand({ Path: ssmPath, Recursive: true, NextToken: nextToken });
+    const response = await client.send(command);
+    results = results.concat(response.Parameters.map(param => param.Name))
+    nextToken = response.NextToken
+  }
+  console.log(`Total ${results.length} parameters found for ${ssmPath}`)
+
+  return results
 };
 
 export const generateApiKey = async (parameterName) => {
