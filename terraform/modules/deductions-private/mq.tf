@@ -138,28 +138,33 @@ resource "aws_security_group" "service_to_mq" {
   description = "controls access from repo services to AMQ"
   vpc_id      = module.vpc.vpc_id
 
-  ingress {
-    description = "Allow traffic from Internal ALB to AMQ"
-    protocol            = "tcp"
-    from_port           = "8162"
-    to_port             = "8162"
-    security_groups = [aws_security_group.vpn_to_mq_admin.id]
-  }
-
-  egress {
-    description = "Allow All Outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = {
     Name = "${var.environment}-service-to-${var.component_name}-sg"
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
 }
+
+resource "aws_security_group_rule" "service_to_mq_ingress" {
+  description = "Allow traffic from Internal ALB to AMQ"
+  from_port           = "8162"
+  to_port             = "8162"
+  protocol = "tcp"
+  security_group_id = aws_security_group.service_to_mq.id
+  source_security_group_id = aws_security_group.vpn_to_mq_admin.id
+  type = "ingress"
+}
+
+resource "aws_security_group_rule" "service_to_mq_egress" {
+  description = "Allow All Outbound"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.service_to_mq.id
+  type = "egress"
+}
+
 
 resource "aws_ssm_parameter" "service_to_mq" {
   name = "/repo/${var.environment}/output/${var.repo_name}/service-to-mq-sg-id"
