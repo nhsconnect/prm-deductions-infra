@@ -1,6 +1,6 @@
 format_version: 4
 pipelines:
-  "prm-deductions-service-api-key-rotation-and-generation":
+  "prm-deductions-service-api-keys":
     group: deductions
     label_template: "${git[:8]}"
     materials:
