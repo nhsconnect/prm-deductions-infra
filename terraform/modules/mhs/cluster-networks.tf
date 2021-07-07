@@ -11,7 +11,7 @@ module "cluster" {
   deductions_private_cidr = var.deductions_private_cidr
   deductions_private_vpc_peering_connection_id = aws_vpc_peering_connection.private_mhs.id
   deploy_opentest = var.deploy_opentest
-  mhs_nat_gateway_id = aws_nat_gateway.internet.id
+  mhs_nat_gateway_id = join(",", aws_nat_gateway.internet.*.id)
   mhs_subnets = var.mhs_private_cidr_blocks
   opentest_cidr_block = var.internet_private_cidr_block
   mhs_vpc_cidr_block = var.mhs_vpc_cidr_block

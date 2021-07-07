@@ -1,6 +1,7 @@
 resource "aws_nat_gateway" "internet" {
-  allocation_id = aws_eip.nat_public_ip.id
-  subnet_id     = aws_subnet.mhs_public[0].id
+  count = 3
+  allocation_id = aws_eip.nat_public_ip[count.index].id
+  subnet_id     = aws_subnet.mhs_public[count.index].id
 
   tags = {
     Name = "${var.environment}-${var.cluster_name}-mhs-nat-gateway"
@@ -10,6 +11,7 @@ resource "aws_nat_gateway" "internet" {
 }
 
 resource "aws_eip" "nat_public_ip" {
+  count = 3
   tags = {
     Name = "${var.environment}-${var.cluster_name}-mhs-nat-public-ip"
   }
