@@ -1,12 +1,13 @@
 import randomstring from "randomstring";
 import {ssmClient as client} from "./clients"
 import {
+  DeleteParameterCommand,
   GetParameterCommand,
   GetParametersByPathCommand,
   ListTagsForResourceCommand,
   PutParameterCommand,
-  RemoveTagsFromResourceCommand,
-} from '@aws-sdk/client-ssm';
+  RemoveTagsFromResourceCommand
+} from '@aws-sdk/client-ssm'
 
 export const getParam = async (parameterName) => {
   const command = new GetParameterCommand({ Name: parameterName });
@@ -59,7 +60,10 @@ export const rotateApiKey = async (parameterName) => {
 }
 
 export const deleteApiKey = async (parameterName) => {
+  const command = new DeleteParameterCommand({Name: parameterName});
+  await client.send(command);
 
+  console.log(`${parameterName} API Key has been deleted`)
 }
 
 export const getRotateApiKeyTag = async (ssmPath) => {

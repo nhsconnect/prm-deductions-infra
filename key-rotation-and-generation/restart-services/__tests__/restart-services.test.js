@@ -1,6 +1,8 @@
 import { restartServices } from "../restart-services";
 import { restartECS } from "../../aws-clients/ecs-client";
 import { initializeConfig } from "../../config";
+import {when} from "jest-when"
+import {ClusterNotFoundException} from "@aws-sdk/client-ecs"
 
 jest.mock('../../aws-clients/ecs-client');
 jest.mock('../../config');
@@ -43,6 +45,27 @@ describe('Restart services', () => {
     expect(restartECS).toHaveBeenCalledWith('fake-repo-1')
     expect(restartECS).toHaveBeenCalledWith('fake-repo-2')
     expect(restartECS).not.toHaveBeenCalledWith('api-key-user')
+    expect(restartECS).toHaveBeenCalledTimes(4)
+  });
+
+  it('should catch ClusterNotFoundException and continue restarting services', async () => {
+    const apiKeys = ['/repo/env/user-input/api-keys/not-existing-repo/existing-repo',
+      '/repo/env/user-input/api-keys/third/fourth']
+
+    function MockClusterNotFoundException() {
+      this.name = "ClusterNotFoundException";
+      this.message = "Cluster not found";
+    }
+
+    when(restartECS).calledWith('not-existing-repo').mockRejectedValue(new MockClusterNotFoundException())
+
+    await restartServices(apiKeys)
+    console.log(Error.name)
+
+    expect(restartECS).toHaveBeenCalledWith('not-existing-repo')
+    expect(restartECS).toHaveBeenCalledWith('existing-repo')
+    expect(restartECS).toHaveBeenCalledWith('third')
+    expect(restartECS).toHaveBeenCalledWith('fourth')
     expect(restartECS).toHaveBeenCalledTimes(4)
   });
 })
