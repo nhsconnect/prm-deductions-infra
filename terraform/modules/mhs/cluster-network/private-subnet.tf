@@ -21,5 +21,5 @@ resource "aws_subnet" "mhs_subnet" {
 resource "aws_route_table_association" "mhs" {
   count = 3
   subnet_id      = aws_subnet.mhs_subnet[count.index].id
-  route_table_id = aws_route_table.mhs.id
+  route_table_id = aws_route_table.mhs[count.index].id
 }

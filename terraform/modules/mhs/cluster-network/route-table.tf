@@ -1,4 +1,5 @@
 resource "aws_route_table" "mhs" {
+  count = 3
   vpc_id = var.mhs_vpc_id
   tags = {
     Name = "${var.environment}-${var.cluster_name}-mhs-route-table"
@@ -8,34 +9,36 @@ resource "aws_route_table" "mhs" {
 }
 
 resource "aws_route" "internet" {
-  route_table_id =   aws_route_table.mhs.id
+  count = 3
+  route_table_id =   aws_route_table.mhs[count.index].id
   destination_cidr_block =  "0.0.0.0/0"
-  nat_gateway_id = var.mhs_nat_gateway_id[0]
+  nat_gateway_id = var.mhs_nat_gateway_id[count.index]
 }
 
 resource "aws_route" "deductions_private" {
-  route_table_id            = aws_route_table.mhs.id
+  count = 3
+  route_table_id            = aws_route_table.mhs[count.index].id
   destination_cidr_block    = var.deductions_private_cidr
   vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
 }
 
 resource "aws_route" "spine" {
-  count = var.deploy_opentest ? 1 : 0
-  route_table_id            = aws_route_table.mhs.id
+  count = var.deploy_opentest ? 3 : 0
+  route_table_id            = aws_route_table.mhs[count.index].id
   destination_cidr_block    = var.spine_cidr_block
   instance_id = join(",", module.opentest.*.vpn_instance_id)
 }
 
 resource "aws_route" "spine_hscn" {
-  count = var.deploy_hscn ? 1 : 0
-  route_table_id            = aws_route_table.mhs.id
+  count = var.deploy_hscn ? 3 : 0
+  route_table_id            = aws_route_table.mhs[count.index].id
   destination_cidr_block    = "10.0.0.0/8"
   gateway_id = var.hscn_gateway_id
 }
 
 resource "aws_route" "spine_hscn_dns" {
-  count = var.deploy_hscn ? 1 : 0
-  route_table_id            = aws_route_table.mhs.id
+  count = var.deploy_hscn ? 3 : 0
+  route_table_id            = aws_route_table.mhs[count.index].id
   destination_cidr_block    = "155.231.231.0/30"
   gateway_id = var.hscn_gateway_id
 }
@@ -74,7 +77,8 @@ resource "aws_vpc_peering_connection_accepter" "deductions_to_gocd" {
 }
 
 resource "aws_route" "mhs_to_gocd" {
-  route_table_id            = aws_route_table.mhs.id
+  count = 3
+  route_table_id            = aws_route_table.mhs[count.index].id
   destination_cidr_block    = var.gocd_cidr
   vpc_peering_connection_id = aws_vpc_peering_connection.mhs_to_gocd.id
 }
