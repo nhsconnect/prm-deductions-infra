@@ -7,6 +7,12 @@ resource "aws_route_table" "mhs" {
   }
 }
 
+resource "aws_route" "internet" {
+  route_table_id =   aws_route_table.mhs.id
+  destination_cidr_block =  "0.0.0.0/0"
+  nat_gateway_id = var.mhs_nat_gateway_id
+}
+
 resource "aws_route" "deductions_private" {
   route_table_id            = aws_route_table.mhs.id
   destination_cidr_block    = var.deductions_private_cidr
