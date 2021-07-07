@@ -3,6 +3,7 @@ import { convertStringListToArray,convertUserListToUserListParamArray } from "..
 import { restartServices } from "../restart-services/restart-services";
 
 export const generateApiKeys = async (ssmPath, isService, nhsEnvironment) => {
+  console.log('Starting key generation and deletion process')
   try {
     const expectedApiKeys = convertStringListToArray(await getParam(ssmPath))
     const actualApiKeys = await getParamsByPath(`/repo/${nhsEnvironment}/user-input/api-keys/`)
@@ -35,6 +36,7 @@ async function generateKeys(expectedApiKeys, actualApiKeys) {
       generatedApiKeys.push(expectedKey)
     }
   }
+  console.log(`Total keys generated ${generatedApiKeys.length}`)
   return generatedApiKeys;
 }
 
@@ -46,5 +48,6 @@ async function deleteKeys(expectedApiKeys, actualApiKeys) {
       deletedApiKeys.push(actualKey)
     }
   }
+  console.log(`Total keys deleted ${deletedApiKeys.length}`)
   return deletedApiKeys;
 }

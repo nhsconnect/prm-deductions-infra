@@ -3,6 +3,7 @@ import { getParamsByPath, getRotateApiKeyTag, removeRotateApiKeyTag, rotateApiKe
 import { restartServices } from "../restart-services/restart-services";
 
 export const rotateApiKeys = async (isService) => {
+  console.log('Starting key rotation process')
   const { nhsEnvironment } = initializeConfig();
 
   try {
