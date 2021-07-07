@@ -8,10 +8,9 @@ resource "aws_route_table" "mhs" {
 }
 
 resource "aws_route" "internet" {
-  count = 3
   route_table_id =   aws_route_table.mhs.id
   destination_cidr_block =  "0.0.0.0/0"
-  nat_gateway_id = var.mhs_nat_gateway_id[count.index]
+  nat_gateway_id = var.mhs_nat_gateway_id[0]
 }
 
 resource "aws_route" "deductions_private" {
