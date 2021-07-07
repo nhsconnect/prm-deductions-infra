@@ -29,7 +29,14 @@ resource "aws_route" "spine" {
 resource "aws_route" "spine_hscn" {
   count = var.deploy_hscn ? 1 : 0
   route_table_id            = aws_route_table.mhs.id
-  destination_cidr_block    = "0.0.0.0/0"
+  destination_cidr_block    = "10.0.0.0/8"
+  gateway_id = var.hscn_gateway_id
+}
+
+resource "aws_route" "spine_hscn_dns" {
+  count = var.deploy_hscn ? 1 : 0
+  route_table_id            = aws_route_table.mhs.id
+  destination_cidr_block    = "155.231.231.0/30"
   gateway_id = var.hscn_gateway_id
 }
 
