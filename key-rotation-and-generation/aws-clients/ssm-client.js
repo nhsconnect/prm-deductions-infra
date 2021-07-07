@@ -58,6 +58,10 @@ export const rotateApiKey = async (parameterName) => {
   console.log(`${parameterName} API Key has been rotated`)
 }
 
+export const deleteApiKey = async (parameterName) => {
+
+}
+
 export const getRotateApiKeyTag = async (ssmPath) => {
   const command = new ListTagsForResourceCommand({ ResourceId: ssmPath, ResourceType: 'Parameter' });
   const response = await client.send(command);

@@ -1,18 +1,19 @@
-import { generateApiKey, getParam } from "../aws-clients/ssm-client";
+import { generateApiKey, getParam, getParamsByPath, deleteApiKey } from "../aws-clients/ssm-client"
 import { convertStringListToArray,convertUserListToUserListParamArray } from "../helpers";
 import { restartServices } from "../restart-services/restart-services";
 
 export const generateApiKeys = async (ssmPath, isService, nhsEnvironment) => {
   try {
-    const apiKeysString = await getParam(ssmPath);
-    const apiKeysArray = convertStringListToArray(apiKeysString)
-    let restartServiceList;
+    const expectedApiKeys = convertStringListToArray(await getParam(ssmPath))
+    const actualApiKeys = await getParamsByPath(`/repo/${nhsEnvironment}/user-input/api-keys/`)
+
     if (!isService){
-      restartServiceList = await generate(convertUserListToUserListParamArray(apiKeysArray, nhsEnvironment))
-      await restartServices(restartServiceList);
+      const actualUserApiKeys = actualApiKeys.filter(apiKey => apiKey.includes("/api-key-user/"));
+      const expectedUserApiKeys = convertUserListToUserListParamArray(expectedApiKeys, nhsEnvironment)
+      await processKeysAndRestartService(expectedUserApiKeys, actualUserApiKeys)
     } else {
-      restartServiceList = await generate(apiKeysArray)
-      await restartServices(restartServiceList);
+      const actualServiceApiKeys = actualApiKeys.filter(apiKey => !apiKey.includes("/api-key-user/"));
+      await processKeysAndRestartService(expectedApiKeys, actualServiceApiKeys)
     }
   } catch (err) {
     console.log(err);
@@ -20,14 +21,30 @@ export const generateApiKeys = async (ssmPath, isService, nhsEnvironment) => {
   }
 };
 
-async function generate(apiKeysArray) {
-  let generatedApiKeys = []
-  for (const apiKey of apiKeysArray) {
-    const apiKeyValue = await getParam(apiKey);
-    if (!apiKeyValue) {
-      await generateApiKey(apiKey);
-      generatedApiKeys.push(apiKey)
+async function processKeysAndRestartService(expectedApiKeys, actualApiKeys) {
+  const generatedKeys = await generateKeys(expectedApiKeys, actualApiKeys)
+  const deletedKeys = await deleteKeys(expectedApiKeys, actualApiKeys)
+  await restartServices(generatedKeys.concat(deletedKeys));
+}
+
+async function generateKeys(expectedApiKeys, actualApiKeys) {
+  const generatedApiKeys = []
+  for (const expectedKey of expectedApiKeys) {
+    if (!actualApiKeys.includes(expectedKey)) {
+      await generateApiKey(expectedKey);
+      generatedApiKeys.push(expectedKey)
     }
   }
   return generatedApiKeys;
+}
+
+async function deleteKeys(expectedApiKeys, actualApiKeys) {
+  const deletedApiKeys = []
+  for (const actualKey of actualApiKeys) {
+    if (!expectedApiKeys.includes(actualKey)) {
+      await deleteApiKey(actualKey);
+      deletedApiKeys.push(actualKey)
+    }
+  }
+  return deletedApiKeys;
 }

@@ -10,7 +10,7 @@ export const convertStringListToArray = (apiKeysString) => {
 
 export const convertUserListToUserListParamArray = (userApiKeys, nhsEnvironment) => {
   if (userApiKeys.length === 0) {
-    throw new Error('Message');
+    throw new Error('Expected user api key list is empty');
   } else {
     const paramList = []
     for (const apiKey of userApiKeys){

@@ -32,6 +32,6 @@ async function rotation(apiKeysArray) {
       rotatedApiKeys.push(apiKey);
     }
   }
-  console.log(`Total keys rotated ${rotatedApiKeys.length}. Keys rotated: ${rotatedApiKeys}`)
+  console.log(`Total keys rotated ${rotatedApiKeys.length}`)
   return rotatedApiKeys;
 }
