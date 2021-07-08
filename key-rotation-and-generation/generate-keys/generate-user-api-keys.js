@@ -4,4 +4,6 @@ import { initializeConfig } from "../config";
 const { nhsEnvironment } = initializeConfig();
 
 generateApiKeys(`/repo/${nhsEnvironment}/user-input/repo-dev-list`, false, nhsEnvironment)
-  .catch(e => throw e);
+  .catch(e => {
+    throw e
+  });

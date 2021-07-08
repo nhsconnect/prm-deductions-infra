@@ -1,3 +1,5 @@
 import { rotateApiKeys } from "./rotate-api-keys";
 
-rotateApiKeys(false).catch(e => throw e);
+rotateApiKeys(false).catch(e => {
+  throw e
+});
