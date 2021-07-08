@@ -7,7 +7,7 @@ resource "aws_network_acl" "mhs_public" {
 resource "aws_network_acl_rule" "ingress_sig" {
   count = length(var.inbound_sig_ips)
   network_acl_id = aws_network_acl.mhs_public[0].id
-  protocol = -1
+  protocol = "TCP(6)"
   rule_action = "allow"
   rule_number = 100 + count.index
   cidr_block = var.inbound_sig_ips[count.index]
@@ -17,7 +17,7 @@ resource "aws_network_acl_rule" "egress_sig" {
   count = length(var.inbound_sig_ips)
   network_acl_id = aws_network_acl.mhs_public[0].id
   egress = true
-  protocol = -1
+  protocol = "TCP(6)"
   rule_action = "allow"
   rule_number = 100 + count.index
   cidr_block = var.inbound_sig_ips[count.index]
