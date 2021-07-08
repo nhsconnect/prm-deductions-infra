@@ -72,6 +72,7 @@ module "repo" {
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   deploy_hscn = var.deploy_hscn
+  inbound_sig_ips = var.inbound_sig_ips
 }
 
 module "test-harness" {
@@ -103,6 +104,7 @@ module "test-harness" {
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   deploy_hscn = var.deploy_hscn
+  inbound_sig_ips = var.inbound_sig_ips
 }
 
 module "deductions-private" {

@@ -214,3 +214,4 @@ variable "deploy_opentest" {}
 variable "deploy_hscn" {}
 variable "mhs_repo_public_subnets" {}
 variable "mhs_test_harness_public_subnets" {}
+variable "inbound_sig_ips" {}

@@ -43,3 +43,5 @@ variable "gocd_cidr" {}
 variable "deploy_opentest" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_hscn" {}
+
+variable "inbound_sig_ips" {}
