@@ -57,5 +57,6 @@ dns_hscn_forward_server_1 = "155.231.231.1"
 dns_hscn_forward_server_2 = "155.231.231.2"
 hscn_gateway_id = "vgw-0ed5add471169ed85"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
-inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","81.170.27.222/32"]
+inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32"]
+deploy_mhs_nacl = true
 

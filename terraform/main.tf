@@ -73,6 +73,7 @@ module "repo" {
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   deploy_hscn = var.deploy_hscn
   inbound_sig_ips = var.inbound_sig_ips
+  deploy_mhs_nacl= var.deploy_mhs_nacl
 }
 
 module "test-harness" {
@@ -105,6 +106,7 @@ module "test-harness" {
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   deploy_hscn = var.deploy_hscn
   inbound_sig_ips = var.inbound_sig_ips
+  deploy_mhs_nacl= var.deploy_mhs_nacl
 }
 
 module "deductions-private" {
