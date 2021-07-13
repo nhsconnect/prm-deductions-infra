@@ -8,6 +8,7 @@ data "aws_iam_policy_document" "trust_policy" {
       identifiers = [
         "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/RepoAdmin",         # dev environment (in dev account)
         "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/NHSDAdminRole",  # test environment (in ci account)
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/RepoAdmin",    # pre-prod environment (in pre-prod account)
         # more accounts will follow for other environments...
       ]
     }
@@ -27,4 +28,8 @@ resource "aws_iam_role_policy_attachment" "repo_admin" {
 
 data "aws_ssm_parameter" "dev_account_id" {
   name = "/repo/dev/user-input/external/aws-account-id"
+}
+
+data "aws_ssm_parameter" "pre_prod_account_id" {
+  name = "/repo/pre-prod/user-input/external/aws-account-id"
 }
