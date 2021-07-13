@@ -46,7 +46,7 @@ state_db_instance_class    = "db.t2.small"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
 mhs_vpc_additional_cidr_block = ""
-mhs_repo_public_subnets   = ["10.34.112.0/22", "10.34.116.0/22", "10.34.120.0/22"]
+mhs_repo_public_subnets   = ["10.36.112.0/22", "10.36.116.0/22", "10.36.120.0/22"]
 mhs_test_harness_public_subnets = []
 
 deploy_mhs_test_harness = false
