@@ -9,7 +9,6 @@ gocd_cidr = "10.1.0.0/16"
 
 deductions_private_cidr             = "10.22.0.0/16"
 deductions_core_cidr             = "10.27.0.0/16"
-mhs_vpc_cidr_block = "10.36.0.0/16"
 
 deductions_private_public_subnets   = ["10.22.101.0/24", "10.22.102.0/24"]
 deductions_private_private_subnets  = ["10.22.1.0/24", "10.22.2.0/24"]
@@ -45,8 +44,9 @@ state_db_instance_class    = "db.t2.small"
 
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
+mhs_vpc_cidr_block = "10.36.0.0/16"
 mhs_vpc_additional_cidr_block = ""
-mhs_repo_public_subnets   = ["10.36.112.0/22", "10.36.116.0/22", "10.36.120.0/22"]
+mhs_repo_public_subnets   = ["10.36.112.0/27", "10.36.116.0/27", "10.36.120.0/27"]
 mhs_test_harness_public_subnets = []
 
 deploy_mhs_test_harness = false

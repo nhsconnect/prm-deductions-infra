@@ -400,10 +400,6 @@ case "${command}" in
       dojo "./tasks _wait_for_dns $2"
       ;;
   _create_secrets)
-      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-username"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/gp-to-repo-db-password"
-      generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-username"
-      generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/repo-to-gp-db-password"
       generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"
       generate_secret_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-password"
       generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-app-username"
