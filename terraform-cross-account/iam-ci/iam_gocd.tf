@@ -5,7 +5,8 @@ data "aws_iam_policy_document" "gocd_trust_policy" {
       type        = "AWS"
       identifiers = [
         "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/repository-ci-agent",   # dev environment (in dev account)
-        "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/gocd_agent-prod"     # test environment (in ci account)
+        "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/gocd_agent-prod",     # test environment (in ci account)
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/repository-ci-agent",   # pre-prod environment (in pre-prod account)
         # more accounts will follow for other environments...
       ]
     }
