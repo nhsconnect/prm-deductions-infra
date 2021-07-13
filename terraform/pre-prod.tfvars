@@ -1,4 +1,4 @@
-environment = "test"
+environment = "pre-prod"
 region      = "eu-west-2"
 repo_name   = "prm-deductions-infra"
 
