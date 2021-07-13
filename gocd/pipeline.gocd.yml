@@ -184,3 +184,34 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks wait_for_dns repo
+      - promote_docker_image_pre_prod:
+          clean_workspace: true
+          resources:
+            - docker
+          environment_variables:
+            NHS_ENVIRONMENT: pre-prod
+          tasks:
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks promote_docker_image
+      - deploy_pre_prod:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: pre-prod
+          jobs:
+            apply: *apply_job
+      - wait_dns_pre_prod:
+          environment_variables:
+            NHS_ENVIRONMENT: pre-prod
+          jobs:
+            repo:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks wait_for_dns repo

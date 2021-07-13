@@ -11,7 +11,7 @@ if [ -z "${DNS_IMAGE_TAG}" ]; then
 fi
 
 AWS_HELPERS_FILE="utils/aws-helpers"
-AWS_HELPERS_VERSION=0.2.1
+AWS_HELPERS_VERSION="0.2.2"
 mkdir -p utils
 if [[ ! -f $AWS_HELPERS_FILE ]];then
   wget --quiet -O $AWS_HELPERS_FILE https://github.com/nhsconnect/prm-deductions-support-infra/releases/download/${AWS_HELPERS_VERSION}/aws-helpers
@@ -412,6 +412,7 @@ case "${command}" in
   create_secrets)
       # Needs to run only once, when adding new environment
       check_env
+      _assume_environment_role $NHS_ENVIRONMENT
       dojo "./tasks _create_secrets"
       ;;
   _generate_vpn_ca)
@@ -424,6 +425,8 @@ case "${command}" in
       generate_vpn_server_crt
       ;;
   generate_vpn_server_crt)
+      check_env
+      _assume_environment_role $NHS_ENVIRONMENT
       dojo "./tasks _generate_vpn_server_crt"
       ;;
   _generate_vpn_client_crt)
