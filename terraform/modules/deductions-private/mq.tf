@@ -186,7 +186,7 @@ resource "aws_security_group" "vpn_to_mq" {
     from_port = "61614"
     to_port = "61614"
     description = "Allow traffic from VPN to MQ through STOMP"
-    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+    security_groups = [aws_security_group.vpn.id]
   }
 
   ingress {
@@ -194,7 +194,7 @@ resource "aws_security_group" "vpn_to_mq" {
     from_port       = "5671"
     to_port         = "5671"
     description = "Allow traffic from VPN to MQ through AMQP"
-    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+    security_groups = [aws_security_group.vpn.id]
   }
 
   egress {

@@ -134,7 +134,7 @@ resource "aws_security_group" "vpn_to_mq_admin" {
     protocol    = "tcp"
     from_port   = 443
     to_port     = 443
-    security_groups = [data.aws_ssm_parameter.vpn_sg_id.value]
+    security_groups = [aws_security_group.vpn.id]
   }
 
   egress {
@@ -150,10 +150,6 @@ resource "aws_security_group" "vpn_to_mq_admin" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
-}
-
-data "aws_ssm_parameter" "vpn_sg_id" {
-  name = "/repo/${var.environment}/output/prm-deductions-infra/vpn-sg-id"
 }
 
 data "aws_ssm_parameter" "gocd_sg_id" {

@@ -62,6 +62,7 @@ resource "aws_network_acl_rule" "egress_gocd" {
 }
 
 data "aws_ssm_parameter" "gocd_nat_public_ip" {
+  provider = aws.ci
   count = var.deploy_mhs_nacl ? 1 : 0
   name = "/repo/prod/output/prm-gocd-infra/gocd-agent-public-ip"
 }
