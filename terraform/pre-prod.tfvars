@@ -46,8 +46,12 @@ repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
 mhs_vpc_cidr_block = "10.36.0.0/16"
 mhs_vpc_additional_cidr_block = ""
-mhs_repo_public_subnets   = ["10.36.112.0/27", "10.36.116.0/27", "10.36.120.0/27"]
+mhs_repo_public_subnets  = ["10.36.112.0/22", "10.36.116.0/22", "10.36.120.0/22"]
+mhs_repo_private_subnets = ["10.36.128.0/22", "10.36.132.0/22", "10.36.136.0/22"]
 mhs_test_harness_public_subnets = []
+mhs_test_harness_private_subnets = []
+mhs_repo_opentest_subnet = ""
+mhs_test_harness_opentest_subnet = ""
 
 deploy_mhs_test_harness = false
 deploy_opentest = false

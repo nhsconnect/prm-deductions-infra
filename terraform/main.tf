@@ -22,26 +22,6 @@ locals {
   first_half_mhs_cidr_block = cidrsubnets(var.mhs_vpc_cidr_block, 1, 1)[0]
   second_half_mhs_cidr_block = cidrsubnets(var.mhs_vpc_cidr_block, 1, 1)[1]
   repo_cidr_block = var.deploy_mhs_test_harness ? local.first_half_mhs_cidr_block : var.mhs_vpc_cidr_block
-
-  repo_mhs_private_cidr_blocks = cidrsubnets(var.deploy_mhs_test_harness ? local.first_half_mhs_cidr_block : var.mhs_vpc_cidr_block, 2, 2, 2)
-  repo_internet_private_cidr_block = cidrsubnets(var.deploy_mhs_test_harness ? local.first_half_mhs_cidr_block : var.mhs_vpc_cidr_block, 2, 2, 2, 3, 3)[3]
-
-  test_harness_mhs_private_cidr_blocks = cidrsubnets(local.second_half_mhs_cidr_block, 2, 2, 2)
-  test_harness_internet_private_cidr_block = cidrsubnets(local.second_half_mhs_cidr_block, 2, 2, 2, 4, 4)[3]
-  //  in dev environment te following subnets are created: [
-  // repo_mhs_private_subnets:     "10.34.0.0/19",
-  //                               "10.34.32.0/19",
-  //                               "10.34.64.0/19",
-  // repo_internet_private_subnet: "10.34.96.0/20",
-  //]
-
-  // in test environment the following subnets are created : >  cidrsubnets("10.239.68.128/25", 2, 2, 2, 4, 4)
-  //[
-  // repo_mhs_private_subnets         "10.239.68.128/27",
-  //                                  "10.239.68.160/27",
-  //                                  "10.239.68.192/27",
-  //  repo_internet_private_subnet:   "10.239.68.224/28",
-  //]
 }
 
 module "repo" {
@@ -62,8 +42,8 @@ module "repo" {
   dns_forward_zone          = var.dns_forward_zone
   region = var.region
   unbound_image_version = var.unbound_image_version
-  mhs_private_cidr_blocks = local.repo_mhs_private_cidr_blocks
-  internet_private_cidr_block = local.repo_internet_private_cidr_block
+  mhs_private_cidr_blocks = var.mhs_repo_private_subnets
+  internet_private_cidr_block = var.mhs_repo_opentest_subnet
   mhs_public_cidr_blocks = var.mhs_repo_public_subnets
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
@@ -95,8 +75,8 @@ module "test-harness" {
   dns_forward_zone          = var.dns_forward_zone
   region = var.region
   unbound_image_version = var.unbound_image_version
-  mhs_private_cidr_blocks = local.test_harness_mhs_private_cidr_blocks
-  internet_private_cidr_block = local.test_harness_internet_private_cidr_block
+  mhs_private_cidr_blocks = var.mhs_test_harness_private_subnets
+  internet_private_cidr_block = var.mhs_test_harness_opentest_subnet
   mhs_public_cidr_blocks = var.mhs_test_harness_public_subnets
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id

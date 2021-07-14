@@ -44,7 +44,11 @@ state_db_instance_class    = "db.t2.small"
 mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD
 mhs_vpc_additional_cidr_block = "10.239.68.0/25"
 mhs_repo_public_subnets   = ["10.239.68.0/27", "10.239.68.32/27", "10.239.68.64/27"]
-mhs_test_harness_public_subnets   = []
+mhs_repo_private_subnets = ["10.239.68.128/27", "10.239.68.160/27", "10.239.68.192/27"]
+mhs_test_harness_public_subnets = []
+mhs_test_harness_private_subnets = []
+mhs_repo_opentest_subnet = ""
+mhs_test_harness_opentest_subnet = ""
 
 deploy_mhs_test_harness = false
 deploy_opentest = false

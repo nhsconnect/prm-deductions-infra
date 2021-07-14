@@ -46,7 +46,12 @@ test_harness_mhs_cluster_domain_name = "test-harness-mhs.patient-deductions.nhs.
 mhs_vpc_cidr_block = "10.34.0.0/16" # Must not conflict with other networks
 mhs_vpc_additional_cidr_block = ""
 mhs_repo_public_subnets   = ["10.34.112.0/22", "10.34.116.0/22", "10.34.120.0/22"]
+mhs_repo_private_subnets = ["10.34.0.0/19", "10.34.32.0/19", "10.34.64.0/19"]
 mhs_test_harness_public_subnets = ["10.34.232.0/22", "10.34.236.0/22", "10.34.240.0/22"]
+mhs_test_harness_private_subnets = ["10.34.128.0/19", "10.34.160.0/19", "10.34.192.0/19"]
+mhs_repo_opentest_subnet = "10.34.96.0/20"
+mhs_test_harness_opentest_subnet = "10.34.224.0/21"
+
 spine_cidr_block = "192.168.128.0/24"
 
 deploy_mhs_test_harness = true

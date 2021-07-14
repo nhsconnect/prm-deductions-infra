@@ -213,6 +213,10 @@ variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
 variable "deploy_hscn" {}
 variable "mhs_repo_public_subnets" {}
+variable "mhs_repo_private_subnets" {}
 variable "mhs_test_harness_public_subnets" {}
+variable "mhs_test_harness_private_subnets" {}
+variable "mhs_repo_opentest_subnet" {}
+variable "mhs_test_harness_opentest_subnet" {}
 variable "inbound_sig_ips" {}
 variable "deploy_mhs_nacl" {}
