@@ -72,3 +72,28 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks rotate_service_keys
+      - test_pre_prod:
+          clean_workspace: true
+          jobs:
+            generate_keys:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: pre-prod
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks generate_service_keys
+            rotate_keys:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: pre-prod
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks rotate_service_keys
