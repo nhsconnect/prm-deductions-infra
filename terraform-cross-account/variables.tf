@@ -7,3 +7,5 @@ variable "region" {
 }
 
 variable "provision_ci_account" {}
+
+variable "provision_strict_iam_roles" {}

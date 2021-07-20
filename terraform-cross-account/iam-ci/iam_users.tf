@@ -9,6 +9,7 @@ data "aws_iam_policy_document" "trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/RepoAdmin",         # dev environment (in dev account)
         "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/NHSDAdminRole",  # test environment (in ci account)
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/RepoAdmin",    # pre-prod environment (in pre-prod account)
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/BootstrapAdmin",    # pre-prod environment Bootstrapp Admin (in pre-prod account)
         # more accounts will follow for other environments...
       ]
     }

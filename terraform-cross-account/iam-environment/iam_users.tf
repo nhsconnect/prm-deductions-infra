@@ -22,3 +22,9 @@ resource "aws_iam_role_policy_attachment" "repo_admin" {
 data "aws_ssm_parameter" "ci_account_id" {
   name = "/repo/ci/user-input/external/aws-account-id"
 }
+
+resource "aws_iam_role" "bootstrap_admin" {
+  count = var.provision_strict_iam_roles ? 1 : 0
+  name = "BootstrapAdmin"
+  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+}
