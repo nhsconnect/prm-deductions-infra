@@ -60,6 +60,18 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions_policy" {
     // FIXME: get table name from ssm
     resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-pre-prod-terraform-table"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject"
+    ]
+    resources = [
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {

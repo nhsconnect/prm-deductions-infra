@@ -1,2 +1,3 @@
+state_bucket_infix = "pre-prod-"
 provision_ci_account = false
 provision_strict_iam_roles = true

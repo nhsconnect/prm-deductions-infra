@@ -7,5 +7,6 @@ module "environment_roles" {
   source = "./iam-environment"
   count = var.provision_ci_account ? 0 : 1
   provision_strict_iam_roles = var.provision_strict_iam_roles
+  state_bucket_infix = var.state_bucket_infix
 }
 
