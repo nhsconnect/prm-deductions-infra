@@ -72,7 +72,7 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks rotate_service_keys
-      - test_pre_prod:
+      - pre_prod_env:
           clean_workspace: true
           jobs:
             generate_keys:
