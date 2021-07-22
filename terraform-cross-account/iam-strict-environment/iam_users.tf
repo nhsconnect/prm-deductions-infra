@@ -23,7 +23,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions = ["ssm:PutParameter*"]
     resources = [
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/external/*"
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/external/*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/*"
     ]
   }
 
@@ -59,6 +60,44 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
     ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:Describe*",
+      "logs:ListTagsLogGroup",
+      "ec2:Describe*",
+      "ssm:Describe*",
+      "ssm:List*",
+      "rds:Describe*",
+      "rds:List*",
+      "route53:List*",
+      "acm:Describe*",
+      "acm:List*",
+      "elasticloadbalancing:Describe*",
+      "iam:List*",
+      "mq:Describe*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = ["iam:GetInstanceProfile"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-pre-prod-repo-dns-server"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["iam:GetRole"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["route53:GetHostedZone"]
+    resources = ["arn:aws:route53:::hostedzone/*"]
   }
 }
 
