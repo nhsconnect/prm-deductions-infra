@@ -140,11 +140,11 @@ resource "aws_security_group" "ssm-endpoint-sg" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id = module.vpc.vpc_id
   service_name = "com.amazonaws.${var.region}.s3"
-
   vpc_endpoint_type = "Gateway"
+  route_table_ids = module.vpc.private_route_table_ids
 
   tags = {
-    Name = "${var.environment}-${var.component_name}-ssm-endpoint"
+    Name = "${var.environment}-${var.component_name}-s3-endpoint"
     CreatedBy = var.repo_name
     Environment = var.environment
   }
