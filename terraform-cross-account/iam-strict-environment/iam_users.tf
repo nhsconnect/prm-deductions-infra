@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions = [
       "logs:Describe*",
-      "logs:ListTagsLogGroup",
+      "logs:List*",
       "ec2:Describe*",
       "ssm:Describe*",
       "ssm:List*",
@@ -98,6 +98,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions =  ["route53:GetHostedZone"]
     resources = ["arn:aws:route53:::hostedzone/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["sts:AssumeRole"]
+    resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/RepoAdmin"]
   }
 }
 
