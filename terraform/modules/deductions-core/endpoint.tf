@@ -141,10 +141,7 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id = module.vpc.vpc_id
   service_name = "com.amazonaws.${var.region}.s3"
 
-  subnet_ids = module.vpc.private_subnets
   vpc_endpoint_type = "Gateway"
-
-  private_dns_enabled = true
 
   tags = {
     Name = "${var.environment}-${var.component_name}-ssm-endpoint"
