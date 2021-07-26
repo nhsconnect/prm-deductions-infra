@@ -135,11 +135,21 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions =  ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/RepoAdmin"]
+    resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
 }
 
 data "aws_iam_policy_document" "repo_developer_permissions" {
+
+  statement {
+    effect = "Allow"
+    actions = ["ssm:PutParameter*"]
+    resources = [
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/ssh-*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/opentest-ssh-*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/dns-ssh-*"
+    ]
+  }
 
   statement {
     effect = "Allow"
@@ -155,6 +165,8 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions = [
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
       "dynamodb:GetItem*",
       "dynamodb:List*",
       "dynamodb:Describe*"
@@ -200,6 +212,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
       "acm:List*",
       "elasticloadbalancing:Describe*",
       "iam:List*",
+      "ecr:DescribeRepositories",
       "mq:Describe*"
     ]
     resources = ["*"]
@@ -214,13 +227,30 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/BootstrapAdmin"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["iam:GetPolicy"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy"
+    ]
   }
 
   statement {
     effect = "Allow"
     actions =  ["route53:GetHostedZone"]
     resources = ["arn:aws:route53:::hostedzone/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["sts:AssumeRole"]
+    resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
 }
 

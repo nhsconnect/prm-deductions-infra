@@ -70,6 +70,8 @@ function tf_plan {
 
   if [[ $aws_account_arn =~ "gocd_agent-prod" || $aws_account_arn =~ "repository-ci-agent" ]]; then
     COMMON_ACCOUNT_ROLE="repository-ci-agent"
+  elif [[ $NHS_ENVIRONMENT =~ "pre-prod" || $NHS_ENVIRONMENT =~ "prod" ]]; then
+    COMMON_ACCOUNT_ROLE="CiReadOnly"
   else
     COMMON_ACCOUNT_ROLE="RepoAdmin"
   fi
