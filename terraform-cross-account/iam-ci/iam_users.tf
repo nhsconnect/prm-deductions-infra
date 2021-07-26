@@ -79,6 +79,27 @@ data "aws_iam_policy_document" "ci_read_only" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+     "ec2:DescribeVpcs",
+     "ec2:DescribeRouteTables",
+     "ec2:DescribeVpcPeeringConnections"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:GetHostedZone",
+      "route53:ListVPCAssociationAuthorizations",
+      "route53:ListResourceRecordSets",
+      "route53:ListHostedZonesByVPC"
+    ]
+    resources = ["*"]
+  }
 }
 
 
