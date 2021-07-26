@@ -13,6 +13,16 @@ resource "aws_iam_role" "bootstrap_admin" {
   assume_role_policy = data.aws_iam_policy_document.trust_policy.json
 }
 
+resource "aws_iam_role" "repo_developer" {
+  name = "RepoDeveloper"
+  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+}
+
+resource "aws_iam_policy" "repo_developer_permissions_policy" {
+  name = "repo_developer_permissions_policy"
+  policy = data.aws_iam_policy_document.repo_developer_permissions.json
+}
+
 resource "aws_iam_policy" "bootstrap_admin_permissions_policy" {
   name = "bootstrap_admin_permissions_policy"
   policy = data.aws_iam_policy_document.bootstrap_admin_permissions.json
@@ -129,9 +139,99 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   }
 }
 
+data "aws_iam_policy_document" "repo_developer_permissions" {
+
+  statement {
+    effect = "Allow"
+    actions = ["ssm:GetParameter*"]
+    resources = [
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/output/*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/output/*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/*",
+      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem*",
+      "dynamodb:List*",
+      "dynamodb:Describe*"
+    ]
+    // FIXME: get table name from ssm
+    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-pre-prod-terraform-table"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:Get*",
+      "s3:List*"
+    ]
+    resources = [
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject"
+    ]
+    resources = [
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:Describe*",
+      "logs:List*",
+      "ec2:Describe*",
+      "ssm:Describe*",
+      "ssm:List*",
+      "rds:Describe*",
+      "rds:List*",
+      "route53:List*",
+      "acm:Describe*",
+      "acm:List*",
+      "elasticloadbalancing:Describe*",
+      "iam:List*",
+      "mq:Describe*"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = ["iam:GetInstanceProfile"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-pre-prod-repo-dns-server"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["iam:GetRole"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["route53:GetHostedZone"]
+    resources = ["arn:aws:route53:::hostedzone/*"]
+  }
+}
+
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {
   policy_arn = aws_iam_policy.bootstrap_admin_permissions_policy.arn
   role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_role_policy_attachment" "repo_developer" {
+  policy_arn = aws_iam_policy.repo_developer_permissions_policy.arn
+  role = aws_iam_role.repo_developer.name
 }
 
 data "aws_caller_identity" "current" {}
