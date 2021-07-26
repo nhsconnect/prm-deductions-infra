@@ -128,6 +128,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
+    actions =  ["iam:GetPolicy"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy"]
+  }
+
+  statement {
+    effect = "Allow"
     actions =  ["route53:GetHostedZone"]
     resources = ["arn:aws:route53:::hostedzone/*"]
   }
@@ -228,16 +234,14 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
     effect = "Allow"
     actions =  ["iam:GetRole"]
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/BootstrapAdmin"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent"
     ]
   }
 
   statement {
     effect = "Allow"
     actions =  ["iam:GetPolicy"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy"
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy"
     ]
   }
 
