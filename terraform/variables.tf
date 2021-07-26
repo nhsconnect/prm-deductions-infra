@@ -52,10 +52,6 @@ variable "deductions_core_cidr" {
   type = string
 }
 
-variable "deductions_core_public_subnets" {
-  type = list
-}
-
 variable "deductions_core_private_subnets" {
   type = list
 }
