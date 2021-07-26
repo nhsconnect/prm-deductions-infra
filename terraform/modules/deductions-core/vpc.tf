@@ -6,11 +6,9 @@ module "vpc" {
 
     azs                     = var.azs
     private_subnets         = var.private_subnets
-    public_subnets          = var.public_subnets
     database_subnets        = var.database_subnets
 
     enable_vpn_gateway      = false
-
     enable_dns_support      = true
     enable_dns_hostnames    = true
 
@@ -21,7 +19,8 @@ module "vpc" {
 }
 
 resource "aws_route" "core_to_private" {
-    route_table_id            = module.vpc.private_route_table_ids[0]
+    count = length(module.vpc.private_route_table_ids)
+    route_table_id            = module.vpc.private_route_table_ids[count.index]
     destination_cidr_block    = var.deductions_private_cidr
     vpc_peering_connection_id = var.core_private_vpc_peering_connection_id
 }
@@ -60,7 +59,8 @@ resource "aws_vpc_peering_connection_accepter" "core_to_gocd" {
 }
 
 resource "aws_route" "core_to_gocd" {
-    route_table_id            = module.vpc.private_route_table_ids[0]
+    count = length(module.vpc.private_route_table_ids)
+    route_table_id            = module.vpc.private_route_table_ids[count.index]
     destination_cidr_block    = var.gocd_cidr
     vpc_peering_connection_id = aws_vpc_peering_connection.core_to_gocd.id
 }

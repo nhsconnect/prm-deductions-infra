@@ -17,7 +17,6 @@ deductions_private_azs              = ["eu-west-2b", "eu-west-2a"]
 deductions_private_vpn_client_subnet = "10.233.200.0/22"
 
 deductions_core_cidr             = "10.26.0.0/16"
-deductions_core_public_subnets   = ["10.26.101.0/24", "10.26.102.0/24"]
 deductions_core_private_subnets  = ["10.26.1.0/24", "10.26.2.0/24"]
 deductions_core_database_subnets = ["10.26.111.0/24", "10.26.112.0/24"]
 deductions_core_azs              = ["eu-west-2b", "eu-west-2a"]

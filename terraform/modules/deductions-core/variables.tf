@@ -20,10 +20,6 @@ variable "component_name" {
 
 variable "cidr" {}
 
-variable "public_subnets" {
-  type = list
-}
-
 variable "private_subnets" {
   type = list
 }
