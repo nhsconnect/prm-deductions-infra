@@ -61,8 +61,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "dynamodb:List*",
       "dynamodb:Describe*"
     ]
-    // FIXME: get table name from ssm
-    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-pre-prod-terraform-table"]
+    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-${var.environment}-terraform-table"]
   }
 
   statement {
@@ -117,13 +116,13 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = ["iam:GetInstanceProfile"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-pre-prod-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-${var.environment}-repo-dns-server"]
   }
 
   statement {
     effect = "Allow"
     actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-${var.environment}-repo-dns-server"]
   }
 
   statement {
@@ -177,8 +176,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
       "dynamodb:List*",
       "dynamodb:Describe*"
     ]
-    // FIXME: get table name from ssm
-    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-pre-prod-terraform-table"]
+    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/prm-deductions-${var.environment}-terraform-table"]
   }
 
   statement {
@@ -219,7 +217,9 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
       "elasticloadbalancing:Describe*",
       "iam:List*",
       "ecr:DescribeRepositories",
-      "mq:Describe*"
+      "mq:Describe*",
+      "ecs:DescribeTaskDefinition",
+      "ecr:ListTagsForResource"
     ]
     resources = ["*"]
   }
@@ -227,21 +227,28 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions = ["iam:GetInstanceProfile"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-pre-prod-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-${var.environment}-repo-dns-server",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/repository-ci-agent"]
   }
 
   statement {
     effect = "Allow"
     actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-pre-prod-repo-dns-server",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent"
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-${var.environment}-repo-dns-server",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.environment}*-EcsTaskRole"
     ]
   }
 
   statement {
     effect = "Allow"
-    actions =  ["iam:GetPolicy"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy"
+    actions =  ["iam:GetPolicy", "iam:GetPolicyVersion"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-ssm",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-ecr",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-logs",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-s3*",
+
     ]
   }
 
@@ -256,6 +263,40 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
     actions =  ["sts:AssumeRole"]
     resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
+
+  statement{
+    effect = "Allow"
+    actions = ["ecs:DescribeServices",]
+    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:service/${var.environment}*-ecs-cluster/${var.environment}*-service"]
+  }
+
+  statement{
+    effect = "Allow"
+    actions = ["kms:GetKeyRotationStatus",
+              "kms:GetKeyPolicy",
+              "kms:ListResourceTags",
+              "kms:Describe*"]
+    resources = ["arn:aws:kms:eu-west-2:${data.aws_caller_identity.current.account_id}:key/*"]
+  }
+
+  statement{
+    effect = "Allow"
+    actions = ["ecs:DescribeClusters"]
+    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:cluster/${var.environment}*-ecs-cluster"]
+  }
+
+  statement{
+    effect = "Allow"
+    actions = ["cloudwatch:List*","cloudwatch:Describe*"]
+    resources = ["arn:aws:cloudwatch:eu-west-2:${data.aws_caller_identity.current.account_id}:alarm:*"]
+  }
+
+  statement{
+    effect = "Allow"
+    actions = ["s3:List*","s3:Get*"]
+    resources = ["arn:aws:s3:::${var.environment}-ehr-repo-bucket"]
+  }
+
 }
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {
