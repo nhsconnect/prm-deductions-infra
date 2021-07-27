@@ -428,7 +428,7 @@ case "${command}" in
       dojo "./tasks _generate_vpn_server_crt"
       ;;
   _generate_vpn_client_crt)
-      _assume_environment_role $NHS_ENVIRONMENT
+      _assume_environment_role $NHS_ENVIRONMENT true
       generate_vpn_client_crt "$2"
       ;;
   generate_vpn_client_crt)

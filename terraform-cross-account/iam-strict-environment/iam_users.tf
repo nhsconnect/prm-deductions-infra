@@ -142,6 +142,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     actions =  ["sts:AssumeRole"]
     resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
+
+  statement {
+    effect = "Allow"
+    actions =  ["ec2:ExportClientVpnClientConfiguration"]
+    resources = ["arn:aws:ec2:eu-west-2:${data.aws_ssm_parameter.ci_account_id.value}:client-vpn-endpoint/${data.aws_ssm_parameter.client-vpn-endpoint-id.value}"]
+  }
 }
 
 data "aws_iam_policy_document" "repo_developer_permissions" {
@@ -314,3 +320,8 @@ data "aws_caller_identity" "current" {}
 data "aws_ssm_parameter" "ci_account_id" {
   name = "/repo/ci/user-input/external/aws-account-id"
 }
+
+data "aws_ssm_parameter" "client-vpn-endpoint-id" {
+  name = "/repo/${var.environment}/output/prm-deductions-infra/client-vpn-endpoint-id"
+}
+
