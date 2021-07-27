@@ -8,8 +8,6 @@ resource "aws_vpc_endpoint" "ecr-dkr" {
 
     security_group_ids = [aws_security_group.ecr-endpoint-sg.id]
 
-    private_dns_enabled = true
-
     tags = {
         Name            = "${var.environment}-${var.component_name}-ecr-dkr-endpoint"
         CreatedBy   = var.repo_name
