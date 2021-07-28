@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = ["iam:GetInstanceProfile"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-${var.environment}-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/*"]
   }
 
   statement {
@@ -233,8 +233,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions = ["iam:GetInstanceProfile"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/mhs-${var.environment}-repo-dns-server",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/repository-ci-agent"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/*"]
   }
 
   statement {
