@@ -122,7 +122,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-${var.environment}-repo-dns-server"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"]
   }
 
   statement {
@@ -240,9 +240,8 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mhs-${var.environment}-repo-dns-server",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.environment}*-EcsTaskRole"
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*",
+      "arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/RepoAdmin"
     ]
   }
 
