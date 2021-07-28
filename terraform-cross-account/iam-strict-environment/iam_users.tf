@@ -127,8 +127,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
-    actions =  ["iam:GetPolicy"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy"]
+    actions =  ["iam:GetPolicy", "iam:GetPolicyVersion"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/*"]
   }
 
   statement {
@@ -248,13 +248,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions =  ["iam:GetPolicy", "iam:GetPolicyVersion"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-ssm",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-ecr",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-logs",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.environment}*-s3*",
-
-    ]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/*"]
   }
 
   statement {

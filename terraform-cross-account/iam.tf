@@ -12,7 +12,6 @@ module "environment_roles" {
 module "environment_strict_roles" {
   source = "./iam-strict-environment"
   count = var.provision_strict_iam_roles ? 1 : 0
-  provision_strict_iam_roles = var.provision_strict_iam_roles
   state_bucket_infix = var.state_bucket_infix
   environment = var.environment
 }
