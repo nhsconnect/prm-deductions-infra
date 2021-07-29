@@ -108,7 +108,9 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "acm:List*",
       "elasticloadbalancing:Describe*",
       "iam:List*",
-      "mq:Describe*"
+      "mq:Describe*",
+      "ecr:DescribeRepositories",
+      "ecr:ListTagsForResource"
     ]
     resources = ["*"]
   }
@@ -147,6 +149,30 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions =  ["ec2:ExportClientVpnClientConfiguration"]
     resources = ["arn:aws:ec2:eu-west-2:${data.aws_ssm_parameter.ci_account_id.value}:client-vpn-endpoint/${data.aws_ssm_parameter.client-vpn-endpoint-id.value}"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions =  ["iam:CreateRole",
+      "iam:AttachRolePolicy",
+      "iam:CreateInstanceProfile",
+      "iam:AddRoleToInstanceProfile",
+      "iam:RemoveRoleFromInstanceProfile",
+      "iam:PassRole",
+      "iam:CreatePolicy",
+      "iam:DeletePolicyVersion",
+      "iam:DeleteInstanceProfile",
+      "iam:CreatePolicyVersion",
+      "iam:DeletePolicy",
+      "iam:DeleteRole",
+      "iam:DetachRolePolicy"
+    ]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/RepoDeveloper",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/RepoDeveloper",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy"]
   }
 }
 
