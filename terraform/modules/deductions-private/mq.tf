@@ -201,22 +201,6 @@ resource "aws_security_group" "vpn_to_mq" {
   description = "controls access from VPN to AMQ"
   vpc_id      = module.vpc.vpc_id
 
-  ingress {
-    protocol = "tcp"
-    from_port = "61614"
-    to_port = "61614"
-    description = "Allow traffic from VPN to MQ through STOMP"
-    security_groups = [aws_security_group.vpn.id]
-  }
-
-  ingress {
-    protocol        = "tcp"
-    from_port       = "5671"
-    to_port         = "5671"
-    description = "Allow traffic from VPN to MQ through AMQP"
-    security_groups = [aws_security_group.vpn.id]
-  }
-
   egress {
     description = "Allow All Outbound"
     from_port   = 0
@@ -230,6 +214,28 @@ resource "aws_security_group" "vpn_to_mq" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+resource "aws_security_group_rule" "vpn_to_mq_through_stomp" {
+  count = var.grant_access_to_queues_through_vpn ? 1 : 0
+  type = "ingress"
+  protocol = "tcp"
+  from_port = "61614"
+  to_port = "61614"
+  description = "Allow traffic from VPN to MQ through STOMP"
+  security_group_id = aws_security_group.vpn_to_mq.id
+  source_security_group_id = aws_security_group.vpn.id
+}
+
+resource "aws_security_group_rule" "vpn_to_mq_through_amqp" {
+  count = var.grant_access_to_queues_through_vpn ? 1 : 0
+  type = "ingress"
+  protocol = "tcp"
+  from_port = "5671"
+  to_port = "5671"
+  description = "Allow traffic from VPN to MQ through AMQP"
+  security_group_id = aws_security_group.vpn_to_mq.id
+  source_security_group_id = aws_security_group.vpn.id
 }
 
 resource "aws_security_group" "gocd_to_mq" {
