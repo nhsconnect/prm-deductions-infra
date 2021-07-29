@@ -65,3 +65,4 @@ dns_hscn_forward_server_2 = "192.168.128.30"
 inbound_sig_ips=[]
 deploy_mhs_nacl = false
 
+grant_access_to_queues_through_vpn = true

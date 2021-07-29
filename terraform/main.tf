@@ -136,6 +136,7 @@ module "deductions-private" {
   repo_mhs_vpc_peering_connection_id = module.repo.private_mhs_vpc_peering_id
   test_harness_mhs_vpc_peering_connection_id = join(",", module.test-harness.*.private_mhs_vpc_peering_id)
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
+  grant_access_to_queues_through_vpn = var.grant_access_to_queues_through_vpn
 }
 
 module "deductions-core" {

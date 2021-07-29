@@ -167,3 +167,5 @@ variable "environment_public_zone" {}
 variable "environment_private_zone" {}
 
 variable "deploy_cross_account_vpc_peering"{}
+
+variable "grant_access_to_queues_through_vpn" {}

@@ -129,14 +129,6 @@ resource "aws_security_group" "vpn_to_mq_admin" {
   description = "controls access from vpn to mq admin"
   vpc_id      = module.vpc.vpc_id
 
-  ingress {
-    description = "Allow vpn to access mq admin ALB"
-    protocol    = "tcp"
-    from_port   = 443
-    to_port     = 443
-    security_groups = [aws_security_group.vpn.id]
-  }
-
   egress {
     description = "Allow All Outbound"
     from_port   = 0
@@ -150,6 +142,17 @@ resource "aws_security_group" "vpn_to_mq_admin" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+resource "aws_security_group_rule" "vpn_to_mq_admin" {
+  count       = var.grant_access_to_queues_through_vpn ? 1 : 0
+  type        = "ingress"
+  description = "Allow vpn to access mq admin ALB"
+  protocol    = "tcp"
+  from_port   = 443
+  to_port     = 443
+  source_security_group_id = aws_security_group.vpn.id
+  security_group_id = aws_security_group.vpn_to_mq_admin.id
 }
 
 data "aws_ssm_parameter" "gocd_sg_id" {
