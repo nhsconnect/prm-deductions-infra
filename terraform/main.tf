@@ -125,7 +125,6 @@ module "deductions-private" {
   maintenance_day_of_week        = var.maintenance_day_of_week
   maintenance_time_of_day        = var.maintenance_time_of_day
   maintenance_time_zone          = var.maintenance_time_zone
-  mq_allow_public_console_access = var.mq_allow_public_console_access
   vpn_client_subnet              = var.deductions_private_vpn_client_subnet
 
   state_db_allocated_storage = var.state_db_allocated_storage

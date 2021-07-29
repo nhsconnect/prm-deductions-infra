@@ -24,7 +24,7 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   user {
     username = data.aws_ssm_parameter.mq-admin-username.value
     password = data.aws_ssm_parameter.mq-admin-password.value
-    console_access = true
+    console_access = var.grant_access_to_queues_through_vpn ? true : false
   }
 
   user {
@@ -145,13 +145,33 @@ resource "aws_security_group" "service_to_mq" {
   }
 }
 
+resource "aws_security_group" "vpn_to_mq_admin" {
+  name        = "${var.environment}-vpn-to-mq-admin"
+  description = "controls access from vpn to mq admin"
+  vpc_id      = module.vpc.vpc_id
+
+  egress {
+    description = "Allow All Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-vpn-to-${var.component_name}-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
 resource "aws_security_group_rule" "service_to_mq_ingress" {
   description = "Allow traffic from Internal ALB to AMQ"
   from_port           = "8162"
   to_port             = "8162"
   protocol = "tcp"
-  security_group_id = aws_security_group.service_to_mq.id
   source_security_group_id = aws_security_group.vpn_to_mq_admin.id
+  security_group_id = aws_security_group.service_to_mq.id
   type = "ingress"
 }
 
@@ -238,4 +258,8 @@ resource "aws_security_group" "gocd_to_mq" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+data "aws_ssm_parameter" "gocd_sg_id" {
+  name = "/repo/${var.environment}/user-input/external/gocd-agent-sg-id"
 }

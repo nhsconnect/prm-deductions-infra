@@ -123,34 +123,6 @@ variable "maintenance_time_zone" {
   description = "The maintenance time zone, in either the Country/City format, or the UTC offset format. e.g. CET"
 }
 
-variable "mq_admin_user" {
-  type        = string
-  default     = ""
-  description = "Admin username"
-}
-
-variable "mq_admin_password" {
-  type        = string
-  default     = ""
-  description = "Admin password"
-}
-
-variable "mq_application_user" {
-  type        = string
-  default     = ""
-  description = "Application username"
-}
-
-variable "mq_application_password" {
-  type        = string
-  default     = ""
-  description = "Application password"
-}
-
-variable "mq_allow_public_console_access"{
-  description = "Will create an NLB in two public subnets to provide internet access to the MQ admin console"
-}
-
 variable "state_db_allocated_storage" {}
 variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}

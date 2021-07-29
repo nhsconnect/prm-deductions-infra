@@ -35,8 +35,6 @@ audit_log                      = "true"
 maintenance_day_of_week        = "SUNDAY"
 maintenance_time_of_day        = "03:00"
 maintenance_time_zone          = "GMT"
-mq_allow_public_console_access = true
-
 state_db_allocated_storage = "20"
 state_db_engine_version    = "11.5"
 state_db_instance_class    = "db.t2.small"

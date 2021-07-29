@@ -48,47 +48,6 @@ resource "aws_ssm_parameter" "deductions_private_vpc_id" {
   }
 }
 
-resource "aws_ssm_parameter" "deductions_private_int_alb_httpl_arn" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-int-alb-httpl-arn"
-  type = "String"
-  value = aws_alb_listener.int-alb-listener.arn
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
-resource "aws_ssm_parameter" "deductions_private_int_alb_httpsl_arn" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-int-alb-httpsl-arn"
-  type = "String"
-  value = aws_alb_listener.int-alb-listener-https.arn
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
-resource "aws_ssm_parameter" "deductions_private_alb_internal_dns" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-alb-internal-dns"
-  type = "String"
-  value = aws_alb.alb-internal.dns_name
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
-
-resource "aws_ssm_parameter" "deductions_private_alb_internal_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-alb-internal-id"
-  type = "String"
-  value = aws_alb.alb-internal.id
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
 resource "aws_ssm_parameter" "deductions_private_database_subnets" {
   name = "/repo/${var.environment}/output/${var.repo_name}/deductions-private-database-subnets"
   type = "String"
