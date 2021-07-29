@@ -214,6 +214,15 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement {
     effect = "Allow"
     actions = [
+      "dynamodb:Describe*",
+      "dynamodb:List*"
+    ]
+    resources = ["arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/${var.environment}-repo-mhs*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "s3:Get*",
       "s3:List*"
     ]
@@ -250,8 +259,10 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
       "iam:List*",
       "ecr:DescribeRepositories",
       "mq:Describe*",
-      "ecs:DescribeTaskDefinition",
-      "ecr:ListTagsForResource"
+      "ecs:Describe*",
+      "ecr:ListTagsForResource",
+      "elasticache:Describe*",
+      "elasticache:List*"
     ]
     resources = ["*"]
   }
@@ -306,7 +317,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
   statement{
     effect = "Allow"
     actions = ["ecs:DescribeClusters"]
-    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:cluster/${var.environment}*-ecs-cluster"]
+    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:cluster/${var.environment}*"]
   }
 
   statement{
@@ -319,6 +330,15 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
     effect = "Allow"
     actions = ["s3:List*","s3:Get*"]
     resources = ["arn:aws:s3:::${var.environment}-ehr-repo-bucket"]
+  }
+
+  statement{
+    effect = "Allow"
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetResourcePolicy"
+    ]
+    resources = ["arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:/repo/${var.environment}/user-input/*"]
   }
 
 }
