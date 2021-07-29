@@ -7,6 +7,7 @@ module "environment_roles" {
   source = "./iam-environment"
   // TODO: Use condition with provision_strict_iam_roles
   count = var.provision_ci_account ? 0 : 1
+  provision_strict_iam_roles = var.provision_strict_iam_roles
 }
 
 module "environment_strict_roles" {
