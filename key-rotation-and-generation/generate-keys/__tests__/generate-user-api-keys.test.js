@@ -1,159 +1,218 @@
-import {generateApiKeys} from "../generate-api-keys";
-import {deleteApiKey, generateApiKey, getParam, getParamsByPath} from "../../aws-clients/ssm-client";
-import {restartServices} from "../../restart-services/restart-services";
+import { generateApiKeys } from "../generate-api-keys";
+import {
+  deleteApiKey,
+  generateApiKey,
+  getParam,
+  getParamsByPath,
+} from "../../aws-clients/ssm-client";
+import { restartServices } from "../../restart-services/restart-services";
 import * as h from "../../helpers";
-import {when} from "jest-when";
+import { when } from "jest-when";
+import { initializeConfig } from "../../config";
 
-jest.mock('../../aws-clients/ssm-client');
-jest.mock('../../helpers', () => ({
-    ...jest.requireActual('../../helpers'),
-      convertUserListToUserListParamArray: jest.fn()
+jest.mock("../../aws-clients/ssm-client");
+jest.mock("../../config");
+jest.mock("../../helpers", () => ({
+  ...jest.requireActual("../../helpers"),
+  convertUserListToUserListParamArray: jest.fn(),
 }));
-jest.mock('../../restart-services/restart-services');
+jest.mock("../../restart-services/restart-services");
 
-describe('generateUserApiKeys', () => {
-    const apiKeysStringList = 'al.pacino1,rob.deniro,joe.pesci';
-    const usersAsArrayList = ['al.pacino1','rob.deniro','joe.pesci']
-    const ssmPath = `/repo/nhs-environment/user-input/repo-dev-list`
+describe("generateUserApiKeys", () => {
+  const apiKeysStringList = "al.pacino1,rob.deniro,joe.pesci";
+  const usersAsArrayList = ["al.pacino1", "rob.deniro", "joe.pesci"];
+  const ssmPath = `/repo/nhs-environment/user-input/repo-dev-list`;
 
+  beforeEach(() => {
+    when(getParam)
+      .calledWith("/repo/nhs-environment/user-input/repo-dev-list")
+      .mockResolvedValue(apiKeysStringList);
 
-    beforeEach(() => {
-        when(getParam)
-          .calledWith('/repo/nhs-environment/user-input/repo-dev-list')
-          .mockResolvedValue(apiKeysStringList)
-    })
-
-    afterEach(() => jest.resetAllMocks())
-
-    it('should create new user-api-key ssm parameter for a key that does not exist', async () => {
-        when(getParamsByPath)
-          .calledWith('/repo/nhs-environment/user-input/api-keys/')
-          .mockResolvedValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci'])
-
-        when(h.convertUserListToUserListParamArray)
-          .calledWith(usersAsArrayList, 'nhs-environment')
-          .mockReturnValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1'])
-
-        await generateApiKeys(ssmPath, false, 'nhs-environment');
-
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParamsByPath).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/')
-
-        expect(generateApiKey).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1');
-        expect(generateApiKey).toHaveBeenCalledTimes(1);
-        expect(deleteApiKey).not.toHaveBeenCalled();
-
-        expect(restartServices).toHaveBeenCalledWith(['/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1']);
+    when(initializeConfig).calledWith().mockReturnValue({
+      nhsEnvironment: "nhs-environment",
+      isStrictEnvironment: false,
     });
+  });
 
-    it('should not create new user-api-key ssm parameter for a key that already exists', async () => {
-        when(getParamsByPath)
-          .calledWith('/repo/nhs-environment/user-input/api-keys/')
-          .mockResolvedValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro'])
+  afterEach(() => jest.resetAllMocks());
 
-        when(h.convertUserListToUserListParamArray)
-          .calledWith(usersAsArrayList, 'nhs-environment')
-          .mockReturnValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro'])
+  it("should create new user-api-key ssm parameter for a key that does not exist", async () => {
+    when(getParamsByPath)
+      .calledWith("/repo/nhs-environment/user-input/api-keys/")
+      .mockResolvedValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+      ]);
 
-        await generateApiKeys(ssmPath, false, 'nhs-environment');
+    when(h.convertUserListToUserListParamArray)
+      .calledWith(usersAsArrayList)
+      .mockReturnValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1",
+      ]);
 
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
+    await generateApiKeys(ssmPath, false);
 
-        expect(generateApiKey).not.toHaveBeenCalled();
-        expect(deleteApiKey).not.toHaveBeenCalled();
-        expect(restartServices).toHaveBeenCalledWith([]);
-    });
+    expect(getParam).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/repo-dev-list"
+    );
+    expect(getParamsByPath).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/api-keys/"
+    );
 
-    it('should delete user-api-key ssm parameter for a key that does not exist as expected user', async () => {
-        const unexpectedUser = '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user'
-        when(getParamsByPath)
-          .calledWith('/repo/nhs-environment/user-input/api-keys/')
-          .mockResolvedValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci', unexpectedUser])
+    expect(generateApiKey).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1"
+    );
+    expect(generateApiKey).toHaveBeenCalledTimes(1);
+    expect(deleteApiKey).not.toHaveBeenCalled();
 
-        when(h.convertUserListToUserListParamArray)
-          .calledWith(usersAsArrayList, 'nhs-environment')
-          .mockReturnValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci'])
+    expect(restartServices).toHaveBeenCalledWith([
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1",
+    ]);
+  });
 
-        await generateApiKeys(ssmPath, false, 'nhs-environment');
+  it("should not create new user-api-key ssm parameter for a key that already exists", async () => {
+    when(getParamsByPath)
+      .calledWith("/repo/nhs-environment/user-input/api-keys/")
+      .mockResolvedValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+      ]);
 
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParamsByPath).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/')
+    when(h.convertUserListToUserListParamArray)
+      .calledWith(usersAsArrayList)
+      .mockReturnValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+      ]);
 
-        expect(generateApiKey).not.toHaveBeenCalled();
+    await generateApiKeys(ssmPath, false);
 
-        expect(deleteApiKey).toHaveBeenCalledTimes(1)
-        expect(deleteApiKey).toHaveBeenCalledWith(unexpectedUser)
+    expect(getParam).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/repo-dev-list"
+    );
 
-        expect(restartServices).toHaveBeenCalledWith([unexpectedUser]);
-    });
+    expect(generateApiKey).not.toHaveBeenCalled();
+    expect(deleteApiKey).not.toHaveBeenCalled();
+    expect(restartServices).toHaveBeenCalledWith([]);
+  });
 
-    it('should both delete and generate user-api-keys ', async () => {
-        const unexpectedUser = '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user'
-        const expectedUser = '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user'
+  it("should delete user-api-key ssm parameter for a key that does not exist as expected user", async () => {
+    const unexpectedUser =
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user";
+    when(getParamsByPath)
+      .calledWith("/repo/nhs-environment/user-input/api-keys/")
+      .mockResolvedValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        unexpectedUser,
+      ]);
 
-        when(getParamsByPath)
-          .calledWith('/repo/nhs-environment/user-input/api-keys/')
-          .mockResolvedValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci', unexpectedUser])
+    when(h.convertUserListToUserListParamArray)
+      .calledWith(usersAsArrayList)
+      .mockReturnValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+      ]);
 
-        when(h.convertUserListToUserListParamArray)
-          .calledWith(usersAsArrayList, 'nhs-environment')
-          .mockReturnValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci', expectedUser])
+    await generateApiKeys(ssmPath, false);
 
-        await generateApiKeys(ssmPath, false, 'nhs-environment');
+    expect(getParam).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/repo-dev-list"
+    );
+    expect(getParamsByPath).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/api-keys/"
+    );
 
-        expect(getParam).toHaveBeenCalledWith('/repo/nhs-environment/user-input/repo-dev-list')
-        expect(getParamsByPath).toHaveBeenCalledWith('/repo/nhs-environment/user-input/api-keys/')
+    expect(generateApiKey).not.toHaveBeenCalled();
 
-        expect(generateApiKey).toHaveBeenCalledWith(expectedUser);
-        expect(generateApiKey).toHaveBeenCalledTimes(1)
+    expect(deleteApiKey).toHaveBeenCalledTimes(1);
+    expect(deleteApiKey).toHaveBeenCalledWith(unexpectedUser);
 
-        expect(deleteApiKey).toHaveBeenCalledTimes(1)
-        expect(deleteApiKey).toHaveBeenCalledWith(unexpectedUser)
+    expect(restartServices).toHaveBeenCalledWith([unexpectedUser]);
+  });
 
-        expect(restartServices).toHaveBeenCalledWith([expectedUser, unexpectedUser]);
-    });
+  it("should both delete and generate user-api-keys ", async () => {
+    const unexpectedUser =
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user";
+    const expectedUser =
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user";
 
-    it('should not process service api keys', async () => {
-        const serviceApiKey = '/repo/nhs-environment/user-input/api-keys/repo-to-gp/service-api'
+    when(getParamsByPath)
+      .calledWith("/repo/nhs-environment/user-input/api-keys/")
+      .mockResolvedValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        unexpectedUser,
+      ]);
 
-        when(getParamsByPath)
-          .calledWith('/repo/nhs-environment/user-input/api-keys/')
-          .mockResolvedValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user', serviceApiKey])
+    when(h.convertUserListToUserListParamArray)
+      .calledWith(usersAsArrayList)
+      .mockReturnValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        expectedUser,
+      ]);
 
-        when(h.convertUserListToUserListParamArray)
-          .calledWith(usersAsArrayList, 'nhs-environment')
-          .mockReturnValue(['/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci',
-              '/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user'])
+    await generateApiKeys(ssmPath, false);
 
-        await generateApiKeys(ssmPath, false, 'nhs-environment');
+    expect(getParam).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/repo-dev-list"
+    );
+    expect(getParamsByPath).toHaveBeenCalledWith(
+      "/repo/nhs-environment/user-input/api-keys/"
+    );
 
-        expect(generateApiKey).not.toHaveBeenCalledWith(serviceApiKey);
-        expect(deleteApiKey).not.toHaveBeenCalledWith(serviceApiKey)
-        expect(restartServices).toHaveBeenCalledWith(expect.not.arrayContaining([serviceApiKey]));
-    })
+    expect(generateApiKey).toHaveBeenCalledWith(expectedUser);
+    expect(generateApiKey).toHaveBeenCalledTimes(1);
 
-    it('should throw and error when ssm has no value', async () => {
+    expect(deleteApiKey).toHaveBeenCalledTimes(1);
+    expect(deleteApiKey).toHaveBeenCalledWith(unexpectedUser);
 
-        when(getParam)
-            .calledWith('repo-dev-empty-list')
-            .mockResolvedValue(null)
+    expect(restartServices).toHaveBeenCalledWith([
+      expectedUser,
+      unexpectedUser,
+    ]);
+  });
 
-        await expect(generateApiKeys("repo-dev-empty-list", false, 'nhs-environment'))
-            .rejects.toEqual(new Error("Unable to retrieve list of api keys"))
+  it("should not process service api keys", async () => {
+    const serviceApiKey =
+      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/service-api";
 
-        expect(generateApiKey).not.toHaveBeenCalled();
-        expect(deleteApiKey).not.toHaveBeenCalled();
-        expect(restartServices).not.toHaveBeenCalled();
+    when(getParamsByPath)
+      .calledWith("/repo/nhs-environment/user-input/api-keys/")
+      .mockResolvedValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user",
+        serviceApiKey,
+      ]);
 
-    })
-})
+    when(h.convertUserListToUserListParamArray)
+      .calledWith(usersAsArrayList)
+      .mockReturnValue([
+        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user",
+      ]);
+
+    await generateApiKeys(ssmPath, false);
+
+    expect(generateApiKey).not.toHaveBeenCalledWith(serviceApiKey);
+    expect(deleteApiKey).not.toHaveBeenCalledWith(serviceApiKey);
+    expect(restartServices).toHaveBeenCalledWith(
+      expect.not.arrayContaining([serviceApiKey])
+    );
+  });
+
+  it("should throw and error when ssm has no value", async () => {
+    when(getParam).calledWith("repo-dev-empty-list").mockResolvedValue(null);
+
+    await expect(
+      generateApiKeys("repo-dev-empty-list", false)
+    ).rejects.toEqual(new Error("Unable to retrieve list of api keys"));
+
+    expect(generateApiKey).not.toHaveBeenCalled();
+    expect(deleteApiKey).not.toHaveBeenCalled();
+    expect(restartServices).not.toHaveBeenCalled();
+  });
+});

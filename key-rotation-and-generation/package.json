@@ -8,14 +8,21 @@
     "generate:service-api-keys": "babel-node generate-keys/generate-service-api-keys.js",
     "generate:user-api-keys": "babel-node generate-keys/generate-user-api-keys.js",
     "rotate:service-api-keys": "babel-node rotate-keys/rotate-service-api-keys.js",
-    "rotate:user-api-keys": "babel-node rotate-keys/rotate-user-api-keys.js"
+    "rotate:user-api-keys": "babel-node rotate-keys/rotate-user-api-keys.js",
+    "lint": "eslint generate-keys/ rotate-keys/ helpers/",
+    "lint:fix": "npm run lint -- --fix"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-ecs": "^3.18.0",
     "@aws-sdk/client-ssm": "^3.18.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.0.4",
+    "prettier": "^2.3.2",
     "randomstring": "^1.2.1"
   },
   "devDependencies": {
