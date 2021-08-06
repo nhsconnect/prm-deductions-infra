@@ -117,6 +117,17 @@ NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt
 ```
 It is part of a pipeline that deploys each environment.
 
+## Replacing VPN server certificate
+
+When VPN CA is changed, the old certificate is still being used by the VPN endpoint. As a result, running the command ```NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt``` to generate a developer’s VPN certificate won’t create a successful VPN connection. The VPN endpoint needs to be deleted or modified not to use the old certificate.
+
+If you need to delete the VPN endpoint please use terraform.
+
+Please note that when the VPN endpoint is deleted in the AWS console, it may cause some sync-up issues with the terraform state as terraform is still looking for the previous VPN endpoint ID and its resources.
+
+The newly created certificate should be associated with the VPN endpoint. If you deleted VPN endpoint, the terraform will handle that association. Otherwise you need to modify the VPN endpoint to use new certificate in the AWS console.
+
+After the deletion of the old VPN certificate, each VPN certificate should be recreated locally and the old certificates should be replaced. A developer can run ```NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt``` locally to generate the new VPN certificate.
 
 # Useful CloudWatch Logs Insights Queries for Repository Codebases
 They will be also stored in a Repo folder in CloudWatch Insights. More information here:  https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_Insights-Saving-Queries.html
@@ -160,4 +171,3 @@ They will be also stored in a Repo folder in CloudWatch Insights. More informati
 `fields @timestamp, @message, service, correlationId`<br/>
 `| filter queue = 'raw-inbound'`<br/>
 `| sort @timestamp desc`
- 
