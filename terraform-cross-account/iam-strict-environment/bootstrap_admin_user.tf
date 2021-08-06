@@ -128,7 +128,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
-    actions =  ["ec2:ExportClientVpnClientConfiguration"]
+    actions =  ["ec2:ExportClientVpnClientConfiguration", "ec2:ImportClientVpnClientCertificateRevocationList"]
     resources = ["arn:aws:ec2:eu-west-2:${data.aws_caller_identity.current.account_id}:client-vpn-endpoint/${data.aws_ssm_parameter.client-vpn-endpoint-id.value}"]
   }
 
