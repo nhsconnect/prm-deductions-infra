@@ -182,6 +182,29 @@ function generate_vpn_server_crt {
   fi
 }
 
+function revoke_vpn_client_crt {
+  check_env
+  if [[ -z $1 ]]; then
+    echo "Username required"
+    exit 1
+  fi
+  username="$1"
+  user_cert=$NHS_ENVIRONMENT.$username.crt
+
+  setup_vpn_ca
+  cd ../..
+  if [[ -f ./revoke-client-config/$user_cert ]]; then
+    echo "Client key file present. Revoking access"
+    mv ./revoke-client-config/$user_cert ./easy-rsa/easyrsa3/pki/issued/$user_cert
+    cd ./easy-rsa/easyrsa3
+    echo yes | ./easyrsa revoke $NHS_ENVIRONMENT.$username
+    ./easyrsa gen-crl
+    client_vpn_endpoint_id=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/client-vpn-endpoint-id")
+    aws ec2 import-client-vpn-client-certificate-revocation-list --certificate-revocation-list file://pki/crl.pem --client-vpn-endpoint-id $client_vpn_endpoint_id --region $AWS_DEFAULT_REGION
+    echo "VPN Access Revoked for ${username} in ${NHS_ENVIRONMENT}"
+  fi
+}
+
 function generate_vpn_client_crt {
   check_env
   if [[ -z $1 ]]; then
@@ -437,6 +460,14 @@ case "${command}" in
   generate_vpn_client_crt)
       check_env
       dojo "./tasks _generate_vpn_client_crt $2"
+      ;;
+  _revoke_vpn_client_crt)
+      _assume_environment_role $NHS_ENVIRONMENT true
+      revoke_vpn_client_crt "$2"
+      ;;
+  revoke_vpn_client_crt)
+      check_env
+      dojo "./tasks _revoke_vpn_client_crt $2"
       ;;
   _test_keys)
       cd key-rotation-and-generation
