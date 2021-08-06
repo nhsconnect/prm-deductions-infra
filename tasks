@@ -193,9 +193,9 @@ function revoke_vpn_client_crt {
 
   setup_vpn_ca
   cd ../..
-  if [[ -f ./revoke-client-config/$user_cert ]]; then
+  if [[ -f ./utils/$user_cert ]]; then
     echo "Client key file present. Revoking access"
-    mv ./revoke-client-config/$user_cert ./easy-rsa/easyrsa3/pki/issued/$user_cert
+    mv ./utils/$user_cert ./easy-rsa/easyrsa3/pki/issued/$user_cert
     cd ./easy-rsa/easyrsa3
     echo yes | ./easyrsa revoke $NHS_ENVIRONMENT.$username
     ./easyrsa gen-crl
