@@ -202,6 +202,8 @@ function revoke_vpn_client_crt {
     client_vpn_endpoint_id=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/client-vpn-endpoint-id")
     aws ec2 import-client-vpn-client-certificate-revocation-list --certificate-revocation-list file://pki/crl.pem --client-vpn-endpoint-id $client_vpn_endpoint_id --region $AWS_DEFAULT_REGION
     echo "VPN Access Revoked for ${username} in ${NHS_ENVIRONMENT}"
+  else
+    echo "No Client key file found in utils. Please add certificate to be revoked"
   fi
 }
 
