@@ -35,7 +35,8 @@ variable "mhs_private_cidr_blocks" {}
 variable "internet_private_cidr_block" {}
 variable "deductions_private_vpc_id" {}
 variable "cluster_name" {}
-variable "mhs_public_cidr_blocks" {}
+variable "mhs_public_subnets_inbound" {}
+variable "mhs_public_subnets_outbound" {}
 variable "mhs_cluster_domain_name" {}
 variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}

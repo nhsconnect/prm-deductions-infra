@@ -180,9 +180,11 @@ variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
 variable "deploy_hscn" {}
-variable "mhs_repo_public_subnets" {}
+variable "mhs_repo_public_subnets_outbound" {}
+variable "mhs_repo_public_subnets_inbound" {}
 variable "mhs_repo_private_subnets" {}
-variable "mhs_test_harness_public_subnets" {}
+variable "mhs_test_harness_public_subnets_outbound" {}
+variable "mhs_test_harness_public_subnets_inbound" {}
 variable "mhs_test_harness_private_subnets" {}
 variable "mhs_repo_opentest_subnet" {}
 variable "mhs_test_harness_opentest_subnet" {}

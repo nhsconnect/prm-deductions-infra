@@ -44,7 +44,8 @@ module "repo" {
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_repo_private_subnets
   internet_private_cidr_block = var.mhs_repo_opentest_subnet
-  mhs_public_cidr_blocks = var.mhs_repo_public_subnets
+  mhs_public_subnets_inbound = var.mhs_repo_public_subnets_inbound
+  mhs_public_subnets_outbound = var.mhs_repo_public_subnets_outbound
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
@@ -77,7 +78,8 @@ module "test-harness" {
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_test_harness_private_subnets
   internet_private_cidr_block = var.mhs_test_harness_opentest_subnet
-  mhs_public_cidr_blocks = var.mhs_test_harness_public_subnets
+  mhs_public_subnets_inbound = var.mhs_test_harness_public_subnets_inbound
+  mhs_public_subnets_outbound = var.mhs_test_harness_public_subnets_outbound
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
