@@ -100,6 +100,17 @@ NHS_ENVIRONMENT=dev ./tasks generate_vpn_client_crt <your-first-name.your-last-n
 NHS_ENVIRONMENT=test ./tasks generate_vpn_client_crt <your-first-name.your-last-name>
 ```
 
+## Revoking VPN client keys
+1. Open the ovpn file that you want to revoke access for. This can be found in the directory where it was created: prm-deductions-infra → client-config. You may have an ovpn file per environment and will be named something like dev.john.smith.ovpn
+2. Copy the certificate from the ovpn - this is everything between the <cert>  </cert> tags. If someone else is revoking your certificates for you, send this certificate to them securely. 
+3. Create a new file in the prm-deductions-infra → utils directory, named similarly to your ovpn file but ending with .crt instead - dev.john.smith.crt
+4. Paste your copied certificate into this new file
+5. [Gain access to AWS as described above](#Access-to-AWS)
+6. Revoke VPN client configuration for each environment:
+```
+NHS_ENVIRONMENT=<env-name> ./tasks revoke_vpn_client_crt <your-first-name.your-last-name>
+```
+
 ## Creating CA
 
 All vpn endpoints use the same CA which needs to be generated only once.
