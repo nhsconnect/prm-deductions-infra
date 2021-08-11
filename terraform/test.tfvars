@@ -39,9 +39,9 @@ state_db_engine_version    = "11.5"
 state_db_instance_class    = "db.t2.small"
 
 mhs_vpc_cidr_block = "10.239.68.128/25" # This is pre-allocated by NHSD
-mhs_vpc_additional_cidr_block = "10.239.68.0/25"
-mhs_repo_public_subnets_inbound = ["10.239.68.0/27", "10.239.68.32/27", "10.239.68.64/27"]
-mhs_repo_public_subnets_outbound = ["10.239.68.96/27", "10.239.68.128/27", "10.239.68.160/27"]
+mhs_vpc_additional_cidr_block = "10.239.69.0/24"
+mhs_repo_public_subnets_inbound = ["10.239.69.0/27", "10.239.69.32/27", "10.239.69.64/27"]
+mhs_repo_public_subnets_outbound = ["10.239.69.96/27", "10.239.69.128/27", "10.239.69.160/27"]
 mhs_repo_private_subnets = ["10.239.68.128/27", "10.239.68.160/27", "10.239.68.192/27"]
 mhs_test_harness_public_subnets_inbound = []
 mhs_test_harness_public_subnets_outbound = []
