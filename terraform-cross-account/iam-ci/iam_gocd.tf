@@ -69,7 +69,7 @@ resource "aws_iam_role_policy_attachment" "cross_ci_write" {
 }
 
 resource "aws_iam_policy" "cross_ci_write" {
-  name = "repository-cross-ci-agent"
+  name = "repository-cross-ci-write"
   policy = data.aws_iam_policy_document.cross_ci_write.json
 }
 
