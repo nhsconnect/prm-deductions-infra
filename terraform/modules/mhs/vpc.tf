@@ -29,6 +29,12 @@ resource "aws_flow_log" "nhs_audit" {
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.mhs_vpc.id
+
+  tags = {
+    Name = "${var.environment}-${var.cluster_name}-mhs-vpc-audit-flow-logs"
+    Environment = var.environment
+    CreatedBy = var.repo_name
+  }
 }
 
 data "aws_ssm_parameter" "nhs_audit_flow_s3_bucket_arn" {

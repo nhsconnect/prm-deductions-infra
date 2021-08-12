@@ -77,6 +77,12 @@ resource "aws_flow_log" "nhs_audit" {
     log_destination_type = "s3"
     traffic_type         = "ALL"
     vpc_id               = module.vpc.vpc_id
+
+    tags = {
+        Name = "${var.environment}-deductions-core-vpc-audit-flow-logs"
+        Environment = var.environment
+        CreatedBy = var.repo_name
+    }
 }
 
 data "aws_ssm_parameter" "gocd_vpc" {
