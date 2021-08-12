@@ -72,6 +72,13 @@ resource "aws_route" "gocd_to_core" {
     vpc_peering_connection_id = aws_vpc_peering_connection.core_to_gocd.id
 }
 
+resource "aws_flow_log" "nhs_audit" {
+    log_destination      = data.aws_ssm_parameter.nhs_audit_flow_s3_bucket_arn.value
+    log_destination_type = "s3"
+    traffic_type         = "ALL"
+    vpc_id               = module.vpc.vpc_id
+}
+
 data "aws_ssm_parameter" "gocd_vpc" {
     provider = aws.ci
     name = "/repo/prod/output/prm-gocd-infra/gocd-vpc-id"
@@ -80,4 +87,8 @@ data "aws_ssm_parameter" "gocd_vpc" {
 data "aws_ssm_parameter" "gocd_route_table_id" {
     provider = aws.ci
     name = "/repo/${var.gocd_environment}/output/prm-gocd-infra/gocd-route-table-id"
+}
+
+data "aws_ssm_parameter" "nhs_audit_flow_s3_bucket_arn" {
+    name = "/repo/user-input/external/nhs-audit-vpc-flow-log-s3-bucket-arn"
 }
