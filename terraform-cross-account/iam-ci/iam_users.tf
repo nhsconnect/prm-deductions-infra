@@ -58,7 +58,7 @@ resource "aws_iam_role_policy_attachment" "sms_read_only" {
 }
 
 resource "aws_iam_policy" "ci_read_only" {
-  name = "CiReadOnly"
+  name = "ci-read-only"
   policy = data.aws_iam_policy_document.ci_read_only.json
 }
 

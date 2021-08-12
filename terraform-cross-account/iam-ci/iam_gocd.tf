@@ -39,51 +39,69 @@ resource "aws_iam_instance_profile" "ci_cross_agent" {
 }
 
 resource "aws_iam_role_policy_attachment" "ci_cross_agent" {
-  policy_arn = aws_iam_policy.ci_cross_agent.arn
+  policy_arn = aws_iam_policy.ci_read_only.arn
   role = aws_iam_role.ci_cross_agent.name
 }
 
-resource "aws_iam_policy" "ci_cross_agent" {
-  name = "CiCrossAgent"
-  policy = data.aws_iam_policy_document.ci_cross_account.json
+resource "aws_iam_role_policy_attachment" "cross_ci_ssm" {
+  policy_arn = aws_iam_policy.cross_ci_ssm.arn
+  role = aws_iam_role.ci_cross_agent.name
 }
 
-data "aws_iam_policy_document" "ci_cross_account" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "ecr:DescribeRepositories"
-    ]
-    resources = ["*"]
-  }
+resource "aws_iam_policy" "cross_ci_ssm" {
+  name = "repository-cross-ci-agent"
+  policy = data.aws_iam_policy_document.cross_ci_ssm.json
+}
 
+data "aws_iam_policy_document" "cross_ci_ssm" {
   statement {
     effect = "Allow"
     actions = [
-      "iam:GetRole",
-      "iam:GetPolicy"
+      "ssm:GetParameter"
     ]
-    resources = ["*"]
+    resources = ["arn:aws:ssm:*:327778747031:parameter/*"]
   }
+}
 
+resource "aws_iam_role_policy_attachment" "cross_ci_write" {
+  policy_arn = aws_iam_policy.cross_ci_write.arn
+  role = aws_iam_role.ci_cross_agent.name
+}
+
+resource "aws_iam_policy" "cross_ci_write" {
+  name = "repository-cross-ci-agent"
+  policy = data.aws_iam_policy_document.cross_ci_write.json
+}
+
+data "aws_iam_policy_document" "cross_ci_write" {
   statement {
     effect = "Allow"
     actions = [
-      "ec2:DescribeVpcs",
-      "ec2:DescribeRouteTables",
-      "ec2:DescribeVpcPeeringConnections"
+      "ec2:AcceptVpcPeeringConnection",
+      "ec2:CreateRoute",
+      "ec2:CreateTags",
+      "ec2:DeleteRoute",
+      "ec2:ReplaceRoute"
     ]
-    resources = ["*"]
+    resources = ["arn:aws:ec2:*:327778747031:vpc*",
+                "arn:aws:ec2:*:327778747031:route-table/*"]
   }
-
   statement {
     effect = "Allow"
     actions = [
-      "route53:GetHostedZone",
-      "route53:ListVPCAssociationAuthorizations",
-      "route53:ListResourceRecordSets",
-      "route53:ListHostedZonesByVPC"
+      "route53:DisassociateVPCFromHostedZone",
+      "route53:AssociateVPCWithHostedZone",
+      "route53:ChangeResourceRecordSets",
+      "route53:DeleteVPCAssociationAuthorization",
+      "route53:CreateVPCAssociationAuthorization"
     ]
-    resources = ["*"]
+    resources = ["arn:aws:route53:::hostedzone/*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:GetChange"
+    ]
+    resources = ["arn:aws:route53:::change/*"]
   }
 }
