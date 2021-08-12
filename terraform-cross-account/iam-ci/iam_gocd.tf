@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "cross_ci_ssm" {
 }
 
 resource "aws_iam_policy" "cross_ci_ssm" {
-  name = "repository-cross-ci-agent"
+  name = "cross-ci-ssm"
   policy = data.aws_iam_policy_document.cross_ci_ssm.json
 }
 
