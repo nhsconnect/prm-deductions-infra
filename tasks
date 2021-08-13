@@ -69,7 +69,7 @@ function tf_plan {
   aws_account_arn=$(aws sts get-caller-identity | jq -r .Arn)
 
   if [[ $aws_account_arn =~ "gocd_agent-prod" || $aws_account_arn =~ "repository-ci-agent" ]]; then
-    COMMON_ACCOUNT_ROLE="repository-ci-agent"
+    COMMON_ACCOUNT_ROLE="repository-cross-ci-agent"
   fi
   if [[ -z "${COMMON_ACCOUNT_ROLE}" ]]; then
     if [[ $NHS_ENVIRONMENT =~ "pre-prod" || $NHS_ENVIRONMENT =~ "prod" ]]; then
