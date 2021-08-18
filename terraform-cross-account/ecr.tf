@@ -61,3 +61,10 @@ resource "aws_ecr_repository" "mhs-unbound-dns" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ecr_repository" "pds_adaptor" {
+  name = "deductions/pds-adaptor"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
