@@ -2,6 +2,12 @@ resource "aws_network_acl" "mhs_public" {
   count = var.deploy_mhs_nacl ? 1 : 0
   vpc_id = aws_vpc.mhs_vpc.id
   subnet_ids = aws_subnet.mhs_public.*.id
+
+  tags = {
+    Name = "${var.environment}-${var.cluster_name}-mhs-inbound-nacl"
+    Environment = var.environment
+    CreatedBy = var.repo_name
+  }
 }
 
 resource "aws_network_acl_rule" "ingress_sig" {
