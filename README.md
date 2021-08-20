@@ -15,6 +15,11 @@ DOJO_DOCKER_IMAGE="nhsdev/deductions-infra-dojo:<commit>"
 
 By default, current directory in docker container is `/dojo/work`.
 
+### AWS helpers
+
+This repository imports shared AWS helpers from [prm-deductions-support-infra](https://github.com/nhsconnect/prm-deductions-support-infra/).
+They can be found `utils` directory after running any task from `tasks` file.
+
 ## Access to AWS
 
 In order to get sufficient access to work with terraform or AWS CLI:
