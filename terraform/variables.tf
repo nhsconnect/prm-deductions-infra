@@ -171,15 +171,11 @@ variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
-variable "hscn_gateway_id" {
-  default = ""
-}
 variable "common_account_id" {}
 variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_opentest" {}
-variable "deploy_hscn" {}
 variable "mhs_repo_public_subnets_outbound" {}
 variable "mhs_repo_public_subnets_inbound" {}
 variable "mhs_repo_private_subnets" {}

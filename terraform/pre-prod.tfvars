@@ -54,7 +54,6 @@ mhs_test_harness_opentest_subnet = ""
 
 deploy_mhs_test_harness = false
 deploy_opentest = false
-deploy_hscn = false
 deploy_cross_account_vpc_peering = true
 
 dns_forward_zone = "ncrs.nhs.uk"

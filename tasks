@@ -422,13 +422,6 @@ case "${command}" in
       TRIES=60
       ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} | grep 'Got answer'"
       ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} | grep 'Got answer'"
-
-      if [ "${NHS_ENVIRONMENT}" == "test" ]; then
-        echo "Querying for private domain on HSCN network: nww.int.spine2.ncrs.nhs.uk"
-        dig nww.int.spine2.ncrs.nhs.uk @${DNS_SERVER_1} | grep 'Got answer'
-        dig nww.int.spine2.ncrs.nhs.uk @${DNS_SERVER_2} | grep 'Got answer'
-        echo "OK. Received reply for an HSCN domain"
-      fi
       ;;
   wait_for_dns)
       dojo "./tasks _wait_for_dns $2"

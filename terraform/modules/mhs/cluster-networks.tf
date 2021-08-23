@@ -21,9 +21,7 @@ module "cluster" {
   region = var.region
   unbound_image_version = var.unbound_image_version
   spine_cidr_block = var.spine_cidr_block
-  hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr = var.gocd_cidr
   gocd_environment = "prod"
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
-  deploy_hscn = var.deploy_hscn
 }

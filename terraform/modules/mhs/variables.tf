@@ -38,12 +38,10 @@ variable "cluster_name" {}
 variable "mhs_public_subnets_inbound" {}
 variable "mhs_public_subnets_outbound" {}
 variable "mhs_cluster_domain_name" {}
-variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
 
 variable "deploy_opentest" {}
 variable "deploy_cross_account_vpc_peering"{}
-variable "deploy_hscn" {}
 
 variable "inbound_sig_ips" {}
 variable "deploy_mhs_nacl" {}

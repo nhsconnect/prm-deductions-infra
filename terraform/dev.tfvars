@@ -55,7 +55,6 @@ spine_cidr_block = "192.168.128.0/24"
 
 deploy_mhs_test_harness = true
 deploy_opentest = true
-deploy_hscn = false
 deploy_cross_account_vpc_peering = true
 
 dns_forward_zone = "opentest.hscic.gov.uk"

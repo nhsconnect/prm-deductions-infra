@@ -49,10 +49,8 @@ module "repo" {
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
-  hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
-  deploy_hscn = var.deploy_hscn
   inbound_sig_ips = var.inbound_sig_ips
   deploy_mhs_nacl= var.deploy_mhs_nacl
 }
@@ -83,10 +81,8 @@ module "test-harness" {
   spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
-  hscn_gateway_id = var.hscn_gateway_id
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
-  deploy_hscn = var.deploy_hscn
   inbound_sig_ips = var.inbound_sig_ips
   deploy_mhs_nacl= var.deploy_mhs_nacl
 }

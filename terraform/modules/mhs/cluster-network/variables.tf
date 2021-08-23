@@ -26,8 +26,6 @@ variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
-variable "hscn_gateway_id" {}
 variable "gocd_cidr" {}
 variable "gocd_environment" {}
 variable "deploy_cross_account_vpc_peering"{}
-variable "deploy_hscn" {}

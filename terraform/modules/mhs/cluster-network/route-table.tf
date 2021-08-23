@@ -29,20 +29,6 @@ resource "aws_route" "spine" {
   instance_id = join(",", module.opentest.*.vpn_instance_id)
 }
 
-resource "aws_route" "spine_hscn" {
-  count = var.deploy_hscn ? 3 : 0
-  route_table_id            = aws_route_table.mhs[count.index].id
-  destination_cidr_block    = "10.0.0.0/8"
-  gateway_id = var.hscn_gateway_id
-}
-
-resource "aws_route" "spine_hscn_dns" {
-  count = var.deploy_hscn ? 3 : 0
-  route_table_id            = aws_route_table.mhs[count.index].id
-  destination_cidr_block    = "155.231.231.0/30"
-  gateway_id = var.hscn_gateway_id
-}
-
 data "aws_caller_identity" "ci" {
   provider = aws.ci
 }
