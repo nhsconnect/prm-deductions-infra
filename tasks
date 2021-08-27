@@ -299,10 +299,6 @@ function generate_deductions_vpn_ssh_key {
   generate_ssh_key "/repo/user-input/ssh-id-rsa" "terraform/modules/ssh"
 }
 
-function generate_opentest_ssh_key {
-  generate_ssh_key "/repo/user-input/opentest-ssh-id-rsa" "terraform/modules/mhs/cluster-network/opentest/ssh"
-}
-
 function generate_dns_ssh_key {
   generate_ssh_key "/repo/user-input/dns-ssh-id-rsa" "terraform/modules/mhs/cluster-network/dns/ssh"
 }
@@ -339,7 +335,6 @@ case "${command}" in
       check_env
       #FIXME: should be in dev account _assume_environment_role $NHS_ENVIRONMENT
       generate_deductions_vpn_ssh_key
-      generate_opentest_ssh_key
       generate_dns_ssh_key
       ;;
   ssh_key)

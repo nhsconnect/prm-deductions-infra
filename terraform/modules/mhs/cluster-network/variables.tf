@@ -15,12 +15,9 @@ variable "mhs_vpc_id" {}
 variable "cluster_name" {}
 variable "deductions_private_cidr" {}
 variable "deductions_private_vpc_peering_connection_id" {}
-variable "deploy_opentest" {}
 variable "mhs_nat_gateway_id" {}
 variable "mhs_subnets" {}
-variable "opentest_cidr_block" {}
 variable "mhs_vpc_cidr_block" {}
-variable "spine_cidr_block" {}
 
 variable "dns_forward_zone" {}
 variable "dns_hscn_forward_server_1" {}

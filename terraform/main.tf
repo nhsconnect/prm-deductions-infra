@@ -35,7 +35,6 @@ module "repo" {
   mhs_vpc_additional_cidr_block = var.mhs_vpc_additional_cidr_block
   repo_name = var.repo_name
   cluster_name = "repo"
-  deploy_opentest = var.deploy_opentest
   deductions_private_cidr = var.deductions_private_cidr
   dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
   dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
@@ -43,16 +42,13 @@ module "repo" {
   region = var.region
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_repo_private_subnets
-  internet_private_cidr_block = var.mhs_repo_opentest_subnet
   mhs_public_subnets_inbound = var.mhs_repo_public_subnets_inbound
   mhs_public_subnets_outbound = var.mhs_repo_public_subnets_outbound
-  spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.repo_mhs_cluster_domain_name
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   inbound_sig_ips = var.inbound_sig_ips
-  deploy_mhs_nacl= var.deploy_mhs_nacl
 }
 
 module "test-harness" {
@@ -67,7 +63,6 @@ module "test-harness" {
   mhs_vpc_additional_cidr_block = var.mhs_vpc_additional_cidr_block
   repo_name = var.repo_name
   cluster_name = "test-harness"
-  deploy_opentest = var.deploy_opentest
   deductions_private_cidr = var.deductions_private_cidr
   dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
   dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
@@ -75,16 +70,13 @@ module "test-harness" {
   region = var.region
   unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_test_harness_private_subnets
-  internet_private_cidr_block = var.mhs_test_harness_opentest_subnet
   mhs_public_subnets_inbound = var.mhs_test_harness_public_subnets_inbound
   mhs_public_subnets_outbound = var.mhs_test_harness_public_subnets_outbound
-  spine_cidr_block = var.spine_cidr_block
   deductions_private_vpc_id = local.deductions_private_vpc_id
   mhs_cluster_domain_name = var.test_harness_mhs_cluster_domain_name
   gocd_cidr            = var.gocd_cidr
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering
   inbound_sig_ips = var.inbound_sig_ips
-  deploy_mhs_nacl= var.deploy_mhs_nacl
 }
 
 module "deductions-private" {

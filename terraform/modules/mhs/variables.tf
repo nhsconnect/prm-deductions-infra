@@ -16,10 +16,7 @@ variable "mhs_vpc_cidr_block" {
 variable "mhs_vpc_additional_cidr_block" {
   type = string
   description = "The additional CIDR block to use for MHS VPC"
-
 }
-
-variable "spine_cidr_block" {}
 
 variable "repo_name" {
   type = string
@@ -32,7 +29,6 @@ variable "dns_hscn_forward_server_1" {}
 variable "dns_hscn_forward_server_2" {}
 variable "unbound_image_version" {}
 variable "mhs_private_cidr_blocks" {}
-variable "internet_private_cidr_block" {}
 variable "deductions_private_vpc_id" {}
 variable "cluster_name" {}
 variable "mhs_public_subnets_inbound" {}
@@ -40,8 +36,6 @@ variable "mhs_public_subnets_outbound" {}
 variable "mhs_cluster_domain_name" {}
 variable "gocd_cidr" {}
 
-variable "deploy_opentest" {}
 variable "deploy_cross_account_vpc_peering"{}
 
 variable "inbound_sig_ips" {}
-variable "deploy_mhs_nacl" {}

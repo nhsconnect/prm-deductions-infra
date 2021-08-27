@@ -40,28 +40,22 @@ state_db_instance_class    = "db.t2.small"
 
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 test_harness_mhs_cluster_domain_name = "test-harness-mhs.patient-deductions.nhs.uk"
-mhs_vpc_cidr_block = "10.34.0.0/16" # Must not conflict with other networks
-mhs_vpc_additional_cidr_block = ""
-mhs_repo_public_subnets_inbound   = ["10.34.112.0/24", "10.34.113.0/24", "10.34.114.0/24"]
-mhs_repo_public_subnets_outbound = ["10.34.115.0/24", "10.34.116.0/24", "10.34.117.0/24"]
-mhs_repo_private_subnets = ["10.34.0.0/19", "10.34.32.0/19", "10.34.64.0/19"]
-mhs_test_harness_public_subnets_inbound = ["10.34.232.0/22", "10.34.236.0/22", "10.34.240.0/22"]
-mhs_test_harness_public_subnets_outbound = ["10.34.244.0/22", "10.34.248.0/22", "10.34.252.0/22"]
-mhs_test_harness_private_subnets = ["10.34.128.0/19", "10.34.160.0/19", "10.34.192.0/19"]
-mhs_repo_opentest_subnet = "10.34.96.0/20"
-mhs_test_harness_opentest_subnet = "10.34.224.0/21"
+mhs_vpc_cidr_block = "10.34.0.0/16"
 
-spine_cidr_block = "192.168.128.0/24"
+mhs_repo_private_subnets = ["10.34.0.0/22", "10.34.4.0/22", "10.34.8.0/22"]
+mhs_repo_public_subnets_inbound  = ["10.34.12.0/22", "10.34.16.0/22", "10.34.20.0/22"]
+mhs_repo_public_subnets_outbound = ["10.34.24.0/22", "10.34.28.0/22", "10.34.32.0/22"]
+mhs_test_harness_private_subnets = ["10.34.128.0/22", "10.34.132.0/22", "10.34.136.0/22"]
+mhs_test_harness_public_subnets_inbound = ["10.34.140.0/22", "10.34.144.0/22", "10.34.148.0/22"]
+mhs_test_harness_public_subnets_outbound = ["10.34.152.0/22", "10.34.156.0/22", "10.34.160.0/22"]
 
 deploy_mhs_test_harness = true
-deploy_opentest = true
 deploy_cross_account_vpc_peering = true
 
-dns_forward_zone = "opentest.hscic.gov.uk"
-dns_hscn_forward_server_1 = "192.168.128.30"
-dns_hscn_forward_server_2 = "192.168.128.30"
+dns_forward_zone = "ncrs.nhs.uk"
+dns_hscn_forward_server_1 = "192.168.128.30" // do we need these at all?
+dns_hscn_forward_server_2 = "192.168.128.30" // do we need these at all?
 
-inbound_sig_ips=[]
-deploy_mhs_nacl = false
+inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.177.31/32","35.177.15.89/32","3.11.199.83/32","18.132.113.121/32","18.132.31.159/32","35.178.64.126/32"]
 
 grant_access_to_queues_through_vpn = true

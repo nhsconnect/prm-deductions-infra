@@ -15,7 +15,6 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
     actions = ["ssm:PutParameter*"]
     resources = [
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/ssh-*",
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/opentest-ssh-*",
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/dns-ssh-*"
     ]
   }

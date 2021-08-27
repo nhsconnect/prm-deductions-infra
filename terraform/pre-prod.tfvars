@@ -42,18 +42,14 @@ state_db_instance_class    = "db.t2.small"
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
 mhs_vpc_cidr_block = "10.36.0.0/16"
-mhs_vpc_additional_cidr_block = ""
 mhs_repo_public_subnets_inbound  = ["10.36.112.0/22", "10.36.116.0/22", "10.36.120.0/22"]
 mhs_repo_public_subnets_outbound = ["10.36.140.0/22", "10.36.144.0/22", "10.36.148.0/22"]
 mhs_repo_private_subnets = ["10.36.128.0/22", "10.36.132.0/22", "10.36.136.0/22"]
 mhs_test_harness_public_subnets_inbound = []
 mhs_test_harness_public_subnets_outbound = []
 mhs_test_harness_private_subnets = []
-mhs_repo_opentest_subnet = ""
-mhs_test_harness_opentest_subnet = ""
 
 deploy_mhs_test_harness = false
-deploy_opentest = false
 deploy_cross_account_vpc_peering = true
 
 dns_forward_zone = "ncrs.nhs.uk"
@@ -61,7 +57,6 @@ dns_hscn_forward_server_1 = "192.168.128.30" // TODO: double-check the values
 dns_hscn_forward_server_2 = "192.168.128.30" // TODO: double-check the values
 
 inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.177.31/32","35.177.15.89/32","3.11.199.83/32","18.132.113.121/32","18.132.31.159/32","35.178.64.126/32"]
-deploy_mhs_nacl = true
 
 grant_access_to_queues_through_vpn = false
 

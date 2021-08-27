@@ -298,7 +298,6 @@ latest.zip
 /easy-rsa
 /client-config
 /terraform/modules/ssh/*
-/terraform/modules/mhs/cluster-network/opentest/ssh/*
 /terraform/modules/mhs/cluster-network/dns/ssh/*
 /ansible/group_vars/dev.yml
 /ansible/group_vars/test.yml

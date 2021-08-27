@@ -157,9 +157,8 @@ variable "mhs_vpc_cidr_block" {
 variable "mhs_vpc_additional_cidr_block" {
   type = string
   description = "The additional CIDR block to use for MHS VPC"
+  default = ""
 }
-
-variable "spine_cidr_block" { default = "" }
 
 variable "mhs_cidr_newbits" {
   description = "Defines the size of the subnets"
@@ -175,15 +174,11 @@ variable "common_account_id" {}
 variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
-variable "deploy_opentest" {}
 variable "mhs_repo_public_subnets_outbound" {}
 variable "mhs_repo_public_subnets_inbound" {}
 variable "mhs_repo_private_subnets" {}
 variable "mhs_test_harness_public_subnets_outbound" {}
 variable "mhs_test_harness_public_subnets_inbound" {}
 variable "mhs_test_harness_private_subnets" {}
-variable "mhs_repo_opentest_subnet" {}
-variable "mhs_test_harness_opentest_subnet" {}
 variable "inbound_sig_ips" {}
-variable "deploy_mhs_nacl" {}
 variable "grant_access_to_queues_through_vpn" {}

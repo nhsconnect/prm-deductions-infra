@@ -22,13 +22,6 @@ resource "aws_route" "deductions_private" {
   vpc_peering_connection_id = var.deductions_private_vpc_peering_connection_id
 }
 
-resource "aws_route" "spine" {
-  count = var.deploy_opentest ? 3 : 0
-  route_table_id            = aws_route_table.mhs[count.index].id
-  destination_cidr_block    = var.spine_cidr_block
-  instance_id = join(",", module.opentest.*.vpn_instance_id)
-}
-
 data "aws_caller_identity" "ci" {
   provider = aws.ci
 }
