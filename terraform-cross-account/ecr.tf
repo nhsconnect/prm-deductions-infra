@@ -1,5 +1,6 @@
 resource "aws_ecr_repository" "gp-to-repo" {
   name = "deductions/gp-to-repo"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -7,6 +8,7 @@ resource "aws_ecr_repository" "gp-to-repo" {
 
 resource "aws_ecr_repository" "repo-to-gp" {
   name = "deductions/repo-to-gp"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -14,6 +16,7 @@ resource "aws_ecr_repository" "repo-to-gp" {
 
 resource "aws_ecr_repository" "gp2gp-adaptor" {
   name = "deductions/gp2gp-adaptor"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -21,6 +24,7 @@ resource "aws_ecr_repository" "gp2gp-adaptor" {
 
 resource "aws_ecr_repository" "gp2gp-message-handler" {
   name = "deductions/gp2gp-message-handler"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -29,6 +33,7 @@ resource "aws_ecr_repository" "gp2gp-message-handler" {
 
 resource "aws_ecr_repository" "ehr-repo" {
   name = "deductions/ehr-repo"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -36,6 +41,7 @@ resource "aws_ecr_repository" "ehr-repo" {
 
 resource "aws_ecr_repository" "mhs-inbound" {
   name = "mhs-inbound"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -43,6 +49,7 @@ resource "aws_ecr_repository" "mhs-inbound" {
 
 resource "aws_ecr_repository" "mhs-outbound" {
   name = "mhs-outbound"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -50,6 +57,7 @@ resource "aws_ecr_repository" "mhs-outbound" {
 
 resource "aws_ecr_repository" "mhs-route" {
   name = "mhs-route"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -57,6 +65,7 @@ resource "aws_ecr_repository" "mhs-route" {
 
 resource "aws_ecr_repository" "mhs-unbound-dns" {
   name = "mhs-unbound-dns"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
@@ -64,6 +73,7 @@ resource "aws_ecr_repository" "mhs-unbound-dns" {
 
 resource "aws_ecr_repository" "pds_adaptor" {
   name = "deductions/pds-adaptor"
+  image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
   }
