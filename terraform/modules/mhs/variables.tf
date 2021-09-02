@@ -24,10 +24,6 @@ variable "repo_name" {
 }
 
 variable "deductions_private_cidr" {}
-variable "dns_forward_zone" {}
-variable "dns_hscn_forward_server_1" {}
-variable "dns_hscn_forward_server_2" {}
-variable "unbound_image_version" {}
 variable "mhs_private_cidr_blocks" {}
 variable "deductions_private_vpc_id" {}
 variable "cluster_name" {}

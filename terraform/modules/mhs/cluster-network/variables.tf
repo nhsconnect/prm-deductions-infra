@@ -19,10 +19,6 @@ variable "mhs_nat_gateway_id" {}
 variable "mhs_subnets" {}
 variable "mhs_vpc_cidr_block" {}
 
-variable "dns_forward_zone" {}
-variable "dns_hscn_forward_server_1" {}
-variable "dns_hscn_forward_server_2" {}
-variable "unbound_image_version" {}
 variable "gocd_cidr" {}
 variable "gocd_environment" {}
 variable "deploy_cross_account_vpc_peering"{}

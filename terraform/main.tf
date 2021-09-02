@@ -36,11 +36,7 @@ module "repo" {
   repo_name = var.repo_name
   cluster_name = "repo"
   deductions_private_cidr = var.deductions_private_cidr
-  dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
-  dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
-  dns_forward_zone          = var.dns_forward_zone
   region = var.region
-  unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_repo_private_subnets
   mhs_public_subnets_inbound = var.mhs_repo_public_subnets_inbound
   mhs_public_subnets_outbound = var.mhs_repo_public_subnets_outbound
@@ -64,11 +60,7 @@ module "test-harness" {
   repo_name = var.repo_name
   cluster_name = "test-harness"
   deductions_private_cidr = var.deductions_private_cidr
-  dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
-  dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
-  dns_forward_zone          = var.dns_forward_zone
   region = var.region
-  unbound_image_version = var.unbound_image_version
   mhs_private_cidr_blocks = var.mhs_test_harness_private_subnets
   mhs_public_subnets_inbound = var.mhs_test_harness_public_subnets_inbound
   mhs_public_subnets_outbound = var.mhs_test_harness_public_subnets_outbound

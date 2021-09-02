@@ -52,10 +52,6 @@ mhs_test_harness_private_subnets = []
 deploy_mhs_test_harness = false
 deploy_cross_account_vpc_peering = true
 
-dns_forward_zone = "ncrs.nhs.uk"
-dns_hscn_forward_server_1 = "192.168.128.30" // TODO: double-check the values
-dns_hscn_forward_server_2 = "192.168.128.30" // TODO: double-check the values
-
 inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.177.31/32","35.177.15.89/32","3.11.199.83/32","18.132.113.121/32","18.132.31.159/32","35.178.64.126/32"]
 
 grant_access_to_queues_through_vpn = false

@@ -6,10 +6,6 @@ export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
 DEDUCTIONS_INFRA_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-if [ -z "${DNS_IMAGE_TAG}" ]; then
-  DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
-fi
-
 AWS_HELPERS_VERSION="0.2.9"
 echo "AWS helper scripts version: $AWS_HELPERS_VERSION"
 
@@ -22,14 +18,6 @@ if [[ ! -f $AWS_HELPERS_FILE ]];then
 fi
 chmod +x $AWS_HELPERS_FILE
 source $AWS_HELPERS_FILE
-
-if [ -z "${DNS_IMAGE_TAG}" ]; then
-  DNS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
-fi
-
-if [ -z "${MHS_IMAGE_TAG}" ]; then
-  MHS_IMAGE_TAG="${GO_DEPENDENCY_LABEL_DOCKER_DNS_IMAGES}"
-fi
 
 function check_env {
   if [[ -z "${NHS_ENVIRONMENT}" ]]; then
@@ -57,11 +45,6 @@ function tf_plan {
   operation=$1
   certs=$2
 
-  if [ -z "${DNS_IMAGE_TAG}" ]; then
-    echo "DNS image tag has to be set"
-    exit 1
-  fi
-
   TARGET=""
 
   cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
@@ -88,9 +71,9 @@ function tf_plan {
   tf_init
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
+    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -var unbound_image_version=${DNS_IMAGE_TAG} -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
+    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
@@ -295,51 +278,8 @@ function create_ssm_param {
   fi
 }
 
-function generate_deductions_vpn_ssh_key {
-  generate_ssh_key "/repo/user-input/ssh-id-rsa" "terraform/modules/ssh"
-}
-
-function generate_dns_ssh_key {
-  generate_ssh_key "/repo/user-input/dns-ssh-id-rsa" "terraform/modules/mhs/cluster-network/dns/ssh"
-}
-
-function generate_ssh_key {
-  secret_id=$1
-  ssh_directory=$2
-  mkdir -p ${ssh_directory}/
-  if [[ ! -f "${ssh_directory}/id_rsa" ]]; then
-    #TODO check aws authentication
-    set +e
-    id_rsa=$(aws ssm get-parameter --with-decryption --region $AWS_DEFAULT_REGION --name $secret_id | jq -r ".Parameter.Value")
-    if [[ $? == 0 ]]; then
-      echo "$id_rsa" > ${ssh_directory}/id_rsa
-    else
-      set -e
-      ssh-keygen -f "${ssh_directory}/id_rsa" -q -N ""
-    fi
-    set -e
-  fi
-  chmod 0600 ${ssh_directory}/id_rsa
-  ssh-keygen -y -f "${ssh_directory}/id_rsa" > "${ssh_directory}/id_rsa.pub"
-  aws ssm put-parameter \
-   --region $AWS_DEFAULT_REGION \
-   --name $secret_id \
-   --type SecureString \
-   --overwrite \
-   --value "`cat ${ssh_directory}/id_rsa`"
-}
-
 command="$1"
 case "${command}" in
-  _ssh_key)
-      check_env
-      #FIXME: should be in dev account _assume_environment_role $NHS_ENVIRONMENT
-      generate_deductions_vpn_ssh_key
-      generate_dns_ssh_key
-      ;;
-  ssh_key)
-      dojo "./tasks _ssh_key"
-      ;;
   _tf)
       check_env
       terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
@@ -350,7 +290,6 @@ case "${command}" in
       ;;
   _tf_plan)
       _assume_environment_role $NHS_ENVIRONMENT
-      ./tasks _ssh_key
       tf_plan "$2"
       ;;
   tf_plan)
@@ -383,43 +322,11 @@ case "${command}" in
       ;;
   _tf_apply)
       _assume_environment_role $NHS_ENVIRONMENT
-      ./tasks _ssh_key
       tf_apply
       ;;
   tf_apply)
       check_env
       dojo "./tasks _tf_apply"
-      ;;
-  promote_docker_image)
-      check_env
-      promote_docker_image "mhs-unbound-dns:$MHS_IMAGE_TAG" "$NHS_ENVIRONMENT"
-      ;;
-  _wait_for_dns)
-      check_env
-      cluster_name=$2
-      if [ -z $cluster_name ]; then
-        echo "Please specify cluster name to verify"
-      fi
-      _assume_environment_role $NHS_ENVIRONMENT
-      AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account)
-      DNS_SERVER_1=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-0")
-      DNS_SERVER_1=$(echo "${DNS_SERVER_1}" | awk -F "," '{print $1}')
-      DNS_SERVER_2=$(_get_aws_ssm_secret "/repo/${NHS_ENVIRONMENT}/output/prm-deductions-infra/${cluster_name}-dns-ip-1")
-      DNS_SERVER_2=$(echo "${DNS_SERVER_2}" | awk -F "," '{print $1}')
-      echo "Waiting for DNS servers ${DNS_SERVER_1} and ${DNS_SERVER_2} to be ready"
-
-      rm -f ./retry
-      curl https://raw.githubusercontent.com/kadwanev/retry/master/retry -o ./retry
-      chmod +x retry
-
-      SLEEP_TIME=1
-      DIG_TIMEOUT=1
-      TRIES=60
-      ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_1} | grep 'Got answer'"
-      ./retry -v --tries=$TRIES --sleep=$SLEEP_TIME "1>&2 dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} & dig +timeout=$DIG_TIMEOUT redhat.com @${DNS_SERVER_2} | grep 'Got answer'"
-      ;;
-  wait_for_dns)
-      dojo "./tasks _wait_for_dns $2"
       ;;
   _create_secrets)
       generate_username_ssm_param "/repo/${NHS_ENVIRONMENT}/user-input/mq-admin-username"

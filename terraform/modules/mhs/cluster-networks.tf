@@ -13,11 +13,7 @@ module "cluster" {
   mhs_nat_gateway_id = aws_nat_gateway.internet.*.id
   mhs_subnets = var.mhs_private_cidr_blocks
   mhs_vpc_cidr_block = var.mhs_vpc_cidr_block
-  dns_hscn_forward_server_1 = var.dns_hscn_forward_server_1
-  dns_hscn_forward_server_2 = var.dns_hscn_forward_server_2
-  dns_forward_zone          = var.dns_forward_zone
   region = var.region
-  unbound_image_version = var.unbound_image_version
   gocd_cidr = var.gocd_cidr
   gocd_environment = "prod"
   deploy_cross_account_vpc_peering = var.deploy_cross_account_vpc_peering

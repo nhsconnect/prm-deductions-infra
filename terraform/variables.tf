@@ -165,11 +165,6 @@ variable "mhs_cidr_newbits" {
 }
 variable "test_harness_mhs_cluster_domain_name" { default = "" }
 variable "repo_mhs_cluster_domain_name" {}
-
-variable "dns_forward_zone" {}
-variable "dns_hscn_forward_server_1" {}
-variable "dns_hscn_forward_server_2" {}
-variable "unbound_image_version" {}
 variable "common_account_id" {}
 variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
