@@ -15,3 +15,7 @@ variable "provision_strict_iam_roles" {}
 variable "environment" {
   type = string
 }
+
+variable "immutable_ecr_repositories" {
+  type = bool
+}
