@@ -55,22 +55,6 @@ resource "aws_ecr_repository" "mhs-outbound" {
   }
 }
 
-resource "aws_ecr_repository" "mhs-route" {
-  name = "mhs-route"
-  image_tag_mutability = "IMMUTABLE"
-  tags = {
-    CreatedBy = var.repo_name
-  }
-}
-
-resource "aws_ecr_repository" "mhs-unbound-dns" {
-  name = "mhs-unbound-dns"
-  image_tag_mutability = "IMMUTABLE"
-  tags = {
-    CreatedBy = var.repo_name
-  }
-}
-
 resource "aws_ecr_repository" "pds_adaptor" {
   name = "deductions/pds-adaptor"
   image_tag_mutability = "IMMUTABLE"
