@@ -62,3 +62,11 @@ resource "aws_ecr_repository" "pds_adaptor" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ecr_repository" "mesh-forwarder" {
+  name = "deductions/mesh-forwarder"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
