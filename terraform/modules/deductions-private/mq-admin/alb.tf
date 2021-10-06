@@ -3,6 +3,7 @@ resource "aws_alb" "mq-admin" {
   subnets         = var.deductions_private_vpc_private_subnets
   security_groups = [var.vpn_to_mq_admin_sg_id]
   internal        = true
+  drop_invalid_header_fields = true
 
   tags = {
     CreatedBy   = var.repo_name
