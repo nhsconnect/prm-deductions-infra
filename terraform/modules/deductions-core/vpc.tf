@@ -18,6 +18,11 @@ module "vpc" {
     }
 }
 
+// We do not use the default VPC SG. This resource removes all ingress/egress rules from it for security reasons.
+resource "aws_default_security_group" "default" {
+    vpc_id = module.vpc.vpc_id
+}
+
 resource "aws_route" "core_to_private" {
     count = length(module.vpc.private_route_table_ids)
     route_table_id            = module.vpc.private_route_table_ids[count.index]
