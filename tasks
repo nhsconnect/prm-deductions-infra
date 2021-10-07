@@ -325,6 +325,7 @@ case "${command}" in
       dojo "./tasks _tf_apply_cross_account"
       ;;
   _tf_apply)
+      _assume_environment_role $NHS_ENVIRONMENT true
       tf_apply
       ;;
   tf_apply)
