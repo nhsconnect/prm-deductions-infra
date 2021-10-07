@@ -1,7 +1,7 @@
 resource "aws_alb" "mq-admin" {
   name            = "${var.environment}-mq-admin-alb"
   subnets         = var.deductions_private_vpc_private_subnets
-  security_groups = [var.vpn_to_mq_admin_sg_id]
+  security_groups = [aws_security_group.vpn_to_mq_admin.id]
   internal        = true
   drop_invalid_header_fields = true
 
@@ -9,6 +9,36 @@ resource "aws_alb" "mq-admin" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+resource "aws_security_group" "vpn_to_mq_admin" {
+  name        = "${var.environment}-vpn-to-mq-admin"
+  description = "controls access from vpn to mq admin"
+  vpc_id      = var.vpc_id
+
+  egress {
+    description = "Allow All Outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-vpn-to-${var.component_name}-sg"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group_rule" "alb_to_mq_ingress" {
+  description = "Allow traffic from Internal ALB to AMQ"
+  from_port = "8162"
+  to_port = "8162"
+  protocol = "tcp"
+  source_security_group_id = aws_security_group.vpn_to_mq_admin.id
+  security_group_id = var.service_to_mq_admin_sg_id
+  type = "ingress"
 }
 
 resource "aws_alb_listener" "int-alb-listener" {
@@ -133,7 +163,7 @@ resource "aws_security_group_rule" "vpn_to_mq_admin" {
   from_port   = 443
   to_port     = 443
   source_security_group_id = var.vpn_sg_id
-  security_group_id = var.vpn_to_mq_admin_sg_id
+  security_group_id = aws_security_group.vpn_to_mq_admin.id
 }
 
 resource "aws_acm_certificate" "mq-admin-cert" {

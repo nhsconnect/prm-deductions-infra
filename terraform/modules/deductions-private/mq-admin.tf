@@ -11,5 +11,6 @@ module "mq-admin" {
   deductions_private_vpc_id = module.vpc.vpc_id
   environment_public_zone = var.environment_public_zone
   environment_private_zone = var.environment_private_zone
-  vpn_to_mq_admin_sg_id = aws_security_group.vpn_to_mq_admin.id
+  service_to_mq_admin_sg_id = aws_security_group.service_to_mq.id
+  vpc_id = module.vpc.vpc_id
 }

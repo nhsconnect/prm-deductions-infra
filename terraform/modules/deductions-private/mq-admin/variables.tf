@@ -24,4 +24,5 @@ variable "deductions_private_vpc_private_subnets" {}
 variable "deductions_private_vpc_id" {}
 variable "environment_public_zone" {}
 variable "environment_private_zone" {}
-variable "vpn_to_mq_admin_sg_id" {}
+variable "service_to_mq_admin_sg_id" {}
+variable "vpc_id" {}

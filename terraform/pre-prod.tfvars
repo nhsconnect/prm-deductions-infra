@@ -54,4 +54,4 @@ deploy_cross_account_vpc_peering = true
 
 inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.177.31/32","35.177.15.89/32","3.11.199.83/32","18.132.113.121/32","18.132.31.159/32","35.178.64.126/32"]
 
-grant_access_to_queues_through_vpn = true
+grant_access_to_queues_through_vpn = false
