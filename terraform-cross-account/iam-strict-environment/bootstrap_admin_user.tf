@@ -51,6 +51,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "s3:PutLifecycleConfiguration",
       "s3:CreateBucket",
       "s3:DeleteBucket",
+      "s3:GetBucketPolicy",
+      "s3:PutBucketPolicy",
       "s3:PutBucketVersioning",
       "s3:PutBucketTagging",
       "s3:PutBucketAcl",
