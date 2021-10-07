@@ -28,15 +28,12 @@ function check_env {
 
 function tf_init {
   check_env
-  #  Condition [ $NHS_ENVIRONMENT == "test" ] is required as test environment infrastructure is deployed in CI AWS account
-  [ $NHS_ENVIRONMENT == "ci" ] || [ $NHS_ENVIRONMENT == "test" ] && bucket_env_infix="" || bucket_env_infix="$NHS_ENVIRONMENT-"
-
   cd "${DEDUCTIONS_INFRA_DIR}/terraform/"
 
   terraform init -reconfigure \
     -backend-config key="${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate" \
-    -backend-config bucket="prm-deductions-${bucket_env_infix}terraform-state" \
-    -backend-config dynamodb_table="prm-deductions-${bucket_env_infix}terraform-table" \
+    -backend-config bucket="prm-deductions-${NHS_ENVIRONMENT}-terraform-state" \
+    -backend-config dynamodb_table="prm-deductions-${NHS_ENVIRONMENT}-terraform-table" \
     -backend-config region=${AWS_DEFAULT_REGION}
 }
 
@@ -60,7 +57,7 @@ function tf_plan {
   fi
   if [[ -z "${COMMON_ACCOUNT_ROLE}" ]]; then
     if [[ $NHS_ENVIRONMENT =~ "pre-prod" || $NHS_ENVIRONMENT =~ "prod" ]]; then
-      COMMON_ACCOUNT_ROLE="ci-read-only"
+      COMMON_ACCOUNT_ROLE="CiReadOnly"
     else
       COMMON_ACCOUNT_ROLE="RepoAdmin"
     fi
