@@ -297,7 +297,9 @@ case "${command}" in
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
-      _assume_environment_role $NHS_ENVIRONMENT true
+      if [[ $NHS_ENVIRONMENT != "ci" ]]; then
+        _assume_environment_role $NHS_ENVIRONMENT true
+      fi
       tf_plan_cross_account "$2"
       ;;
   tf_plan_cross_account)
@@ -321,7 +323,9 @@ case "${command}" in
       dojo "./tasks _tf_apply_cross_account"
       ;;
   _tf_apply)
-      _assume_environment_role $NHS_ENVIRONMENT
+      if [[ $NHS_ENVIRONMENT != "ci" ]]; then
+        _assume_environment_role $NHS_ENVIRONMENT
+      fi
       tf_apply
       ;;
   tf_apply)
