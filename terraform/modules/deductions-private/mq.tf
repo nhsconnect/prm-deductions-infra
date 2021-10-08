@@ -160,13 +160,7 @@ resource "aws_security_group" "vpn_to_mq" {
   description = "controls access from VPN to AMQ"
   vpc_id      = module.vpc.vpc_id
 
-  egress {
-    description = "Allow All Outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress= []
 
   tags = {
     Name = "${var.environment}-vpn-to-${var.component_name}-sg"
