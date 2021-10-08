@@ -16,13 +16,7 @@ resource "aws_security_group" "vpn_to_mq_admin" {
   description = "controls access from vpn to mq admin"
   vpc_id      = var.vpc_id
 
-  egress {
-    description = "Allow All Outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress= []
 
   tags = {
     Name = "${var.environment}-vpn-to-${var.component_name}-sg"
