@@ -145,16 +145,6 @@ resource "aws_security_group" "service_to_mq" {
   }
 }
 
-resource "aws_security_group_rule" "service_to_mq_egress" {
-  description = "Allow All Outbound"
-  from_port   = 0
-  to_port     = 0
-  protocol    = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.service_to_mq.id
-  type = "egress"
-}
-
 resource "aws_ssm_parameter" "service_to_mq" {
   name = "/repo/${var.environment}/output/${var.repo_name}/service-to-mq-sg-id"
   type = "String"
