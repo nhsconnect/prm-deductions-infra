@@ -160,8 +160,6 @@ resource "aws_security_group" "vpn_to_mq" {
   description = "controls access from VPN to AMQ"
   vpc_id      = module.vpc.vpc_id
 
-  egress= []
-
   tags = {
     Name = "${var.environment}-vpn-to-${var.component_name}-sg"
     CreatedBy   = var.repo_name

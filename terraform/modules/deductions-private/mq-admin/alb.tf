@@ -16,8 +16,6 @@ resource "aws_security_group" "vpn_to_mq_admin" {
   description = "controls access from vpn to mq admin"
   vpc_id      = var.vpc_id
 
-  egress= []
-
   tags = {
     Name = "${var.environment}-vpn-to-${var.component_name}-sg"
     CreatedBy   = var.repo_name
