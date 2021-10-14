@@ -4,7 +4,10 @@ data "aws_iam_policy_document" "trust_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/NHSDAdminRole"]
+      identifiers = [
+        "arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/NHSDAdminRole",
+        "arn:aws:iam::${data.aws_ssm_parameter.nhsd_identities_account_id.value}:root"
+      ]
     }
   }
 }
@@ -24,4 +27,8 @@ resource "aws_iam_role_policy_attachment" "repo_admin" {
 
 data "aws_ssm_parameter" "ci_account_id" {
   name = "/repo/ci/user-input/external/aws-account-id"
+}
+
+data "aws_ssm_parameter" "nhsd_identities_account_id" {
+  name = "/repo/nhsd-identities/user-input/external/aws-account-id"
 }
