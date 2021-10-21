@@ -1,12 +1,9 @@
-data "aws_iam_policy_document" "gocd_trust_policy" {
+data "aws_iam_policy_document" "ci_to_env_deployment_trust_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/repository-ci-agent",
-        "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/repository-ci-agent",
-        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/repository-ci-agent",
         "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/Deployer",
         "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/Deployer",
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/Deployer",
@@ -16,24 +13,9 @@ data "aws_iam_policy_document" "gocd_trust_policy" {
   }
 }
 
-resource "aws_iam_role" "ci_cross_agent" {
-  name = "repository-cross-ci-agent"
-  assume_role_policy = data.aws_iam_policy_document.gocd_trust_policy.json
-}
-
-resource "aws_iam_instance_profile" "ci_cross_agent" {
-  name = "repository-cross-ci-agent"
-  role = aws_iam_role.ci_cross_agent.name
-}
-
-resource "aws_iam_role_policy_attachment" "ci_cross_agent" {
-  policy_arn = aws_iam_policy.ci_read_only.arn
-  role = aws_iam_role.ci_cross_agent.name
-}
-
 resource "aws_iam_role" "ci_to_env_linker" {
   name = "CiToEnvLinker"
-  assume_role_policy = data.aws_iam_policy_document.gocd_trust_policy.json
+  assume_role_policy = data.aws_iam_policy_document.ci_to_env_deployment_trust_policy.json
 }
 
 resource "aws_iam_instance_profile" "ci_to_env_linker" {
@@ -51,11 +33,6 @@ resource "aws_iam_role_policy_attachment" "ci_to_env_linker_ssm" {
   role = aws_iam_role.ci_to_env_linker.name
 }
 
-resource "aws_iam_role_policy_attachment" "cross_ci_ssm" {
-  policy_arn = aws_iam_policy.cross_ci_ssm.arn
-  role = aws_iam_role.ci_cross_agent.name
-}
-
 resource "aws_iam_policy" "cross_ci_ssm" {
   name = "cross-ci-ssm"
   policy = data.aws_iam_policy_document.cross_ci_ssm.json
@@ -69,11 +46,6 @@ data "aws_iam_policy_document" "cross_ci_ssm" {
     ]
     resources = ["arn:aws:ssm:*:327778747031:parameter/*"]
   }
-}
-
-resource "aws_iam_role_policy_attachment" "cross_ci_write" {
-  policy_arn = aws_iam_policy.cross_ci_write.arn
-  role = aws_iam_role.ci_cross_agent.name
 }
 
 resource "aws_iam_role_policy_attachment" "ci_to_env_linker_write" {
