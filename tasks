@@ -6,7 +6,7 @@ export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
 DEDUCTIONS_INFRA_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-AWS_HELPERS_VERSION="0.2.13"
+AWS_HELPERS_VERSION="0.2.15"
 echo "AWS helper scripts version: $AWS_HELPERS_VERSION"
 
 # Do not change the file name as the aws helper scripts depend on it
@@ -52,17 +52,12 @@ function tf_plan {
 
   aws_account_arn=$(aws sts get-caller-identity | jq -r .Arn)
 
-  if [[ $aws_account_arn =~ "gocd_agent-prod" || $aws_account_arn =~ "repository-ci-agent" ]]; then
-    COMMON_ACCOUNT_ROLE="repository-cross-ci-agent"
+  if [[ $aws_account_arn =~ "gocd_agent-prod" || $aws_account_arn =~ "Deployer" ]]; then
+    COMMON_ACCOUNT_ROLE="CiToEnvLinker"
+  else
+    COMMON_ACCOUNT_ROLE="CiReadOnly"
   fi
-  if [[ -z "${COMMON_ACCOUNT_ROLE}" ]]; then
-    if [[ $NHS_ENVIRONMENT =~ "pre-prod" || $NHS_ENVIRONMENT =~ "prod" ]]; then
-      COMMON_ACCOUNT_ROLE="CiReadOnly"
-    else
-      COMMON_ACCOUNT_ROLE="RepoAdmin"
-    fi
-  fi
-  echo "assuming ${COMMON_ACCOUNT_ROLE} for cross account actions"
+  echo "Instructing terraform to assume ${COMMON_ACCOUNT_ROLE} role for cross account actions"
   COMMON_ACCOUNT_ID=$(_get_aws_ssm_secret "/repo/ci/user-input/external/aws-account-id")
 
   tf_init
