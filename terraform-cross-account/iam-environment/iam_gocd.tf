@@ -1,4 +1,4 @@
-# The role from which repository-ci-agent can be assumed
+# The role from which repository-ci-agent and Deployer can be assumed
 data "aws_ssm_parameter" "gocd_trusted_principal" {
   name = "/repo/user-input/external/gocd-trusted-principal"
 }
@@ -26,5 +26,21 @@ resource "aws_iam_instance_profile" "ci_agent" {
 
 resource "aws_iam_role_policy_attachment" "admin_access" {
   role       = aws_iam_role.ci_agent.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
+resource "aws_iam_role" "deployer" {
+  name               = "Deployer"
+  description        = "Role to allow deployment of service infrastructure"
+  assume_role_policy = data.aws_iam_policy_document.gocd_trust_policy.json
+}
+
+resource "aws_iam_instance_profile" "deployer" {
+  name = "Deployer"
+  role = aws_iam_role.deployer.name
+}
+
+resource "aws_iam_role_policy_attachment" "deployer_admin_access" {
+  role       = aws_iam_role.deployer.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }

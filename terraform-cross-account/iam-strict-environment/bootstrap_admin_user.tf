@@ -150,9 +150,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "iam:DeleteRole",
       "iam:DetachRolePolicy"
     ]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/Deployer",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/RepoDeveloper",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/repository-ci-agent",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/Deployer",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/RepoDeveloper",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy"]

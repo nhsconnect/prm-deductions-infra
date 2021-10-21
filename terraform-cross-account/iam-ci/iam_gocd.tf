@@ -4,24 +4,16 @@ data "aws_iam_policy_document" "gocd_trust_policy" {
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/repository-ci-agent",   # dev environment (in dev account)
-        "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/repository-ci-agent",     # test environment (in test account)
-        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/repository-ci-agent", # pre-prod environment (in pre-prod account)
-        "arn:aws:iam::${data.aws_caller_identity.ci_account.account_id}:role/repository-ci-agent" # test environment (in pre-prod account)
-        # more accounts will follow for other environments...
+        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/repository-ci-agent",
+        "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/repository-ci-agent",
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/repository-ci-agent",
+        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/Deployer",
+        "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/Deployer",
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/Deployer",
+        # prod to be added...
       ]
     }
   }
-}
-
-resource "aws_iam_role" "ci_agent" {
-  name = "repository-ci-agent"
-  assume_role_policy = data.aws_iam_policy_document.gocd_trust_policy.json
-}
-
-resource "aws_iam_instance_profile" "ci_agent" {
-  name = "repository-ci-agent"
-  role = aws_iam_role.ci_agent.name
 }
 
 resource "aws_iam_role_policy_attachment" "ci_agent" {
@@ -42,6 +34,26 @@ resource "aws_iam_instance_profile" "ci_cross_agent" {
 resource "aws_iam_role_policy_attachment" "ci_cross_agent" {
   policy_arn = aws_iam_policy.ci_read_only.arn
   role = aws_iam_role.ci_cross_agent.name
+}
+
+resource "aws_iam_role" "ci_to_env_linker" {
+  name = "CiToEnvLinker"
+  assume_role_policy = data.aws_iam_policy_document.gocd_trust_policy.json
+}
+
+resource "aws_iam_instance_profile" "ci_to_env_linker" {
+  name = "CiToEnvLinker"
+  role = aws_iam_role.ci_to_env_linker.name
+}
+
+resource "aws_iam_role_policy_attachment" "ci_to_env_linker" {
+  policy_arn = aws_iam_policy.ci_read_only.arn
+  role = aws_iam_role.ci_to_env_linker.name
+}
+
+resource "aws_iam_role_policy_attachment" "ci_to_env_linker_ssm" {
+  policy_arn = aws_iam_policy.cross_ci_ssm.arn
+  role = aws_iam_role.ci_to_env_linker.name
 }
 
 resource "aws_iam_role_policy_attachment" "cross_ci_ssm" {
@@ -67,6 +79,11 @@ data "aws_iam_policy_document" "cross_ci_ssm" {
 resource "aws_iam_role_policy_attachment" "cross_ci_write" {
   policy_arn = aws_iam_policy.cross_ci_write.arn
   role = aws_iam_role.ci_cross_agent.name
+}
+
+resource "aws_iam_role_policy_attachment" "ci_to_env_linker_write" {
+  policy_arn = aws_iam_policy.cross_ci_write.arn
+  role = aws_iam_role.ci_to_env_linker.name
 }
 
 resource "aws_iam_policy" "cross_ci_write" {

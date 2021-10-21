@@ -6,7 +6,7 @@ export AWS_DEFAULT_REGION=eu-west-2
 NHS_SERVICE=deductions-infra
 DEDUCTIONS_INFRA_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-AWS_HELPERS_VERSION="0.2.10"
+AWS_HELPERS_VERSION="0.2.13"
 echo "AWS helper scripts version: $AWS_HELPERS_VERSION"
 
 # Do not change the file name as the aws helper scripts depend on it
