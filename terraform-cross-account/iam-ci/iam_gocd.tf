@@ -7,9 +7,9 @@ data "aws_iam_policy_document" "gocd_trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/repository-ci-agent",
         "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/repository-ci-agent",
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/repository-ci-agent",
-        # "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/Deployer",
-        # "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/Deployer",
-        # "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/Deployer",
+        "arn:aws:iam::${data.aws_ssm_parameter.dev_account_id.value}:role/Deployer",
+        "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/Deployer",
+        "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/Deployer",
         # prod to be added...
       ]
     }
