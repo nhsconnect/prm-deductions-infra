@@ -8,6 +8,13 @@ data "aws_iam_policy_document" "trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.nhsd_identities_account_id.value}:root"
       ]
     }
+    condition {
+      test = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values = [
+        "true"
+      ]
+    }
   }
 }
 
