@@ -109,7 +109,6 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
     actions =  ["iam:GetRole"]
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*",
-      "arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/RepoAdmin",
       "arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"
     ]
   }
