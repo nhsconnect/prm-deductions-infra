@@ -1,10 +1,9 @@
-data "aws_iam_policy_document" "trust_policy" {
+data "aws_iam_policy_document" "strict_env_trust_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
       identifiers = [
-        "arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/NHSDAdminRole",
         "arn:aws:iam::${data.aws_ssm_parameter.nhsd_identities_account_id.value}:root"
       ]
     }

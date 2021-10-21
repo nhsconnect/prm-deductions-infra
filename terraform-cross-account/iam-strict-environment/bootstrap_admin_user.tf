@@ -1,6 +1,6 @@
 resource "aws_iam_role" "bootstrap_admin" {
   name = "BootstrapAdmin"
-  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+  assume_role_policy = data.aws_iam_policy_document.strict_env_trust_policy.json
 }
 
 resource "aws_iam_policy" "bootstrap_admin_permissions_policy" {

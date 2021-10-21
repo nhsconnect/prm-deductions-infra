@@ -1,6 +1,6 @@
 resource "aws_iam_role" "repo_developer" {
   name = "RepoDeveloper"
-  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+  assume_role_policy = data.aws_iam_policy_document.strict_env_trust_policy.json
 }
 
 resource "aws_iam_policy" "repo_developer_permissions_policy" {
