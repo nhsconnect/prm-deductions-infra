@@ -15,8 +15,6 @@ deductions_core_azs              = ["eu-west-2b", "eu-west-2a"]
 
 mhs_cidr_newbits=2
 
-broker_name                    = "deductor-amq-broker-test"
-
 mhs_repo_public_subnets_inbound = ["10.239.69.0/27", "10.239.69.32/27", "10.239.69.64/27"]
 mhs_repo_public_subnets_outbound = ["10.239.69.96/27", "10.239.69.128/27", "10.239.69.160/27"]
 mhs_repo_private_subnets = ["10.239.68.128/27", "10.239.68.160/27", "10.239.68.192/27"]

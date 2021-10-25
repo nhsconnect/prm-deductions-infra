@@ -94,7 +94,7 @@ module "deductions-private" {
   test_harness_mhs_vpc_cidr_block = var.deploy_mhs_test_harness ? local.second_half_mhs_cidr_block : ""
   deploy_mhs_test_harness = var.deploy_mhs_test_harness
 
-  broker_name                    = var.broker_name
+  broker_name                    = "deductor-amq-broker-${var.environment}"
   deployment_mode                = var.deployment_mode
   mq_deployment_mode             = var.mq_deployment_mode
   engine_type                    = var.engine_type

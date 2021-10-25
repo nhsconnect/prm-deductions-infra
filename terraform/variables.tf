@@ -71,10 +71,6 @@ variable "gocd_environment" {
 }
 
 # deductions-public mq variables
-variable "broker_name" {
-  type = string
-}
-
 variable "mq_deployment_mode" {
   type = string
 }

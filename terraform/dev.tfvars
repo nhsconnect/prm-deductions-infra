@@ -14,8 +14,6 @@ deductions_core_private_subnets  = ["10.25.1.0/24", "10.25.2.0/24"]
 deductions_core_database_subnets = ["10.25.111.0/24", "10.25.112.0/24"]
 deductions_core_azs              = ["eu-west-2a", "eu-west-2b"]
 
-broker_name                    = "deductor-amq-broker-dev"
-
 mhs_repo_private_subnets = ["10.34.0.0/22", "10.34.4.0/22", "10.34.8.0/22"]
 mhs_repo_public_subnets_inbound  = ["10.34.12.0/22", "10.34.16.0/22", "10.34.20.0/22"]
 mhs_repo_public_subnets_outbound = ["10.34.24.0/22", "10.34.28.0/22", "10.34.32.0/22"]
