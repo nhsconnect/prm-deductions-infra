@@ -118,7 +118,7 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks tf_apply_cross_account
-                  -
+
       - deploy_prod:
           clean_workspace: true
           resources:
@@ -136,6 +136,7 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks tf_apply_cross_account
+
   "prm-deductions-infra":
     group: deductions
     label_template: "${git[:8]}"
