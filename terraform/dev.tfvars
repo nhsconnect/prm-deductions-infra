@@ -1,11 +1,4 @@
 environment = "dev"
-region      = "eu-west-2"
-repo_name   = "prm-deductions-infra"
-
-deductions_private_component_name = "deductions-private"
-deductions_core_component_name    = "deductions-core"
-
-gocd_cidr = "10.1.0.0/16"
 
 mhs_cidr_newbits=8
 
@@ -22,25 +15,6 @@ deductions_core_database_subnets = ["10.25.111.0/24", "10.25.112.0/24"]
 deductions_core_azs              = ["eu-west-2a", "eu-west-2b"]
 
 broker_name                    = "deductor-amq-broker-dev"
-deployment_mode                = "ACTIVE_STANDBY_MULTI_AZ"
-mq_deployment_mode             = "SINGLE_INSTANCE"
-engine_type                    = "ActiveMQ"
-engine_version                 = "5.15.15"
-host_instance_type             = "mq.t2.micro"
-auto_minor_version_upgrade     = "true"
-apply_immediately              = "true"
-general_log                    = "true"
-audit_log                      = "true"
-maintenance_day_of_week        = "SUNDAY"
-maintenance_time_of_day        = "03:00"
-maintenance_time_zone          = "GMT"
-state_db_allocated_storage = "20"
-state_db_engine_version    = "11.5"
-state_db_instance_class    = "db.t2.small"
-
-repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
-test_harness_mhs_cluster_domain_name = "test-harness-mhs.patient-deductions.nhs.uk"
-mhs_vpc_cidr_block = "10.34.0.0/16"
 
 mhs_repo_private_subnets = ["10.34.0.0/22", "10.34.4.0/22", "10.34.8.0/22"]
 mhs_repo_public_subnets_inbound  = ["10.34.12.0/22", "10.34.16.0/22", "10.34.20.0/22"]
@@ -48,6 +22,12 @@ mhs_repo_public_subnets_outbound = ["10.34.24.0/22", "10.34.28.0/22", "10.34.32.
 mhs_test_harness_private_subnets = ["10.34.128.0/22", "10.34.132.0/22", "10.34.136.0/22"]
 mhs_test_harness_public_subnets_inbound = ["10.34.140.0/22", "10.34.144.0/22", "10.34.148.0/22"]
 mhs_test_harness_public_subnets_outbound = ["10.34.152.0/22", "10.34.156.0/22", "10.34.160.0/22"]
+
+
+repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
+test_harness_mhs_cluster_domain_name = "test-harness-mhs.patient-deductions.nhs.uk"
+mhs_vpc_cidr_block = "10.34.0.0/16"
+
 
 deploy_mhs_test_harness = true
 deploy_cross_account_vpc_peering = true

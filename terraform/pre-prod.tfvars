@@ -1,11 +1,4 @@
 environment = "pre-prod"
-region      = "eu-west-2"
-repo_name   = "prm-deductions-infra"
-
-deductions_private_component_name = "deductions-private"
-deductions_core_component_name    = "deductions-core"
-
-gocd_cidr = "10.1.0.0/16"
 
 deductions_private_cidr             = "10.22.0.0/16"
 deductions_core_cidr             = "10.27.0.0/16"
@@ -23,21 +16,6 @@ deductions_core_azs              = ["eu-west-2b", "eu-west-2a"]
 mhs_cidr_newbits=8
 
 broker_name                    = "deductor-amq-broker-pre-prod"
-deployment_mode                = "ACTIVE_STANDBY_MULTI_AZ"
-mq_deployment_mode             = "SINGLE_INSTANCE"
-engine_type                    = "ActiveMQ"
-engine_version                 = "5.15.15"
-host_instance_type             = "mq.t2.micro"
-auto_minor_version_upgrade     = "true"
-apply_immediately              = "true"
-general_log                    = "true"
-audit_log                      = "true"
-maintenance_day_of_week        = "SUNDAY"
-maintenance_time_of_day        = "03:00"
-maintenance_time_zone          = "GMT"
-state_db_allocated_storage = "20"
-state_db_engine_version    = "11.5"
-state_db_instance_class    = "db.t2.small"
 
 repo_mhs_cluster_domain_name = "mhs.patient-deductions.nhs.uk"
 
@@ -45,13 +23,6 @@ mhs_vpc_cidr_block = "10.36.0.0/16"
 mhs_repo_public_subnets_inbound  = ["10.36.112.0/22", "10.36.116.0/22", "10.36.120.0/22"]
 mhs_repo_public_subnets_outbound = ["10.36.140.0/22", "10.36.144.0/22", "10.36.148.0/22"]
 mhs_repo_private_subnets = ["10.36.128.0/22", "10.36.132.0/22", "10.36.136.0/22"]
-mhs_test_harness_public_subnets_inbound = []
-mhs_test_harness_public_subnets_outbound = []
-mhs_test_harness_private_subnets = []
-
-deploy_mhs_test_harness = false
-deploy_cross_account_vpc_peering = true
 
 inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.177.31/32","35.177.15.89/32","3.11.199.83/32","18.132.113.121/32","18.132.31.159/32","35.178.64.126/32"]
 
-grant_access_to_queues_through_vpn = false
