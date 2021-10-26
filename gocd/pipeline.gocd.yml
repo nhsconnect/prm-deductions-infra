@@ -120,6 +120,9 @@ pipelines:
                   - ./tasks tf_apply_cross_account
 
       - deploy_prod:
+          approval:
+            type: manual
+            allow_only_on_success: true
           clean_workspace: true
           resources:
             - docker
@@ -165,6 +168,9 @@ pipelines:
           jobs:
             apply: *apply_job
       - deploy_prod:
+          approval:
+            type: manual
+            allow_only_on_success: true
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: prod
