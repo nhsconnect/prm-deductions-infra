@@ -31,11 +31,6 @@ common:
           command: /bin/bash
           arguments:
             - -c
-            - ./tasks tf_apply
-      - exec:
-          command: /bin/bash
-          arguments:
-            - -c
             - ./tasks tf_plan create
       - exec:
           command: /bin/bash
