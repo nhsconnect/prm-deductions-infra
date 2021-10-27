@@ -126,6 +126,7 @@ pipelines:
               artifacts:
                 - build:
                     source: terraform-cross-account/nhs_deployment_cross_account.tfplan
+                    destination: terraform-cross-account/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -148,6 +149,7 @@ pipelines:
                     stage: plan_prod
                     job: plan
                     source: terraform-cross-account/nhs_deployment_cross_account.tfplan
+                    destination: terraform-cross-account/
                     is_file: yes
                 - exec:
                     command: /bin/bash
