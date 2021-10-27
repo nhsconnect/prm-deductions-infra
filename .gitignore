@@ -292,8 +292,7 @@ latest.zip
 */.terraform.lock.hcl
 *.pfx
 *.pem
-*/nhs_deployment.tfplan
-*/nhs_deployment_cross_account.tfplan
+*/*.tfplan
 */tf-out.json
 /easy-rsa
 /client-config

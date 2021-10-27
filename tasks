@@ -37,6 +37,15 @@ function tf_init {
     -backend-config region=${AWS_DEFAULT_REGION}
 }
 
+function configure_tf_plan_filename {
+  certs=$1
+  if [[ "${certs}" == "true" ]]; then
+    export TF_PLAN_FILENAME="certs_deployment.tfplan"
+  else
+    export TF_PLAN_FILENAME="deployment.tfplan"
+  fi
+}
+
 function tf_plan {
   check_env
   operation=$1
@@ -49,6 +58,8 @@ function tf_plan {
   if [[ "${certs}" == "true" ]]; then
     TARGET="-target=module.deductions-private.aws_acm_certificate.mq-admin-cert -target=module.deductions-private.aws_acm_certificate.gp2gp-adaptor-cert"
   fi
+
+  configure_tf_plan_filename $certs
 
   aws_account_arn=$(aws sts get-caller-identity | jq -r .Arn)
 
@@ -63,9 +74,9 @@ function tf_plan {
   tf_init
   terraform get # modules
   if [[ "${operation}" == "create" ]]; then
-    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="nhs_deployment.tfplan"
+    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars $TARGET -out="${TF_PLAN_FILENAME}"
   elif [[ "${operation}" == "destroy" ]]; then
-    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars -out="nhs_deployment.tfplan" -destroy
+    terraform plan -var common_account_id=${COMMON_ACCOUNT_ID} -var common_account_role=${COMMON_ACCOUNT_ROLE} -var-file=${NHS_ENVIRONMENT}.tfvars -out="${TF_PLAN_FILENAME}" -destroy
   else
     echo "Unknown operation (should be create or destroy), got: ${operation}"
     exit 1
@@ -74,9 +85,13 @@ function tf_plan {
 
 function tf_apply {
   check_env
+
+  certs=$1
+  configure_tf_plan_filename $certs
+
   tf_init
   terraform get # modules
-  terraform apply nhs_deployment.tfplan
+  terraform apply $TF_PLAN_FILENAME
   terraform output -json > tf-out.json
 }
 
@@ -316,9 +331,17 @@ case "${command}" in
       check_env
       dojo "./tasks _tf_apply_cross_account"
       ;;
+  _tf_apply_certs)
+      _assume_environment_role $NHS_ENVIRONMENT true
+      tf_apply true
+      ;;
   _tf_apply)
       _assume_environment_role $NHS_ENVIRONMENT true
-      tf_apply
+      tf_apply false
+      ;;
+  tf_apply_certs)
+      check_env
+      dojo "./tasks _tf_apply_certs"
       ;;
   tf_apply)
       check_env
