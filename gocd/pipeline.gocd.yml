@@ -174,9 +174,9 @@ pipelines:
                 - docker
               artifacts:
                 - build:
-                    source: deployment.tfplan
+                    source: terraform/deployment.tfplan
                 - build:
-                    source: certs_deployment.tfplan
+                    source: terraform/certs_deployment.tfplan
               tasks:
                 - exec:
                     command: /bin/bash
