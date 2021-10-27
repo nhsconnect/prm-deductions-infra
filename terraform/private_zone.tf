@@ -1,4 +1,3 @@
-
 resource "aws_route53_zone" "private" {
   name = "patient-deductions.nhs.uk"
   vpc {
@@ -22,7 +21,7 @@ resource "aws_ssm_parameter" "private_zone_id" {
 }
 
 resource "aws_route53_zone" "environment_private" {
-  name = "${var.environment}.non-prod.patient-deductions.nhs.uk"
+  name = var.deploy_prod_route53_zone ? "${var.environment}.patient-deductions.nhs.uk" : "${var.environment}.non-prod.patient-deductions.nhs.uk"
   # NOTE: The aws_route53_zone vpc argument accepts multiple configuration
   #       blocks. The below usage of the single vpc configuration, the
   #       lifecycle configuration, and the aws_route53_zone_association

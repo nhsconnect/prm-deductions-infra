@@ -165,6 +165,7 @@ variable "common_account_id" {}
 variable "common_account_role" {}
 variable "deploy_cross_account_vpc_peering"{}
 variable "deploy_mhs_test_harness" {}
+variable "deploy_prod_route53_zone" { default = false }
 variable "mhs_repo_public_subnets_outbound" {}
 variable "mhs_repo_public_subnets_inbound" {}
 variable "mhs_repo_private_subnets" {}
