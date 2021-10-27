@@ -1,11 +1,8 @@
 format_version: 4
 common:
-  plan_job: &plan_job
+  deploy_job: &deploy_job
     resources:
       - docker
-    artifacts:
-      - build:
-          source: terraform/tf-out.json
     tasks:
       - exec:
           command: /bin/bash
@@ -27,13 +24,6 @@ common:
           arguments:
             - -c
             - ./tasks tf_plan create
-  apply_job: &apply_job
-    resources:
-      - docker
-    artifacts:
-      - build:
-          source: terraform/tf-out.json
-    tasks:
       - exec:
           command: /bin/bash
           arguments:
@@ -161,22 +151,55 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: dev
           jobs:
-            plan: *plan_job
-            apply: *apply_job
+            apply: *deploy_job
       - deploy_test:
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: test
           jobs:
-            plan: *plan_job
-            apply: *apply_job
+            apply: *deploy_job
       - deploy_pre_prod:
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: pre-prod
           jobs:
-            plan: *plan_job
-            apply: *apply_job
+            apply: *deploy_job
+      - plan_prod:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: prod
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: terraform/tf-out.json
+                - build:
+                    source: deployment.tfplan
+                - build:
+                    source: certs_deployment.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks create_secrets
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks generate_vpn_server_crt
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan_certs create
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan create
       - deploy_prod:
           approval:
             type: manual
@@ -185,5 +208,32 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: prod
           jobs:
-            plan: *plan_job
-            apply: *apply_job
+            deploy:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: terraform/tf-out.json
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: certs_deployment.tfplan
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: deployment.tfplan
+                    is_file: yes
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_apply_certs
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_apply
