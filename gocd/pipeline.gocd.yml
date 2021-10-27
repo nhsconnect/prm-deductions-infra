@@ -149,11 +149,11 @@ pipelines:
                     job: plan
                     source: terraform-cross-account/nhs_deployment_cross_account.tfplan
                     is_file: yes
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - ./tasks tf_apply_cross_account
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_apply_cross_account
 
   "prm-deductions-infra":
     group: deductions
