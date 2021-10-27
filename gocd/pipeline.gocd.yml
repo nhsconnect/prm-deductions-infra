@@ -1,6 +1,6 @@
 format_version: 4
 common:
-  apply_job: &apply_job
+  plan_job: &plan_job
     resources:
       - docker
     artifacts:
@@ -26,12 +26,19 @@ common:
           command: /bin/bash
           arguments:
             - -c
-            - ./tasks tf_apply_certs
+            - ./tasks tf_plan create
+  apply_job: &apply_job
+    resources:
+      - docker
+    artifacts:
+      - build:
+          source: terraform/tf-out.json
+    tasks:
       - exec:
           command: /bin/bash
           arguments:
             - -c
-            - ./tasks tf_plan create
+            - ./tasks tf_apply_certs
       - exec:
           command: /bin/bash
           arguments:
@@ -154,18 +161,21 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: dev
           jobs:
+            plan: *plan_job
             apply: *apply_job
       - deploy_test:
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: test
           jobs:
+            plan: *plan_job
             apply: *apply_job
       - deploy_pre_prod:
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: pre-prod
           jobs:
+            plan: *plan_job
             apply: *apply_job
       - deploy_prod:
           approval:
@@ -175,4 +185,5 @@ pipelines:
           environment_variables:
             NHS_ENVIRONMENT: prod
           jobs:
+            plan: *plan_job
             apply: *apply_job
