@@ -115,22 +115,40 @@ pipelines:
                 arguments:
                   - -c
                   - ./tasks tf_apply_cross_account
-
+      - plan_prod:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: prod
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: terraform-cross-account/nhs_deployment_cross_account.tfplan
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan_cross_account create
       - deploy_prod:
           approval:
             type: manual
             allow_only_on_success: true
           clean_workspace: true
-          resources:
-            - docker
           environment_variables:
             NHS_ENVIRONMENT: prod
-          tasks:
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - ./tasks tf_plan_cross_account create
+          jobs:
+            deploy:
+              resources:
+                - docker
+              tasks:
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: terraform-cross-account/nhs_deployment_cross_account.tfplan
+                    is_file: yes
             - exec:
                 command: /bin/bash
                 arguments:
@@ -213,12 +231,12 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: certs_deployment.tfplan
+                    source: terraform/certs_deployment.tfplan
                     is_file: yes
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: deployment.tfplan
+                    source: terraform/deployment.tfplan
                     is_file: yes
                 - exec:
                     command: /bin/bash
