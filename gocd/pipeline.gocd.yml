@@ -195,8 +195,10 @@ pipelines:
               artifacts:
                 - build:
                     source: terraform/deployment.tfplan
+                    destination: terraform/
                 - build:
                     source: terraform/certs_deployment.tfplan
+                    destination: terraform/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -234,11 +236,13 @@ pipelines:
                     stage: plan_prod
                     job: plan
                     source: terraform/certs_deployment.tfplan
+                    destination: terraform/
                     is_file: yes
                 - fetch:
                     stage: plan_prod
                     job: plan
                     source: terraform/deployment.tfplan
+                    destination: terraform/
                     is_file: yes
                 - exec:
                     command: /bin/bash
