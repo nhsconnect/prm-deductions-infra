@@ -215,11 +215,6 @@ pipelines:
                 - fetch:
                     stage: plan_prod
                     job: plan
-                    source: terraform/tf-out.json
-                    is_file: yes
-                - fetch:
-                    stage: plan_prod
-                    job: plan
                     source: certs_deployment.tfplan
                     is_file: yes
                 - fetch:
