@@ -43,9 +43,20 @@ data "aws_iam_policy_document" "cross_ci_ssm" {
   statement {
     effect = "Allow"
     actions = [
-      "ssm:GetParameter"
+      "ssm:GetParameter*",
+      "ssm:ListTagsForResource",
+      "ssm:PutParameter",
+      "ssm:AddTagsToResource"
     ]
     resources = ["arn:aws:ssm:*:327778747031:parameter/*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ssm:DescribeParameters",
+    ]
+    resources = ["arn:aws:ssm:*:327778747031:*"]
   }
 }
 
@@ -77,9 +88,10 @@ data "aws_iam_policy_document" "cross_ci_write" {
     actions = [
       "route53:DisassociateVPCFromHostedZone",
       "route53:AssociateVPCWithHostedZone",
+      "route53:ListTagsForResource",
       "route53:ChangeResourceRecordSets",
       "route53:DeleteVPCAssociationAuthorization",
-      "route53:CreateVPCAssociationAuthorization"
+      "route53:CreateVPCAssociationAuthorization",
     ]
     resources = ["arn:aws:route53:::hostedzone/*"]
   }
