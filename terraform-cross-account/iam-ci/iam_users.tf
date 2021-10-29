@@ -70,7 +70,8 @@ data "aws_iam_policy_document" "ci_read_only" {
       "route53:GetHostedZone",
       "route53:ListVPCAssociationAuthorizations",
       "route53:ListResourceRecordSets",
-      "route53:ListHostedZonesByVPC"
+      "route53:ListHostedZonesByVPC",
+      "route53:ListTagsForResource"
     ]
     resources = ["*"]
   }
