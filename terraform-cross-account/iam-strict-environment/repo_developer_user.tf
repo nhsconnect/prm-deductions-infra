@@ -3,13 +3,12 @@ resource "aws_iam_role" "repo_developer" {
   assume_role_policy = data.aws_iam_policy_document.strict_env_trust_policy.json
 }
 
-resource "aws_iam_policy" "repo_developer_permissions_policy" {
-  name = "repo_developer_permissions_policy"
-  policy = data.aws_iam_policy_document.repo_developer_permissions.json
+resource "aws_iam_policy" "terraform_plan_permissions_policy" {
+  name = "terraform_plan_permissions_policy"
+  policy = data.aws_iam_policy_document.terraform_plan_permissions.json
 }
 
-data "aws_iam_policy_document" "repo_developer_permissions" {
-
+data "aws_iam_policy_document" "terraform_plan_permissions" {
   statement {
     effect = "Allow"
     actions = ["ssm:PutParameter*"]
@@ -183,7 +182,7 @@ data "aws_iam_policy_document" "repo_developer_permissions" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "repo_developer" {
-  policy_arn = aws_iam_policy.repo_developer_permissions_policy.arn
+resource "aws_iam_role_policy_attachment" "terraform_plan_to_repo_developer" {
+  policy_arn = aws_iam_policy.terraform_plan_permissions_policy.arn
   role = aws_iam_role.repo_developer.name
 }

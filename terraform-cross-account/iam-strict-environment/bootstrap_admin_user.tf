@@ -20,20 +20,14 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
-    actions = ["ssm:GetParameter*"]
-    resources = [
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/output/*",
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/output/*",
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/*",
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/*"
+    actions = [
+      "secretsmanager:CreateSecret",
+      "secretsmanager:ListSecrets",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:PutSecretValue",
+      "secretsmanager:UpdateSecret"
     ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = ["secretsmanager:CreateSecret","secretsmanager:ListSecrets", "secretsmanager:DescribeSecret", "secretsmanager:PutSecretValue", "secretsmanager:UpdateSecret" ]
     resources = [
-      "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:/repo/${var.environment}/user-input/external/repo-mhs-inbound-ca-certs",
       "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:/repo/${var.environment}/user-input/external/repo-mhs-inbound-ca-certs"
     ]
   }
@@ -56,17 +50,14 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:PutEncryptionConfiguration",
-      "s3:PutLifecycleConfiguration",
       "s3:CreateBucket",
       "s3:DeleteBucket",
-      "s3:GetBucketPolicy",
+      "s3:PutEncryptionConfiguration",
+      "s3:PutLifecycleConfiguration",
       "s3:PutBucketPolicy",
       "s3:PutBucketVersioning",
       "s3:PutBucketTagging",
-      "s3:PutBucketAcl",
-      "s3:Get*",
-      "s3:List*"
+      "s3:PutBucketAcl"
     ]
     resources = [
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state*"
@@ -76,65 +67,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:PutObject",
-      "s3:GetObject"
+      "s3:PutObject"
     ]
     resources = [
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
     ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:Describe*",
-      "logs:List*",
-      "ec2:Describe*",
-      "ssm:Describe*",
-      "ssm:List*",
-      "rds:Describe*",
-      "rds:List*",
-      "route53:List*",
-      "acm:Describe*",
-      "acm:List*",
-      "elasticloadbalancing:Describe*",
-      "iam:List*",
-      "mq:Describe*",
-      "ecr:DescribeRepositories",
-      "ecr:ListTagsForResource"
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = ["iam:GetInstanceProfile"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions =  ["iam:GetRole"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions =  ["iam:GetPolicy", "iam:GetPolicyVersion"]
-    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions =  ["route53:GetHostedZone"]
-    resources = ["arn:aws:route53:::hostedzone/*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions =  ["sts:AssumeRole"]
-    resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
 
   statement {
@@ -145,7 +83,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
-    actions =  ["iam:CreateRole",
+    actions =  [
+      "iam:CreateRole",
       "iam:AttachRolePolicy",
       "iam:CreateInstanceProfile",
       "iam:AddRoleToInstanceProfile",
@@ -173,5 +112,10 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {
   policy_arn = aws_iam_policy.bootstrap_admin_permissions_policy.arn
+  role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_plan_to_bootstrap_admin" {
+  policy_arn = aws_iam_policy.terraform_plan_permissions_policy.arn
   role = aws_iam_role.bootstrap_admin.name
 }
