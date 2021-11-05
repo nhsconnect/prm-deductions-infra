@@ -31,6 +31,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
+    actions = ["secretsmanager:CreateSecret"]
+    resources = ["arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:/repo/${var.environment}/user-input/external/repo-mhs-inbound-ca-certs"]
+  }
+
+  statement {
+    effect = "Allow"
     actions = [
       "dynamodb:PutItem*",
       "dynamodb:GetItem*",
