@@ -186,3 +186,8 @@ resource "aws_iam_role_policy_attachment" "terraform_plan_to_repo_developer" {
   policy_arn = aws_iam_policy.terraform_plan_permissions_policy.arn
   role = aws_iam_role.repo_developer.name
 }
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_read_only_to_repo_developer" {
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess"
+  role = aws_iam_role.repo_developer.name
+}
