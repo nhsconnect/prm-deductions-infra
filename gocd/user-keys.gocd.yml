@@ -98,3 +98,28 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks rotate_user_keys
+      - prod_env:
+          clean_workspace: true
+          jobs:
+            generate_keys:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: prod
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks generate_user_keys
+            rotate_keys:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: prod
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks rotate_user_keys
