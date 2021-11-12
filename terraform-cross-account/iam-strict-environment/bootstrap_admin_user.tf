@@ -22,7 +22,6 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions = [
       "secretsmanager:CreateSecret",
-      "secretsmanager:ListSecrets",
       "secretsmanager:DescribeSecret",
       "secretsmanager:PutSecretValue",
       "secretsmanager:UpdateSecret"

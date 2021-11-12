@@ -216,4 +216,12 @@ data "aws_iam_policy_document" "aws_console_read" {
       "ecs:ListTasks"]
     resources = ["*"]
   }
+
+  statement{
+    effect = "Allow"
+    actions = [
+      "secretsmanager:ListSecrets"
+    ]
+    resources = ["*"]
+  }
 }
