@@ -154,8 +154,9 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
 
   statement{
     effect = "Allow"
-    actions = ["ecs:DescribeClusters"]
-    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:cluster/${var.environment}*"]
+    actions = ["ecs:DescribeClusters","ecs:ListAttributes", "ecs:ListClusters", "ecs:ListContainerInstances",
+      "ecs:ListServices", "ecs:ListTaskDefinitionFamilies", "ecs:ListTaskDefinitions", "ecs:ListTasks"]
+    resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
   }
 
   statement{
@@ -190,4 +191,30 @@ resource "aws_iam_role_policy_attachment" "terraform_plan_to_repo_developer" {
 resource "aws_iam_role_policy_attachment" "cloudwatch_read_only_to_repo_developer" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsReadOnlyAccess"
   role = aws_iam_role.repo_developer.name
+}
+
+resource "aws_iam_policy" "aws_console_read" {
+  name = "aws_console_read_policy"
+  policy = data.aws_iam_policy_document.aws_console_read.json
+}
+
+resource "aws_iam_role_policy_attachment" "aws_console_read" {
+  policy_arn = aws_iam_policy.aws_console_read.arn
+  role = aws_iam_role.repo_developer.name
+}
+
+data "aws_iam_policy_document" "aws_console_read" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecs:ListAttributes",
+      "ecs:ListClusters",
+      "ecs:ListContainerInstances",
+      "ecs:ListServices",
+      "ecs:ListTaskDefinitionFamilies",
+      "ecs:ListTaskDefinitions",
+      "ecs:ListTasks"]
+    resources = [
+      "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+  }
 }
