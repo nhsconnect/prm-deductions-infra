@@ -214,7 +214,6 @@ data "aws_iam_policy_document" "aws_console_read" {
       "ecs:ListTaskDefinitionFamilies",
       "ecs:ListTaskDefinitions",
       "ecs:ListTasks"]
-    resources = [
-      "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+    resources = ["*"]
   }
 }
