@@ -24,17 +24,17 @@ export const convertUserListToUserListParamArray = (userApiKeys) => {
   function addApiKeyToParamList(apiKey, paramList) {
     if (!isStrictEnvironment) {
       const apiKeyRepoTpGpPath = `/repo/${nhsEnvironment}/user-input/api-keys/repo-to-gp/api-key-user/${apiKey}`;
-      const apiKeyGp2GpAdaptorPath = `/repo/${nhsEnvironment}/user-input/api-keys/gp2gp-adaptor/api-key-user/${apiKey}`;
       const apiKeyPdsAdaptorPath = `/repo/${nhsEnvironment}/user-input/api-keys/pds-adaptor/api-key-user/${apiKey}`
 
       paramList.push(apiKeyRepoTpGpPath);
-      paramList.push(apiKeyGp2GpAdaptorPath);
       paramList.push(apiKeyPdsAdaptorPath)
     }
     const apiKeyGpToRepoPath = `/repo/${nhsEnvironment}/user-input/api-keys/gp-to-repo/api-key-user/${apiKey}`;
     const apiKeyEhrRepoPath = `/repo/${nhsEnvironment}/user-input/api-keys/ehr-repo/api-key-user/${apiKey}`;
+    const apiKeyGp2GpAdaptorPath = `/repo/${nhsEnvironment}/user-input/api-keys/gp2gp-adaptor/api-key-user/${apiKey}`;
 
     paramList.push(apiKeyGpToRepoPath);
     paramList.push(apiKeyEhrRepoPath);
+    paramList.push(apiKeyGp2GpAdaptorPath);
   }
 };
