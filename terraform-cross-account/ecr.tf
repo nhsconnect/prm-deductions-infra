@@ -78,3 +78,11 @@ resource "aws_ecr_repository" "nems-event-processor" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ecr_repository" "suspension-service" {
+  name = "repo/suspension-service"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
