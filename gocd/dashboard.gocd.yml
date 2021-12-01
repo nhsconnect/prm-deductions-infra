@@ -27,21 +27,23 @@ pipelines:
     stages:
       - deploy_dev:
           clean_workspace: true
-          resources:
-            - docker
-          environment_variables:
-            NHS_ENVIRONMENT: dev
-          tasks:
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - ./tasks tf_plan_dashboard create
-            - exec:
-                command: /bin/bash
-                arguments:
-                  - -c
-                  - ./tasks tf_apply_dashboard
+          jobs:
+            dashboard:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: dev
+              tasks:
+                - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - ./tasks tf_plan_dashboard create
+              - exec:
+                  command: /bin/bash
+                  arguments:
+                    - -c
+                    - ./tasks tf_apply_dashboard
 #
 #      - deploy_test:
 #          clean_workspace: true
