@@ -1,0 +1,151 @@
+{
+  "widgets": [
+    {
+      "height": 6,
+      "width": 6,
+      "y": 0,
+      "x": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false } ],
+          [ ".", "Health", "Environment", "dev", { "visible": false } ],
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "dev-mesh-forwarder-nems-events-observability-queue" ],
+          [ ".", "NumberOfMessagesSent", ".", "." ],
+          [ ".", "NumberOfMessagesReceived", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesVisible", ".", "." ],
+          [ ".", "SentMessageSize", ".", "." ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "title": "Nems-OBS-Metrics"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 0,
+      "x": 12,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false } ],
+          [ ".", "Health", "Environment", "dev", { "visible": false } ],
+          [ "AWS/ECS", "CPUUtilization", "ServiceName", "dev-nems-event-processor-service", "ClusterName", "dev-nems-event-processor-ecs-cluster" ],
+          [ ".", "MemoryUtilization", ".", ".", ".", "." ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "title": "Nems-Container"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 6,
+      "x": 0,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
+          [ ".", "Health", "Environment", "dev", { "visible": false, "id": "m2" } ],
+          [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m3" } ],
+          [ { "expression": "ANOMALY_DETECTION_BAND(m3, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "id": "ad1", "color": "#95A5A6" } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "title": "MeshInboxMessageCount"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 0,
+      "x": 0,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
+          [ ".", "Health", "Environment", "dev" ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "title": "Nems Health"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 0,
+      "x": 18,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1" } ],
+          [ ".", "Health", "Environment", "dev", { "visible": false } ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "title": "Nems-Error-Count"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 6,
+      "x": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1", "visible": false } ],
+          [ "MeshForwarder", "." ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "start": "-PT3H",
+        "end": "P0D",
+        "title": "Mesh-Error-Count"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 6,
+      "x": 12,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1", "visible": false } ],
+          [ "PdsAdaptor", "Error Count" ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "eu-west-2",
+        "stat": "Average",
+        "period": 300,
+        "start": "-PT3H",
+        "end": "P0D",
+        "title": "PDS-Error Count"
+      }
+    }
+  ]
+}
