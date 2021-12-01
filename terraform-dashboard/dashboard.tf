@@ -8,6 +8,7 @@ data "template_file" "widgets" {
 
   vars = {
     region = var.region,
-    environment = var.environment
+    environment = var.environment,
+    mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
   }
 }

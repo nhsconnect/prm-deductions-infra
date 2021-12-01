@@ -10,7 +10,7 @@
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false } ],
           [ ".", "Health", "Environment", "${environment}", { "visible": false } ],
-          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${environment}-mesh-forwarder-nems-events-observability-queue" ],
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${mesh_forwarder_nems_observability_queue}" ],
           [ ".", "NumberOfMessagesSent", ".", "." ],
           [ ".", "NumberOfMessagesReceived", ".", "." ],
           [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
