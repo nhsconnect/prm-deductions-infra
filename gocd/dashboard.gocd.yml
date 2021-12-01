@@ -35,10 +35,10 @@ pipelines:
                 NHS_ENVIRONMENT: dev
               tasks:
                 - exec:
-                  command: /bin/bash
-                  arguments:
-                    - -c
-                    - ./tasks tf_plan_dashboard create
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan_dashboard create
                 - exec:
                     command: /bin/bash
                     arguments:
