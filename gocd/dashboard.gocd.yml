@@ -28,7 +28,7 @@ pipelines:
       - deploy_dev:
           clean_workspace: true
           jobs:
-            dashboard:
+            apply:
               resources:
                 - docker
               environment_variables:
