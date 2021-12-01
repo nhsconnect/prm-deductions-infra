@@ -19,7 +19,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "title": "Nems-OBS-Metrics"
@@ -40,7 +40,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "title": "Nems-Container"
@@ -61,7 +61,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "title": "MeshInboxMessageCount"
@@ -80,7 +80,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "title": "Nems Health"
@@ -99,7 +99,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "title": "Nems-Error-Count"
@@ -118,7 +118,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "start": "-PT3H",
@@ -139,7 +139,7 @@
         ],
         "view": "timeSeries",
         "stacked": false,
-        "region": "eu-west-2",
+        "region": "${region}",
         "stat": "Average",
         "period": 300,
         "start": "-PT3H",

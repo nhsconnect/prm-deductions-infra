@@ -7,6 +7,6 @@ data "template_file" "widgets" {
   template = file("${path.module}/widget-template.json")
 
   vars = {
-    aws_region   = var.region
+    region = var.region
   }
 }
