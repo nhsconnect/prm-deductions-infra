@@ -9,8 +9,8 @@
       "properties": {
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false } ],
-          [ ".", "Health", "Environment", "dev", { "visible": false } ],
-          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "dev-mesh-forwarder-nems-events-observability-queue" ],
+          [ ".", "Health", "Environment", "${environment}", { "visible": false } ],
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${environment}-mesh-forwarder-nems-events-observability-queue" ],
           [ ".", "NumberOfMessagesSent", ".", "." ],
           [ ".", "NumberOfMessagesReceived", ".", "." ],
           [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
@@ -34,8 +34,8 @@
       "properties": {
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false } ],
-          [ ".", "Health", "Environment", "dev", { "visible": false } ],
-          [ "AWS/ECS", "CPUUtilization", "ServiceName", "dev-nems-event-processor-service", "ClusterName", "dev-nems-event-processor-ecs-cluster" ],
+          [ ".", "Health", "Environment", "${environment}", { "visible": false } ],
+          [ "AWS/ECS", "CPUUtilization", "ServiceName", "${environment}-nems-event-processor-service", "ClusterName", "${environment}-nems-event-processor-ecs-cluster" ],
           [ ".", "MemoryUtilization", ".", ".", ".", "." ]
         ],
         "view": "timeSeries",
@@ -55,7 +55,7 @@
       "properties": {
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
-          [ ".", "Health", "Environment", "dev", { "visible": false, "id": "m2" } ],
+          [ ".", "Health", "Environment", "${environment}", { "visible": false, "id": "m2" } ],
           [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m3" } ],
           [ { "expression": "ANOMALY_DETECTION_BAND(m3, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "id": "ad1", "color": "#95A5A6" } ]
         ],
@@ -76,7 +76,7 @@
       "properties": {
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
-          [ ".", "Health", "Environment", "dev" ]
+          [ ".", "Health", "Environment", "${environment}" ]
         ],
         "view": "timeSeries",
         "stacked": false,
@@ -95,7 +95,7 @@
       "properties": {
         "metrics": [
           [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1" } ],
-          [ ".", "Health", "Environment", "dev", { "visible": false } ]
+          [ ".", "Health", "Environment", "${environment}", { "visible": false } ]
         ],
         "view": "timeSeries",
         "stacked": false,

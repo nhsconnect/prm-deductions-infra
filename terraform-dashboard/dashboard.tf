@@ -7,6 +7,7 @@ data "template_file" "widgets" {
   template = file("${path.module}/widget-template.json")
 
   vars = {
-    region = var.region
+    region = var.region,
+    environment = var.environment
   }
 }
