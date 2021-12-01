@@ -39,11 +39,11 @@ pipelines:
                   arguments:
                     - -c
                     - ./tasks tf_plan_dashboard create
-              - exec:
-                  command: /bin/bash
-                  arguments:
-                    - -c
-                    - ./tasks tf_apply_dashboard
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_apply_dashboard
 #
 #      - deploy_test:
 #          clean_workspace: true
