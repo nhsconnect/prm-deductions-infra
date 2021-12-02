@@ -32,6 +32,13 @@ data "aws_ssm_parameter" "suspension-service-ecs-cluster-name"{
 data "aws_ssm_parameter" "not-suspended-observability-queue-name"{
   name = "/repo/${var.environment}/output/suspension-service/not-suspended-observability-queue-name"
 }
+data "aws_ssm_parameter" "nems_events_observability_queue"{
+  name = "/repo/${var.environment}/output/mesh-forwarder/nems-events-observability-queue"
+}
+
+data "aws_ssm_parameter" "mesh_forwarder_ecs_cluster_name"{
+  name = "/repo/${var.environment}/output/mesh-forwarder/mesh-forwarder-ecs-cluster-name"
+}
 
 
 
