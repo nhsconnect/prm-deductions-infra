@@ -203,6 +203,11 @@ resource "aws_iam_role_policy_attachment" "aws_console_read" {
   role = aws_iam_role.repo_developer.name
 }
 
+resource "aws_iam_role_policy_attachment" "sqs_read_only_to_repo_developer" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess"
+  role = aws_iam_role.repo_developer.name
+}
+
 data "aws_iam_policy_document" "aws_console_read" {
   statement {
     effect = "Allow"
