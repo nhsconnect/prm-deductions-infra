@@ -14,6 +14,26 @@ data "aws_ssm_parameter" "nems_undhandled_queue_name"{
   name = "/repo/${var.environment}/output/nems-event-processor/unhandled_events_queue_name"
 }
 
+data "aws_ssm_parameter" "nems_cluster_name"{
+  name = "/repo/${var.environment}/output/nems-event-processor/nems-event-processor-ecs-cluster-name"
+}
+
+data "aws_ssm_parameter" "suspensions_observability_queue_name"{
+  name = "/repo/${var.environment}/output/nems-event-processor/suspensions-observability-queue-name"
+}
+
+data "aws_ssm_parameter" "suspensions-queue-name"{
+  name = "/repo/${var.environment}/output/suspension-service/suspensions-queue-name"
+}
+
+data "aws_ssm_parameter" "suspension-service-ecs-cluster-name"{
+  name = "/repo/${var.environment}/output/suspension-service/suspension-service-ecs-cluster-name"
+}
+data "aws_ssm_parameter" "not-suspended-observability-queue-name"{
+  name = "/repo/${var.environment}/output/suspension-service/not-suspended-observability-queue-name"
+}
+
+
 
 
 
