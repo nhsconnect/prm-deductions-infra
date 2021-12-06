@@ -1,6 +1,4 @@
 locals {
-  widgets_json = data.template_file.widgets.rendered
-
   nems = {
     name = "nems-event-processor"
     title = "NEMS Event Processor"
@@ -81,7 +79,7 @@ module "error_count_widgets" {
 }
 
 locals {
-  mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
+  mesh_forwarder_nems_observability_queue = nonsensitive(data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value)
   queue_metrics = {
     type = "metric"
     properties = {
@@ -101,10 +99,6 @@ locals {
       stacked = false
     }
   }
-}
-
-
-locals {
   mesh_inbox_count = {
     type = "metric"
     properties = {
@@ -120,9 +114,6 @@ locals {
       stacked = false
     }
   }
-}
-
-locals {
   health_widget = {
     type = "metric"
     properties = {
@@ -137,35 +128,27 @@ locals {
       stacked = false
     }
   }
+
+  all_widgets = concat([
+      local.queue_metrics,
+      local.mesh_inbox_count,
+      local.health_widget
+    ],
+    values(module.error_count_widgets).*.widget,
+    values(module.task_widgets).*.widget
+  )
 }
 
 
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
-  dashboard_body = local.widgets_json
+  dashboard_body = jsonencode({
+    widgets = local.all_widgets
+  })
   dashboard_name = "ContinuityDashboard${title(var.environment)}"
 }
 
-data "template_file" "widgets" {
-  template = file("${path.module}/widget-template.json")
-
-  vars = {
-    region = var.region
-    environment = var.environment
-
-    queue_metrics = jsonencode(local.queue_metrics)
-    mesh_inbox_count = jsonencode(local.mesh_inbox_count)
-    health_widget = jsonencode(local.health_widget)
-    mesh_error_count = jsonencode(module.error_count_widgets.mesh.widget)
-    nems_error_count = jsonencode(module.error_count_widgets.nems.widget)
-    pds_adaptor_error_count = jsonencode(module.error_count_widgets.pds_adaptor.widget)
-    mesh_cpu_widget = jsonencode(module.task_widgets.mesh_cpu.widget)
-    mesh_memory_widget = jsonencode(module.task_widgets.mesh_memory.widget)
-    nems_cpu_widget = jsonencode(module.task_widgets.nems_cpu.widget)
-    nems_memory_widget = jsonencode(module.task_widgets.nems_memory.widget)
 #    suspensions_observability_queue_name = data.aws_ssm_parameter.suspensions_observability_queue_name.value
 #    nems_cluster_name = data.aws_ssm_parameter.nems_cluster_name.value
 #    incoming_nems_events_queue_name = data.aws_ssm_parameter.incoming_nems_events_queue_name.value,
 #    nems_events_dlq_name = data.nems_events_dlq_name,
 #    nems_undhandled_queue_name = data.nems_undhandled_queue_name
-  }
-}
