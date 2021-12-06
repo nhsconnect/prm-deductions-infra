@@ -39,8 +39,6 @@ EOF
 
   widget = {
     type = "log"
-    x = 0
-    y = 12
     properties = {
       query = "SOURCE '${local.container_insights_log_group}' | ${local.log_query}"
       region = var.region

@@ -118,7 +118,9 @@
         "title": "PDS Adaptor Error Count"
       }
     },
-    ${task_cpu_widget},
-    ${task_memory_widget}
+    ${mesh_cpu_widget},
+    ${mesh_memory_widget},
+    ${nems_cpu_widget},
+    ${nems_memory_widget}
   ]
 }

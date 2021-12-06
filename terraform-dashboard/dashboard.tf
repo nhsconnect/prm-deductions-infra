@@ -1,18 +1,68 @@
 locals {
   widgets_json = data.template_file.widgets.rendered
+
+  nems = {
+    name = "nems-event-processor"
+    title = "NEMS Event Processor"
+  }
+  mesh = {
+    name = "mesh-forwarder"
+    title = "MESH Forwarder"
+  }
+  pds_adaptor = {
+    name = "pds-adaptor"
+    title = "PDS Adaptor"
+  }
+  suspensions = {
+    name = "suspension-service"
+    title = "Suspension Service"
+  }
+  memory = {
+    title = "Memory"
+  }
 }
 
 module "task_widgets" {
   for_each = {
-    nems_processor_cpu = {
+    nems_cpu = {
       type = "cpu"
-      component = "nems-event-processor"
-      title = "NEMS Event Processor CPU"
+      component = local.nems.name
+      title = "${local.nems.title} CPU"
     }
-    nems_processor_memory = {
+    nems_memory = {
       type = "memory"
-      component = "nems-event-processor"
-      title = "NEMS Event Processor Memory"
+      component = local.nems.name
+      title = "${local.nems.title} Memory"
+    }
+    mesh_cpu = {
+      type = "cpu"
+      component = local.mesh.name
+      title = "${local.mesh.title} CPU"
+    }
+    mesh_memory = {
+      type = "memory"
+      component = local.mesh.name
+      title = "${local.mesh.title} Memory"
+    }
+    pds_adaptor_cpu = {
+      type = "cpu"
+      component = local.pds_adaptor.name
+      title = "${local.pds_adaptor.title} CPU"
+    }
+    pds_adaptor_memory = {
+      type = "memory"
+      component = local.pds_adaptor.name
+      title = "${local.pds_adaptor.title} Memory"
+    }
+    suspensions_cpu = {
+      type = "cpu"
+      component = local.suspensions.name
+      title = "${local.suspensions.title} CPU"
+    }
+    suspensions_memory = {
+      type = "memory"
+      component = local.suspensions.name
+      title = "${local.suspensions.title} Memory"
     }
   }
   source = "./widgets/task_widget"
@@ -34,8 +84,10 @@ data "template_file" "widgets" {
     region = var.region
     environment = var.environment
     mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
-    task_cpu_widget = jsonencode(module.task_widgets.nems_processor_cpu.widget)
-    task_memory_widget = jsonencode(module.task_widgets.nems_processor_memory.widget)
+    mesh_cpu_widget = jsonencode(module.task_widgets.mesh_cpu.widget)
+    mesh_memory_widget = jsonencode(module.task_widgets.mesh_memory.widget)
+    nems_cpu_widget = jsonencode(module.task_widgets.nems_cpu.widget)
+    nems_memory_widget = jsonencode(module.task_widgets.nems_memory.widget)
 #    suspensions_observability_queue_name = data.aws_ssm_parameter.suspensions_observability_queue_name.value
 #    nems_cluster_name = data.aws_ssm_parameter.nems_cluster_name.value
 #    incoming_nems_events_queue_name = data.aws_ssm_parameter.incoming_nems_events_queue_name.value,
