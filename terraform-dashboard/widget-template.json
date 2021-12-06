@@ -31,8 +31,8 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "MeshForwarder", "MeshInboxMessageCount" ],
-          [ { "expression": "ANOMALY_DETECTION_BAND(m3, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "color": "#95A5A6" } ]
+          [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m1" } ],
+          [ { "expression": "ANOMALY_DETECTION_BAND(m1, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "color": "#95A5A6" } ]
         ],
         "view": "timeSeries",
         "stacked": false,
