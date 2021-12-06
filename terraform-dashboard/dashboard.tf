@@ -15,52 +15,56 @@ locals {
     name = "suspension-service"
     title = "Suspension Service"
   }
-}
-
-module "task_widgets" {
-  for_each = {
-    nems_cpu = {
+  task_widget_definitions = [
+    {
       type = "cpu"
       component = local.nems.name
       title = "${local.nems.title} CPU"
-    }
-    nems_memory = {
+    },
+    {
       type = "memory"
       component = local.nems.name
       title = "${local.nems.title} Memory"
-    }
-    mesh_cpu = {
+    },
+    {
       type = "cpu"
       component = local.mesh.name
       title = "${local.mesh.title} CPU"
-    }
-    mesh_memory = {
+    },
+    {
       type = "memory"
       component = local.mesh.name
       title = "${local.mesh.title} Memory"
-    }
-    pds_adaptor_cpu = {
+    },
+    {
       type = "cpu"
       component = local.pds_adaptor.name
       title = "${local.pds_adaptor.title} CPU"
-    }
-    pds_adaptor_memory = {
+    },
+    {
       type = "memory"
       component = local.pds_adaptor.name
       title = "${local.pds_adaptor.title} Memory"
-    }
-    suspensions_cpu = {
+    },
+    {
       type = "cpu"
       component = local.suspensions.name
       title = "${local.suspensions.title} CPU"
-    }
-    suspensions_memory = {
+    },
+    {
       type = "memory"
       component = local.suspensions.name
       title = "${local.suspensions.title} Memory"
     }
+  ]
+}
+
+module "task_widgets" {
+  for_each = {
+    for i, def in local.task_widget_definitions : i => def
   }
   source = "./widgets/task_widget"
+  
   environment = var.environment
   component = each.value.component
   title = each.value.title
