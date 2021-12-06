@@ -174,3 +174,9 @@ variable "mhs_test_harness_public_subnets_inbound" {}
 variable "mhs_test_harness_private_subnets" {}
 variable "inbound_sig_ips" {}
 variable "grant_access_to_queues_through_vpn" {}
+
+variable "alarm_lambda_zip" {
+  type        = string
+  description = "path to zipfile containing lambda code to dispatch alarm notifications to MS Teams"
+  default     = "../notification-lambda/build/alarm.zip"
+}

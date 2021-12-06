@@ -1,6 +1,10 @@
 format_version: 4
 common:
   deploy_job: &deploy_job
+    artifacts:
+      - build:
+          source: notification-lambda/build/alarm.zip
+          destination: notification-lambda/build/
     resources:
       - docker
     tasks:
@@ -199,6 +203,9 @@ pipelines:
                 - build:
                     source: terraform/certs_deployment.tfplan
                     destination: terraform/
+                - build:
+                    source: notification-lambda/build/alarm.zip
+                    destination: notification-lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -243,6 +250,12 @@ pipelines:
                     job: plan
                     source: terraform/deployment.tfplan
                     destination: terraform/
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: notification-lambda/build/alarm.zip
+                    destination: notification-lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash

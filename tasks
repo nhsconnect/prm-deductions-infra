@@ -322,11 +322,29 @@ function create_ssm_param {
   fi
 }
 
+function build_lambda {
+    lambda_name=$1
+
+    build_dir=notification-lambda/build/$lambda_name
+    rm -rf $build_dir
+    mkdir -p $build_dir
+
+    cp notification-lambda/$lambda_name/*.py $build_dir
+
+    pushd $build_dir
+    zip -r -X ../$lambda_name.zip .
+    popd
+}
+
+function build_lambdas {
+    build_lambda alarm
+}
+
 command="$1"
 case "${command}" in
   _tf)
       check_env
-      terraform init -backend-config key=${NHS_SERVICE}-${NHS_ENVIRONMENT}/terraform.tfstate
+      tf_init
       bash
       ;;
   tf)
@@ -338,6 +356,7 @@ case "${command}" in
       ;;
   tf_plan)
       check_env
+      build_lambdas
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
