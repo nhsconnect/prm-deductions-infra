@@ -31,17 +31,15 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
-          [ ".", "Health", "Environment", "${environment}", { "visible": false, "id": "m2" } ],
-          [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m3" } ],
-          [ { "expression": "ANOMALY_DETECTION_BAND(m3, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "id": "ad1", "color": "#95A5A6" } ]
+          [ "MeshForwarder", "MeshInboxMessageCount" ],
+          [ { "expression": "ANOMALY_DETECTION_BAND(m3, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "color": "#95A5A6" } ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "${region}",
         "stat": "Average",
         "period": 300,
-        "title": "MeshInboxMessageCount"
+        "title": "MESH Inbox Message Count"
       }
     },
     {
@@ -52,15 +50,14 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "NemsEventProcessor", "ErrorCountInLogs", { "visible": false, "id": "m1" } ],
-          [ ".", "Health", "Environment", "${environment}" ]
+          [ "NemsEventProcessor", "Health", "Environment", "${environment}" ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "${region}",
         "stat": "Average",
         "period": 300,
-        "title": "Nems Health"
+        "title": "NEMS Events Processor Health"
       }
     },
     {
@@ -71,15 +68,14 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1" } ],
-          [ ".", "Health", "Environment", "${environment}", { "visible": false } ]
+          [ "NemsEventProcessor", "ErrorCountInLogs" ]
         ],
         "view": "timeSeries",
         "stacked": false,
         "region": "${region}",
         "stat": "Average",
         "period": 300,
-        "title": "Nems-Error-Count"
+        "title": "NEMS Events Processor Error Count"
       }
     },
     {
@@ -90,8 +86,7 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1", "visible": false } ],
-          [ "MeshForwarder", "." ]
+          [ "MeshForwarder", "ErrorCountInLogs" ]
         ],
         "view": "timeSeries",
         "stacked": false,
@@ -100,7 +95,7 @@
         "period": 300,
         "start": "-PT3H",
         "end": "P0D",
-        "title": "Mesh-Error-Count"
+        "title": "MESH Forwarder Error Count"
       }
     },
     {
@@ -111,8 +106,7 @@
       "type": "metric",
       "properties": {
         "metrics": [
-          [ "NemsEventProcessor", "ErrorCountInLogs", { "id": "m1", "visible": false } ],
-          [ "PdsAdaptor", "Error Count" ]
+          [ "PdsAdaptor", "ErrorCountInLogs" ]
         ],
         "view": "timeSeries",
         "stacked": false,
@@ -121,7 +115,7 @@
         "period": 300,
         "start": "-PT3H",
         "end": "P0D",
-        "title": "PDS-Error Count"
+        "title": "PDS Adaptor Error Count"
       }
     },
     ${task_cpu_widget},
