@@ -17,9 +17,6 @@ locals {
     name = "suspension-service"
     title = "Suspension Service"
   }
-  memory = {
-    title = "Memory"
-  }
 }
 
 module "task_widgets" {
@@ -72,6 +69,77 @@ module "task_widgets" {
   metric_type = each.value.type
 }
 
+module "error_count_widgets" {
+  for_each = {
+    nems = local.nems, 
+    mesh = local.mesh,
+    pds_adaptor = local.pds_adaptor
+  }
+  source = "./widgets/error_count_widget"
+  component = each.value.name
+  title = each.value.title
+}
+
+locals {
+  mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
+  queue_metrics = {
+    type = "metric"
+    properties = {
+      metrics = [
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${local.mesh_forwarder_nems_observability_queue}" ],
+          [ ".", "NumberOfMessagesSent", ".", "." ],
+          [ ".", "NumberOfMessagesReceived", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesVisible", ".", "." ],
+          [ ".", "SentMessageSize", ".", "." ]
+      ],
+      region = var.region
+      title = "Incoming NEMS Observability Queue"
+      view = "timeSeries"
+      stat = "Average",
+      period = 300,
+      stacked = false
+    }
+  }
+}
+
+
+locals {
+  mesh_inbox_count = {
+    type = "metric"
+    properties = {
+      metrics = [
+          [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m1" } ],
+          [ { "expression": "ANOMALY_DETECTION_BAND(m1, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "color": "#95A5A6" } ]
+      ],
+      region = var.region
+      title = "MESH Inbox Message Count"
+      view = "timeSeries"
+      stat = "Average",
+      period = 300,
+      stacked = false
+    }
+  }
+}
+
+locals {
+  health_widget = {
+    type = "metric"
+    properties = {
+      metrics = [
+        [ "NemsEventProcessor", "Health", "Environment", var.environment ]
+      ],
+      region = var.region
+      title = "NEMS Events Processor Health"
+      view = "timeSeries"
+      stat = "Average",
+      period = 300,
+      stacked = false
+    }
+  }
+}
+
+
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
   dashboard_body = local.widgets_json
   dashboard_name = "ContinuityDashboard${title(var.environment)}"
@@ -83,7 +151,13 @@ data "template_file" "widgets" {
   vars = {
     region = var.region
     environment = var.environment
-    mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
+
+    queue_metrics = jsonencode(local.queue_metrics)
+    mesh_inbox_count = jsonencode(local.mesh_inbox_count)
+    health_widget = jsonencode(local.health_widget)
+    mesh_error_count = jsonencode(module.error_count_widgets.mesh.widget)
+    nems_error_count = jsonencode(module.error_count_widgets.nems.widget)
+    pds_adaptor_error_count = jsonencode(module.error_count_widgets.pds_adaptor.widget)
     mesh_cpu_widget = jsonencode(module.task_widgets.mesh_cpu.widget)
     mesh_memory_widget = jsonencode(module.task_widgets.mesh_memory.widget)
     nems_cpu_widget = jsonencode(module.task_widgets.nems_cpu.widget)
