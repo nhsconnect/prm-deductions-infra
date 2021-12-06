@@ -2,20 +2,24 @@ locals {
   widgets_json = data.template_file.widgets.rendered
 }
 
-module "task_cpu_widget" {
+module "task_widgets" {
+  for_each = {
+    nems_processor_cpu = {
+      type = "cpu"
+      component = "nems-event-processor"
+      title = "NEMS Event Processor CPU"
+    }
+    nems_processor_memory = {
+      type = "memory"
+      component = "nems-event-processor"
+      title = "NEMS Event Processor Memory"
+    }
+  }
   source = "./widgets/task_widget"
   environment = var.environment
-  component = "nems-event-processor"
-  title = "NEMS Event Processor CPU"
-  metric_type = "cpu"
-}
-
-module "task_memory_widget" {
-  source = "./widgets/task_widget"
-  environment = var.environment
-  component = "nems-event-processor"
-  title = "NEMS Event Processor Memory"
-  metric_type = "memory"
+  component = each.value.component
+  title = each.value.title
+  metric_type = each.value.type
 }
 
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
@@ -30,8 +34,8 @@ data "template_file" "widgets" {
     region = var.region
     environment = var.environment
     mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
-    task_cpu_widget = jsonencode(module.task_cpu_widget.widget)
-    task_memory_widget = jsonencode(module.task_memory_widget.widget)
+    task_cpu_widget = jsonencode(module.task_widgets.nems_processor_cpu.widget)
+    task_memory_widget = jsonencode(module.task_widgets.nems_processor_memory.widget)
 #    suspensions_observability_queue_name = data.aws_ssm_parameter.suspensions_observability_queue_name.value
 #    nems_cluster_name = data.aws_ssm_parameter.nems_cluster_name.value
 #    incoming_nems_events_queue_name = data.aws_ssm_parameter.incoming_nems_events_queue_name.value,
