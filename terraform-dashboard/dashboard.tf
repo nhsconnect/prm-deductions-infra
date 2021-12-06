@@ -1,34 +1,21 @@
 locals {
   widgets_json = data.template_file.widgets.rendered
+}
 
-  task_insights_log_group = "/aws/ecs/containerinsights/${var.environment}-nems-event-processor-ecs-cluster/performance"
-  task_cpu_widget = {
-    type = "log"
-    x = 0
-    y = 12
-    properties = {
-      query = "SOURCE '${local.task_insights_log_group}' | ${file("task_cpu_widget_query.txt")}"
-      region = var.region
-      title = "Nems Events Processor Container"
-      view = "timeSeries"
-      stacked = false
-    }
-  }
-  task_cpu_widget_json = jsonencode(local.task_cpu_widget)
+module "task_cpu_widget" {
+  source = "./widgets/task_widget"
+  environment = var.environment
+  component = "nems-event-processor"
+  title = "NEMS Event Processor CPU"
+  metric_type = "cpu"
+}
 
-  task_memory_widget = {
-    type = "log"
-    x = 0
-    y = 12
-    properties = {
-      query = "SOURCE '${local.task_insights_log_group}' | ${file("task_memory_widget_query.txt")}"
-      region = var.region
-      title = "Nems Events Processor Container"
-      view = "timeSeries"
-      stacked = false
-    }
-  }
-  task_memory_widget_json = jsonencode(local.task_memory_widget)
+module "task_memory_widget" {
+  source = "./widgets/task_widget"
+  environment = var.environment
+  component = "nems-event-processor"
+  title = "NEMS Event Processor Memory"
+  metric_type = "memory"
 }
 
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
@@ -43,8 +30,8 @@ data "template_file" "widgets" {
     region = var.region
     environment = var.environment
     mesh_forwarder_nems_observability_queue = data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value
-    task_cpu_widget = local.task_cpu_widget_json
-    task_memory_widget = local.task_memory_widget_json
+    task_cpu_widget = jsonencode(module.task_cpu_widget.widget)
+    task_memory_widget = jsonencode(module.task_memory_widget.widget)
 #    suspensions_observability_queue_name = data.aws_ssm_parameter.suspensions_observability_queue_name.value
 #    nems_cluster_name = data.aws_ssm_parameter.nems_cluster_name.value
 #    incoming_nems_events_queue_name = data.aws_ssm_parameter.incoming_nems_events_queue_name.value,
