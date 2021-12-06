@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
   dashboard_body = data.template_file.widgets.rendered
-  dashboard_name = "ContinuityDashboard"
+  dashboard_name = "ContinuityDashboard${title(var.environment)}"
 }
 
 data "template_file" "widgets" {

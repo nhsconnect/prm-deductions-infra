@@ -149,10 +149,8 @@
     },
     {
       "type": "log",
+      "y": 12,
       "x": 0,
-      "y": 0,
-      "width": 24,
-      "height": 6,
       "properties": {
           "query": "SOURCE '/aws/ecs/containerinsights/${environment}-nems-event-processor-ecs-cluster/performance' | fields CpuUtilized / CpuReserved * 100 as CpuUtilizedPercent, (AvailabilityZone like \"eu-west-2b\") as is_eu_west_2b, (AvailabilityZone like \"eu-west-2a\") as is_eu_west_2a\n| filter (Type = \"Task\")\n| stats sum(CpuUtilizedPercent * is_eu_west_2b) as eu_west_2b, sum(CpuUtilizedPercent * is_eu_west_2a) as eu_west_2a by bin(2m) as period\n| sort period desc",
           "region": "eu-west-2",
