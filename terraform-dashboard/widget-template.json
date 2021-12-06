@@ -29,6 +29,29 @@
       "height": 6,
       "width": 6,
       "y": 0,
+      "x": 6,
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${mesh_forwarder_nems_observability_queue}" ],
+          [ ".", "NumberOfMessagesSent", ".", "." ],
+          [ ".", "NumberOfMessagesReceived", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
+          [ ".", "ApproximateNumberOfMessagesVisible", ".", "." ],
+          [ ".", "SentMessageSize", ".", "." ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "${region}",
+        "stat": "Average",
+        "period": 300,
+        "title": "NEMS Obs Metrics"
+      }
+    },
+    {
+      "height": 6,
+      "width": 6,
+      "y": 0,
       "x": 12,
       "type": "metric",
       "properties": {
@@ -43,7 +66,7 @@
         "region": "${region}",
         "stat": "Average",
         "period": 300,
-        "title": "Nems-Container"
+        "title": "NEMS Event Processor service level stats"
       }
     },
     {

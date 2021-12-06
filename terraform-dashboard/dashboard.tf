@@ -1,5 +1,6 @@
 locals {
   widgets_json = data.template_file.widgets.rendered
+
   task_memory_log_group = "/aws/ecs/containerinsights/${var.environment}-nems-event-processor-ecs-cluster/performance"
   task_memory_widget = {
     type = "log"
@@ -13,7 +14,6 @@ locals {
       stacked = false
     }
   }
-
   task_memory_widget_json = jsonencode(local.task_memory_widget)
 }
 
