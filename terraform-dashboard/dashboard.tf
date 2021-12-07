@@ -3,6 +3,11 @@ locals {
     name = "nems-event-processor"
     title = "NEMS Event Processor"
   }
+
+  nems_observability_queue = {
+    name = nonsensitive(data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value)
+    title = "Incoming NEMS Observability Queue"
+  }
   mesh = {
     name = "mesh-forwarder"
     title = "MESH Forwarder"
@@ -89,25 +94,16 @@ module "health_widgets" {
   environment = var.environment
 }
 
-locals {
-  mesh_forwarder_nems_observability_queue = nonsensitive(data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value)
-  queue_metrics = {
-    type = "metric"
-    properties = {
-      metrics = [
-          [ "AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${local.mesh_forwarder_nems_observability_queue}" ],
-          [ ".", "NumberOfMessagesSent", ".", "." ],
-          [ ".", "NumberOfMessagesReceived", ".", "." ],
-          [ ".", "ApproximateNumberOfMessagesDelayed", ".", "." ],
-          [ ".", "ApproximateNumberOfMessagesVisible", ".", "." ],
-          [ ".", "SentMessageSize", ".", "." ]
-      ],
-      region = var.region
-      title = "Incoming NEMS Observability Queue"
-      view = "timeSeries"
-      stat = "Average"
-    }
+module "queue_metrics_widgets" {
+  for_each = {
+    nems_observability_queue = local.nems_observability_queue
   }
+  source = "./widgets/queue_metrics_widget"
+  component = each.value
+  environment = var.environment
+}
+
+locals {
   mesh_inbox_count = {
     type = "metric"
     properties = {
@@ -122,9 +118,9 @@ locals {
   }
 
   all_widgets = concat([
-      local.queue_metrics,
       local.mesh_inbox_count
     ],
+    values(module.queue_metrics_widgets).*.widget,
     values(module.error_count_widgets).*.widget,
     values(module.health_widgets).*.widget,
     values(module.task_widgets).*.widget
