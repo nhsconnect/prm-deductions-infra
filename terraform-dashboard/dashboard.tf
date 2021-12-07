@@ -115,8 +115,7 @@ locals {
     type = "metric"
     properties = {
       metrics = [
-          [ "MeshForwarder", "MeshInboxMessageCount", { "id": "m1" } ],
-          [ { "expression": "ANOMALY_DETECTION_BAND(m1, 2)", "label": "MeshForwarder MeshInboxMessageCount (expected)", "color": "#95A5A6" } ]
+          [ "MeshForwarder", "MeshInboxMessageCount" ]
       ],
       region = var.region
       title = "MESH Inbox Message Count"
