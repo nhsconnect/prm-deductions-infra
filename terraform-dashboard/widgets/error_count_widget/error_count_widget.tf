@@ -1,16 +1,16 @@
 variable "component" {
+  validation {
+    condition     = alltrue([contains(keys(var.component), "name"), contains(keys(var.component), "title")])
+    error_message = "The component must have \"name\" and \"title\" keys."
+  }
 }
 
 variable "region" {
   default = "eu-west-2"
 }
 
-variable "title" {
-  description = "Widget title"
-}
-
 locals {
-  component_pascal_case = replace(title(var.component), "-", "")
+  component_pascal_case = replace(title(var.component.name), "-", "")
   widget = {
     type = "metric"
     properties = {
@@ -18,7 +18,7 @@ locals {
         [ local.component_pascal_case, "ErrorCountInLogs" ]
       ],
       region = var.region
-      title = "${var.title} Error Count"
+      title = "${var.component.title} Error Count"
       view = "timeSeries"
       stat = "Average"
     }

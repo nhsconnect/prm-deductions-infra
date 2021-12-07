@@ -17,43 +17,43 @@ locals {
   }
   task_widget_definitions = [
     {
-      type = "cpu"
-      component = local.nems.name
+      metric_type = "cpu"
+      name = local.nems.name
       title = "${local.nems.title} CPU"
     },
     {
-      type = "memory"
-      component = local.nems.name
+      metric_type = "memory"
+      name = local.nems.name
       title = "${local.nems.title} Memory"
     },
     {
-      type = "cpu"
-      component = local.mesh.name
+      metric_type = "cpu"
+      name = local.mesh.name
       title = "${local.mesh.title} CPU"
     },
     {
-      type = "memory"
-      component = local.mesh.name
+      metric_type = "memory"
+      name = local.mesh.name
       title = "${local.mesh.title} Memory"
     },
     {
-      type = "cpu"
-      component = local.pds_adaptor.name
+      metric_type = "cpu"
+      name = local.pds_adaptor.name
       title = "${local.pds_adaptor.title} CPU"
     },
     {
-      type = "memory"
-      component = local.pds_adaptor.name
+      metric_type = "memory"
+      name = local.pds_adaptor.name
       title = "${local.pds_adaptor.title} Memory"
     },
     {
-      type = "cpu"
-      component = local.suspensions.name
+      metric_type = "cpu"
+      name = local.suspensions.name
       title = "${local.suspensions.title} CPU"
     },
     {
-      type = "memory"
-      component = local.suspensions.name
+      metric_type = "memory"
+      name = local.suspensions.name
       title = "${local.suspensions.title} Memory"
     }
   ]
@@ -65,9 +65,7 @@ module "task_widgets" {
   }
   source = "./widgets/task_widget"
   environment = var.environment
-  component = each.value.component
-  title = each.value.title
-  metric_type = each.value.type
+  component = each.value
 }
 
 module "error_count_widgets" {
@@ -77,8 +75,7 @@ module "error_count_widgets" {
     pds_adaptor = local.pds_adaptor
   }
   source = "./widgets/error_count_widget"
-  component = each.value.name
-  title = each.value.title
+  component = each.value
 }
 
 module "health_widgets" {
