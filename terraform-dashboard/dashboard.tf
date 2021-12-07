@@ -1,56 +1,100 @@
 locals {
+  all_widgets = concat([{
+    type = "metric"
+    properties = {
+      metrics = [
+        ["MeshForwarder", "MeshInboxMessageCount"]
+      ],
+      region = var.region
+      title  = "MESH Inbox Message Count"
+      view   = "timeSeries"
+      stat   = "Average"
+    }
+    }
+    ],
+    values(module.queue_metrics_widgets).*.widget,
+    values(module.error_count_widgets).*.widget,
+    values(module.health_widgets).*.widget,
+    values(module.task_widgets).*.widget
+  )
   nems = {
-    name = "nems-event-processor"
+    name  = "nems-event-processor"
     title = "NEMS Event Processor"
   }
 
-  nems_observability_queue = {
-    name = nonsensitive(data.aws_ssm_parameter.mesh_forwarder_nems_observability_queue.value)
-    title = "Incoming NEMS Observability Queue"
-  }
+  queue_widget_definitions = [
+    {
+      name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
+      title = "MESH Forwarder Observability Queue"
+    },
+    {
+      name  = "${var.environment}-nems-event-processor-incoming-queue"
+      title = "NEMS Event Processor Incoming Queue"
+    },
+    {
+      name  = "${var.environment}-nems-event-processor-suspensions-observability-queue"
+      title = "NEMS Processor Suspensions Observability Queue"
+    },
+    {
+      name  = "${var.environment}-nems-event-processor-unhandled-events-queue"
+      title = "NEMS Event Processor Unhandled Queue"
+    },
+    {
+      name  = "${var.environment}-nems-event-processor-dlq"
+      title = "NEMS Event Processor DLQ"
+    },
+    {
+      name  = "${var.environment}-suspension-service-suspensions-queue"
+      title = "Suspension Service Incoming Queue"
+    },
+    {
+      name  = "${var.environment}-suspension-service-not-suspended-observability-queue"
+      title = "Suspension Service Not Suspended Observability Queue"
+    }
+  ]
   mesh = {
-    name = "mesh-forwarder"
+    name  = "mesh-forwarder"
     title = "MESH Forwarder"
   }
   pds_adaptor = {
-    name = "pds-adaptor"
+    name  = "pds-adaptor"
     title = "PDS Adaptor"
   }
   suspensions = {
-    name = "suspension-service"
+    name  = "suspension-service"
     title = "Suspension Service"
   }
   task_widget_definitions = [
     {
-      type = "cpu"
+      type      = "cpu"
       component = local.nems
     },
     {
-      type = "memory"
+      type      = "memory"
       component = local.nems
     },
     {
-      type = "cpu"
+      type      = "cpu"
       component = local.mesh
     },
     {
-      type = "memory"
+      type      = "memory"
       component = local.mesh
     },
     {
-      type = "cpu"
+      type      = "cpu"
       component = local.pds_adaptor
     },
     {
-      type = "memory"
+      type      = "memory"
       component = local.pds_adaptor
     },
     {
-      type = "cpu"
+      type      = "cpu"
       component = local.suspensions
     },
     {
-      type = "memory"
+      type      = "memory"
       component = local.suspensions
     }
   ]
@@ -60,64 +104,40 @@ module "task_widgets" {
   for_each = {
     for i, def in local.task_widget_definitions : i => def
   }
-  source = "./widgets/task_widget"
+  source      = "./widgets/task_widget"
   environment = var.environment
-  component = each.value.component
-  metric_type =  each.value.type
+  component   = each.value.component
+  metric_type = each.value.type
 }
 
 module "error_count_widgets" {
   for_each = {
-    nems = local.nems,
-    mesh = local.mesh,
+    nems        = local.nems,
+    mesh        = local.mesh,
     pds_adaptor = local.pds_adaptor
   }
-  source = "./widgets/error_count_widget"
+  source    = "./widgets/error_count_widget"
   component = each.value
 }
 
 module "health_widgets" {
   for_each = {
-    nems = local.nems
+    nems        = local.nems
     pds_adaptor = local.pds_adaptor
     suspensions = local.suspensions
   }
-  source = "./widgets/health_widget"
-  component = each.value
+  source      = "./widgets/health_widget"
+  component   = each.value
   environment = var.environment
 }
 
 module "queue_metrics_widgets" {
   for_each = {
-    nems_observability_queue = local.nems_observability_queue
+    for i, def in local.queue_widget_definitions : i => def
   }
-  source = "./widgets/queue_metrics_widget"
-  component = each.value
+  source      = "./widgets/queue_metrics_widget"
+  component   = each.value
   environment = var.environment
-}
-
-locals {
-  mesh_inbox_count = {
-    type = "metric"
-    properties = {
-      metrics = [
-          [ "MeshForwarder", "MeshInboxMessageCount" ]
-      ],
-      region = var.region
-      title = "MESH Inbox Message Count"
-      view = "timeSeries"
-      stat = "Average"
-    }
-  }
-
-  all_widgets = concat([
-      local.mesh_inbox_count
-    ],
-    values(module.queue_metrics_widgets).*.widget,
-    values(module.error_count_widgets).*.widget,
-    values(module.health_widgets).*.widget,
-    values(module.task_widgets).*.widget
-  )
 }
 
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
@@ -126,9 +146,3 @@ resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
   })
   dashboard_name = "ContinuityDashboard${title(var.environment)}"
 }
-
-#    suspensions_observability_queue_name = data.aws_ssm_parameter.suspensions_observability_queue_name.value
-#    nems_cluster_name = data.aws_ssm_parameter.nems_cluster_name.value
-#    incoming_nems_events_queue_name = data.aws_ssm_parameter.incoming_nems_events_queue_name.value,
-#    nems_events_dlq_name = data.nems_events_dlq_name,
-#    nems_undhandled_queue_name = data.nems_undhandled_queue_name
