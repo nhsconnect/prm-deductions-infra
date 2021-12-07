@@ -88,9 +88,8 @@ module "health_widgets" {
     suspensions = local.suspensions
   }
   source = "./widgets/health_widget"
-  component = each.value.name
+  component = each.value
   environment = var.environment
-  title = each.value.title
 }
 
 locals {
