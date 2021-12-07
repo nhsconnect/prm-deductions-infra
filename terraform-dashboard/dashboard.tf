@@ -64,7 +64,6 @@ module "task_widgets" {
     for i, def in local.task_widget_definitions : i => def
   }
   source = "./widgets/task_widget"
-  
   environment = var.environment
   component = each.value.component
   title = each.value.title
@@ -73,12 +72,24 @@ module "task_widgets" {
 
 module "error_count_widgets" {
   for_each = {
-    nems = local.nems, 
+    nems = local.nems,
     mesh = local.mesh,
     pds_adaptor = local.pds_adaptor
   }
   source = "./widgets/error_count_widget"
   component = each.value.name
+  title = each.value.title
+}
+
+module "health_widgets" {
+  for_each = {
+    nems = local.nems
+    pds_adaptor = local.pds_adaptor
+    suspensions = local.suspensions
+  }
+  source = "./widgets/health_widget"
+  component = each.value.name
+  environment = var.environment
   title = each.value.title
 }
 
@@ -98,9 +109,7 @@ locals {
       region = var.region
       title = "Incoming NEMS Observability Queue"
       view = "timeSeries"
-      stat = "Average",
-      period = 300,
-      stacked = false
+      stat = "Average"
     }
   }
   mesh_inbox_count = {
@@ -113,36 +122,19 @@ locals {
       region = var.region
       title = "MESH Inbox Message Count"
       view = "timeSeries"
-      stat = "Average",
-      period = 300,
-      stacked = false
-    }
-  }
-  health_widget = {
-    type = "metric"
-    properties = {
-      metrics = [
-        [ "NemsEventProcessor", "Health", "Environment", var.environment ]
-      ],
-      region = var.region
-      title = "NEMS Events Processor Health"
-      view = "timeSeries"
-      stat = "Average",
-      period = 300,
-      stacked = false
+      stat = "Average"
     }
   }
 
   all_widgets = concat([
       local.queue_metrics,
-      local.mesh_inbox_count,
-      local.health_widget
+      local.mesh_inbox_count
     ],
     values(module.error_count_widgets).*.widget,
+    values(module.health_widgets).*.widget,
     values(module.task_widgets).*.widget
   )
 }
-
 
 resource "aws_cloudwatch_dashboard" "continuity_dashboard" {
   dashboard_body = jsonencode({
