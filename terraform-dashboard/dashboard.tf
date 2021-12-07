@@ -22,44 +22,36 @@ locals {
   }
   task_widget_definitions = [
     {
-      metric_type = "cpu"
-      name = local.nems.name
-      title = "${local.nems.title} CPU"
+      type = "cpu"
+      component = local.nems
     },
     {
-      metric_type = "memory"
-      name = local.nems.name
-      title = "${local.nems.title} Memory"
+      type = "memory"
+      component = local.nems
     },
     {
-      metric_type = "cpu"
-      name = local.mesh.name
-      title = "${local.mesh.title} CPU"
+      type = "cpu"
+      component = local.mesh
     },
     {
-      metric_type = "memory"
-      name = local.mesh.name
-      title = "${local.mesh.title} Memory"
+      type = "memory"
+      component = local.mesh
     },
     {
-      metric_type = "cpu"
-      name = local.pds_adaptor.name
-      title = "${local.pds_adaptor.title} CPU"
+      type = "cpu"
+      component = local.pds_adaptor
     },
     {
-      metric_type = "memory"
-      name = local.pds_adaptor.name
-      title = "${local.pds_adaptor.title} Memory"
+      type = "memory"
+      component = local.pds_adaptor
     },
     {
-      metric_type = "cpu"
-      name = local.suspensions.name
-      title = "${local.suspensions.title} CPU"
+      type = "cpu"
+      component = local.suspensions
     },
     {
-      metric_type = "memory"
-      name = local.suspensions.name
-      title = "${local.suspensions.title} Memory"
+      type = "memory"
+      component = local.suspensions
     }
   ]
 }
@@ -70,7 +62,8 @@ module "task_widgets" {
   }
   source = "./widgets/task_widget"
   environment = var.environment
-  component = each.value
+  component = each.value.component
+  metric_type =  each.value.type
 }
 
 module "error_count_widgets" {
