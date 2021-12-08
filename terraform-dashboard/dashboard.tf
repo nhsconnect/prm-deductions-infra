@@ -87,9 +87,10 @@ module "task_widgets" {
 
 module "error_count_widgets" {
   for_each = {
-    nems        = local.nems,
-    mesh        = local.mesh,
+    nems        = local.nems
+    mesh        = local.mesh
     pds_adaptor = local.pds_adaptor
+    suspensions = local.suspensions
   }
   source    = "./widgets/error_count_widget"
   component = each.value
@@ -98,7 +99,8 @@ module "error_count_widgets" {
 module "health_widgets" {
   for_each = {
     nems        = local.nems
-    pds_adaptor = local.pds_adaptor
+    # mesh        = local.mesh ## to be taken from load balancer
+    # pds_adaptor = local.pds_adaptor ## to be taken from load balancer
     suspensions = local.suspensions
   }
   source      = "./widgets/health_widget"
