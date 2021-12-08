@@ -1,19 +1,16 @@
 format_version: 4
-#common:
-#  deploy_job: &deploy_job
-#    resources:
-#      - docker
-#    tasks:
-#      - exec:
-#          command: /bin/bash
-#          arguments:
-#            - -c
-#            - ./tasks tf_plan_dashboard create
-#      - exec:
-#          command: /bin/bash
-#          arguments:
-#            - -c
-#            - ./tasks tf_apply_dashboard
+common:
+ tasks: &tasks
+  - exec:
+      command: /bin/bash
+      arguments:
+        - -c
+        - ./tasks tf_plan_dashboard create
+  - exec:
+      command: /bin/bash
+      arguments:
+        - -c
+        - ./tasks tf_apply_dashboard
 
 pipelines:
   "prm-deductions-infra-dashboard":
@@ -34,17 +31,18 @@ pipelines:
               environment_variables:
                 NHS_ENVIRONMENT: dev
               tasks:
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks tf_plan_dashboard create
-                - exec:
-                    command: /bin/bash
-                    arguments:
-                      - -c
-                      - ./tasks tf_apply_dashboard
-#
+                *tasks
+#                 - exec:
+#                     command: /bin/bash
+#                     arguments:
+#                       - -c
+#                       - ./tasks tf_plan_dashboard create
+#                 - exec:
+#                     command: /bin/bash
+#                     arguments:
+#                       - -c
+#                       - ./tasks tf_apply_dashboard
+# #
 #      - deploy_test:
 #          clean_workspace: true
 #          resources:
