@@ -32,22 +32,13 @@ pipelines:
                 NHS_ENVIRONMENT: dev
               tasks:
                 *tasks
-#                 - exec:
-#                     command: /bin/bash
-#                     arguments:
-#                       - -c
-#                       - ./tasks tf_plan_dashboard create
-#                 - exec:
-#                     command: /bin/bash
-#                     arguments:
-#                       - -c
-#                       - ./tasks tf_apply_dashboard
-# #
-#      - deploy_test:
-#          clean_workspace: true
-#          resources:
-#            - docker
-#          environment_variables:
-#            NHS_ENVIRONMENT: test
-#          tasks:
-#            *deploy_job
+      - deploy_test:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: test
+              tasks:
+                *tasks
