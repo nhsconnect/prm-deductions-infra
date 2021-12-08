@@ -64,38 +64,13 @@ locals {
     name  = "suspension-service"
     title = "Suspension Service"
   }
+
+  task_widget_components = [local.nems, local.mesh, local.pds_adaptor, local.suspensions]
+  task_widget_types = [ "cpu", "memory"]
   task_widget_definitions = [
-    {
-      type      = "cpu"
-      component = local.nems
-    },
-    {
-      type      = "memory"
-      component = local.nems
-    },
-    {
-      type      = "cpu"
-      component = local.mesh
-    },
-    {
-      type      = "memory"
-      component = local.mesh
-    },
-    {
-      type      = "cpu"
-      component = local.pds_adaptor
-    },
-    {
-      type      = "memory"
-      component = local.pds_adaptor
-    },
-    {
-      type      = "cpu"
-      component = local.suspensions
-    },
-    {
-      type      = "memory"
-      component = local.suspensions
+  for pair in setproduct(local.task_widget_components, local.task_widget_types) : {
+      component = pair[0]
+      type  = pair[1]
     }
   ]
 }
