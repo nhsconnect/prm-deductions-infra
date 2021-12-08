@@ -208,6 +208,11 @@ resource "aws_iam_role_policy_attachment" "sqs_read_only_to_repo_developer" {
   role = aws_iam_role.repo_developer.name
 }
 
+resource "aws_iam_role_policy_attachment" "cloudwatch_full_access" {
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+  role = aws_iam_role.repo_developer.name
+}
+
 data "aws_iam_policy_document" "aws_console_read" {
   statement {
     effect = "Allow"
