@@ -20,10 +20,10 @@ locals {
     }}],
     values(module.queue_metrics_widgets).*.widget,
     values(module.error_count_widgets).*.widget,
-    [module.health_lb_widgets.mesh.widget],
-    [module.health_widgets.nems.widget],
-    [module.health_lb_widgets.pds_adaptor.widget],
-    [module.health_widgets.suspensions.widget],
+    [module.health_lb_widgets["mesh"].widget],
+    [module.health_widgets["nems"].widget],
+    [module.health_lb_widgets["pds_adaptor"].widget],
+    [module.health_widgets["suspensions"].widget],
     values(module.task_widgets).*.widget
   )
 
