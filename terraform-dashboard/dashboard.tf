@@ -56,10 +56,20 @@ locals {
     name  = "mesh-forwarder"
     title = "MESH Forwarder"
   }
+  mesh_na = {
+    name  = "mesh-forwarder-na"
+    title = "MESH Forwarder NA"
+  }
   pds_adaptor = {
     name  = "pds-adaptor"
     title = "PDS Adaptor"
   }
+
+  pds_adaptor_na = {
+    name  = "pds-adaptor-na"
+    title = "PDS Adaptor NA"
+  }
+
   suspensions = {
     name  = "suspension-service"
     title = "Suspension Service"
@@ -68,9 +78,9 @@ locals {
   task_widget_components = [local.nems, local.mesh, local.pds_adaptor, local.suspensions]
   task_widget_types = [ "cpu", "memory"]
   task_widget_definitions = [
-  for pair in setproduct(local.task_widget_components, local.task_widget_types) : {
-      component = pair[0]
-      type  = pair[1]
+  for pair in setproduct(local.task_widget_types, local.task_widget_components) : {
+      component = pair[1]
+      type  = pair[0]
     }
   ]
 }
@@ -99,8 +109,8 @@ module "error_count_widgets" {
 module "health_widgets" {
   for_each = {
     nems        = local.nems
-    # mesh        = local.mesh ## to be taken from load balancer
-    # pds_adaptor = local.pds_adaptor ## to be taken from load balancer
+    mesh        = local.mesh_na ## to be taken from load balancer
+    pds_adaptor = local.pds_adaptor_na ## to be taken from load balancer
     suspensions = local.suspensions
   }
   source      = "./widgets/health_widget"
