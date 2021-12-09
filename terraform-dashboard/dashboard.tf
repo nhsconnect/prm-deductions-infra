@@ -75,8 +75,8 @@ locals {
     title = "Suspension Service"
   }
 
-  task_widget_components = [local.nems, local.mesh, local.pds_adaptor, local.suspensions]
-  task_widget_types = [ "cpu", "memory"]
+  task_widget_components = [local.mesh, local.nems, local.pds_adaptor, local.suspensions]
+  task_widget_types = ["cpu", "memory"]
   task_widget_definitions = [
   for pair in setproduct(local.task_widget_types, local.task_widget_components) : {
       component = pair[1]

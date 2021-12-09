@@ -2,8 +2,8 @@ fields MemoryUtilized / MemoryReserved * 100 as MemoryUtilizedPercent,
   (AvailabilityZone like "eu-west-2a") as is_A,
   (AvailabilityZone like "eu-west-2b") as is_B
 | filter (Type = "Task")
-| stats 
-  sum(MemoryUtilizedPercent * is_A) as A, 
-  sum(MemoryUtilizedPercent * is_B) as B
+| stats
+  max(MemoryUtilizedPercent * is_A) as A,
+  max(MemoryUtilizedPercent * is_B) as B
   by bin(2m) as period
 | sort period desc
