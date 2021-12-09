@@ -1,3 +1,11 @@
+data "aws_lb" "pds_adaptor_load_balancer" {
+  name = "${var.environment}-pds-adaptor-alb-int"
+}
+
+data "aws_lb_target_group" "pds_adaptor_target_group" {
+  name = "${var.environment}-pds-adaptor-int-tg"
+}
+
 locals {
   all_widgets = concat([{
     type = "metric"
@@ -9,18 +17,15 @@ locals {
       title  = "MESH Inbox Message Count"
       view   = "timeSeries"
       stat   = "Average"
-    }
-    }
-    ],
+    }}],
     values(module.queue_metrics_widgets).*.widget,
     values(module.error_count_widgets).*.widget,
-    values(module.health_widgets).*.widget,
+    [module.health_lb_widgets.mesh.widget],
+    [module.health_widgets.nems.widget],
+    [module.health_lb_widgets.pds_adaptor.widget],
+    [module.health_widgets.suspensions.widget],
     values(module.task_widgets).*.widget
   )
-  nems = {
-    name  = "nems-event-processor"
-    title = "NEMS Event Processor"
-  }
 
   queue_widget_definitions = [
     {
@@ -53,21 +58,28 @@ locals {
     }
   ]
   mesh = {
-    name  = "mesh-forwarder"
-    title = "MESH Forwarder"
+    name         = "mesh-forwarder"
+    title        = "MESH Forwarder"
+    loadbalancer = "NA"
+    targetgroup  = "NA"
   }
+  # to be completed (removing NA) when health metrics will be available on load balancer (like PDS adaptor below)
   mesh_na = {
-    name  = "mesh-forwarder-na"
-    title = "MESH Forwarder NA"
-  }
-  pds_adaptor = {
-    name  = "pds-adaptor"
-    title = "PDS Adaptor"
+    name         = "mesh-forwarder-na"
+    title        = "(NA) MESH Forwarder"
+    loadbalancer = "NA"
+    targetgroup  = "NA"
   }
 
-  pds_adaptor_na = {
-    name  = "pds-adaptor-na"
-    title = "PDS Adaptor NA"
+  nems = {
+    name  = "nems-event-processor"
+    title = "NEMS Event Processor"
+  }
+  pds_adaptor = {
+    name         = "pds-adaptor"
+    title        = "PDS Adaptor"
+    loadbalancer = data.aws_lb.pds_adaptor_load_balancer.arn_suffix
+    targetgroup  = data.aws_lb_target_group.pds_adaptor_target_group.arn_suffix
   }
 
   suspensions = {
@@ -76,11 +88,11 @@ locals {
   }
 
   task_widget_components = [local.mesh, local.nems, local.pds_adaptor, local.suspensions]
-  task_widget_types = ["cpu", "memory"]
+  task_widget_types      = ["cpu", "memory"]
   task_widget_definitions = [
-  for pair in setproduct(local.task_widget_types, local.task_widget_components) : {
+    for pair in setproduct(local.task_widget_types, local.task_widget_components) : {
       component = pair[1]
-      type  = pair[0]
+      type      = pair[0]
     }
   ]
 }
@@ -109,11 +121,19 @@ module "error_count_widgets" {
 module "health_widgets" {
   for_each = {
     nems        = local.nems
-    mesh        = local.mesh_na ## to be taken from load balancer
-    pds_adaptor = local.pds_adaptor_na ## to be taken from load balancer
     suspensions = local.suspensions
   }
   source      = "./widgets/health_widget"
+  component   = each.value
+  environment = var.environment
+}
+
+module "health_lb_widgets" {
+  for_each = {
+    mesh        = local.mesh_na
+    pds_adaptor = local.pds_adaptor
+  }
+  source      = "./widgets/health_lb_widget"
   component   = each.value
   environment = var.environment
 }
