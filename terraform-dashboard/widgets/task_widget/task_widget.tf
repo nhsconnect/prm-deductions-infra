@@ -34,8 +34,8 @@ fields
 | filter
     (Type = "Task")
 | stats
-    sum(Percent * is_A) as A,
-    sum(Percent * is_B) as B
+    max(Percent * is_A) as A,
+    max(Percent * is_B) as B
     by bin(2m) as period
 | sort
     period desc
