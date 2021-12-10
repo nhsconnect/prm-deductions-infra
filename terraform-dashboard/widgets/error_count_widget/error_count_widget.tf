@@ -20,7 +20,7 @@ locals {
       region = var.region
       title = "${var.component.title} Error Count"
       view = "timeSeries"
-      stat = "Average"
+      stat = "Sum"
     }
   }
 }
