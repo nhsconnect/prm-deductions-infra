@@ -37,10 +37,6 @@ locals {
 
   queue_widget_definitions = [
     {
-      name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
-      title = "MESH Forwarder Observability Queue"
-    },
-    {
       name  = "${var.environment}-nems-event-processor-incoming-queue"
       title = "NEMS Event Processor Incoming Queue"
     },
@@ -49,16 +45,20 @@ locals {
       title = "NEMS Processor Suspensions Observability Queue"
     },
     {
+      name  = "${var.environment}-suspension-service-suspensions-queue"
+      title = "Suspension Service Incoming Queue"
+    },
+    {
+      name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
+      title = "MESH Forwarder Observability Queue"
+    },
+    {
       name  = "${var.environment}-nems-event-processor-unhandled-events-queue"
       title = "NEMS Event Processor Unhandled Queue"
     },
     {
       name  = "${var.environment}-nems-event-processor-dlq"
       title = "NEMS Event Processor DLQ"
-    },
-    {
-      name  = "${var.environment}-suspension-service-suspensions-queue"
-      title = "Suspension Service Incoming Queue"
     },
     {
       name  = "${var.environment}-suspension-service-not-suspended-observability-queue"

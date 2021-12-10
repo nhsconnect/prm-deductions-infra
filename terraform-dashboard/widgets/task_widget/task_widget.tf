@@ -46,7 +46,7 @@ EOF
     properties = {
       query  = "SOURCE '${local.container_insights_log_group}' | ${local.log_query}"
       region = var.region
-      title  = "${var.component.title} ${local.titles[var.metric_type]}"
+      title  = "${var.component.title} ${local.titles[var.metric_type]} %"
       view   = "timeSeries"
       yAxis = {
         left = {
