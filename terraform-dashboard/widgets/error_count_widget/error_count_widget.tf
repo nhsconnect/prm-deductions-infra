@@ -15,12 +15,20 @@ locals {
     type = "metric"
     properties = {
       metrics = [
-        [ local.component_pascal_case, "ErrorCountInLogs" ]
+        [local.component_pascal_case, "ErrorCountInLogs"]
       ],
       region = var.region
-      title = "${var.component.title} Error Count"
-      view = "timeSeries"
-      stat = "Sum"
+      title  = "${var.component.title} Error Count"
+      view   = "timeSeries"
+      stat   = "Sum"
+      yAxis = {
+        left = {
+          showUnits = false
+        }
+        right = {
+          showUnits = false
+        }
+      }
     }
   }
 }

@@ -26,11 +26,19 @@ locals {
       metrics = [
         ["AWS/ApplicationELB", "HealthyHostCount", "TargetGroup", "${var.component.targetgroup}", "LoadBalancer", "${var.component.loadbalancer}"],
         [".", "UnHealthyHostCount", ".", ".", ".", "."]
-      ],
+      ]
       region = var.region
       title  = "${var.component.title} Health"
       view   = "timeSeries"
       stat   = "Average"
+      yAxis = {
+        left = {
+          showUnits = false
+        }
+        right = {
+          showUnits = false
+        }
+      }
     }
   }
 }

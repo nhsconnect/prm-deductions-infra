@@ -48,6 +48,14 @@ EOF
       region = var.region
       title  = "${var.component.title} ${local.titles[var.metric_type]}"
       view   = "timeSeries"
+      yAxis = {
+        left = {
+          showUnits = false
+        }
+        right = {
+          showUnits = false
+        }
+      }
     }
   }
 }

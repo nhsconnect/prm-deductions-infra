@@ -20,11 +20,19 @@ locals {
     properties = {
       metrics = [
         [ local.component_pascal_case, "Health", "Environment", var.environment ]
-      ],
+      ]
       region = var.region
       title = "${var.component.title} Health"
       view = "timeSeries"
       stat = "Average"
+      yAxis = {
+        left = {
+          showUnits = false
+        }
+        right = {
+          showUnits = false
+        }
+      }
     }
   }
 }

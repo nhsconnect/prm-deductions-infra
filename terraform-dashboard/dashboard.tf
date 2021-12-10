@@ -17,6 +17,14 @@ locals {
       title  = "MESH Inbox Message Count"
       view   = "timeSeries"
       stat   = "Average"
+      yAxis = {
+        left = {
+          showUnits = false
+        }
+        right = {
+          showUnits = false
+        }
+      }
     }}],
     values(module.queue_metrics_widgets).*.widget,
     values(module.error_count_widgets).*.widget,
