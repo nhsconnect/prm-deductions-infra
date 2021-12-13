@@ -22,14 +22,18 @@ locals {
         ["AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${var.component.name}"],
         [".", "NumberOfMessagesSent", ".", "."],
         [".", "NumberOfMessagesReceived", ".", "."],
-        [".", "ApproximateNumberOfMessagesDelayed", ".", "."],
         [".", "ApproximateNumberOfMessagesVisible", ".", "."],
-        [".", "SentMessageSize", ".", "."]
+        [".", "SentMessageSize", ".", ".", { "yAxis": "right" } ]
       ],
       region = var.region
       title  = "${var.component.title}"
       view   = "timeSeries"
       stat   = "Average"
+      yAxis  = {
+        right = {
+            label = "Size"
+        }
+      }
     }
   }
 }
