@@ -63,6 +63,10 @@ locals {
     {
       name  = "${var.environment}-suspension-service-not-suspended-observability-queue"
       title = "Suspension Service Not Suspended Observability Queue"
+    },
+    {
+      name  = "${var.environment}-suspension-service-mof-updated-queue"
+      title = "Suspension Service MOF Updated Queue"
     }
   ]
   mesh = {
