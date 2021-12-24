@@ -1,7 +1,7 @@
 resource "aws_alb" "mq-admin" {
   name            = "${var.environment}-mq-admin-alb"
   subnets         = var.deductions_private_vpc_private_subnets
-  security_groups = [aws_security_group.vpn_to_mq_admin.id]
+  security_groups = [aws_security_group.vpn_to_mq_admin.id, aws_security_group.mq_ui_to_alb.id]
   internal        = true
   drop_invalid_header_fields = true
 
@@ -9,6 +9,28 @@ resource "aws_alb" "mq-admin" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+resource "aws_security_group" "mq_ui_to_alb" {
+  name        = "${var.environment}-mq-admin-alb"
+  description = "controls access to the internal ALB for AMQ Admin UI"
+  vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.environment}-mq-admin-to-alb"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group_rule" "alb_to_mq_health_check" {
+  description = "Allow outbound traffic from Internal ALB to AMQ nodes to make a health check"
+  from_port = "8162"
+  to_port = "8162"
+  protocol = "tcp"
+  source_security_group_id = var.service_to_mq_admin_sg_id
+  security_group_id = aws_security_group.mq_ui_to_alb.id
+  type = "egress"
 }
 
 resource "aws_security_group" "vpn_to_mq_admin" {

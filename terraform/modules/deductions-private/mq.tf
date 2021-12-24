@@ -7,7 +7,11 @@ resource "aws_mq_broker" "deductor_mq_broker" {
   auto_minor_version_upgrade = var.auto_minor_version_upgrade
   apply_immediately          = var.apply_immediately
   publicly_accessible        = "false"
-  security_groups            = [aws_security_group.service_to_mq.id, aws_security_group.vpn_to_mq.id, aws_security_group.gocd_to_mq.id]
+  security_groups            = [
+    aws_security_group.service_to_mq.id,
+    aws_security_group.vpn_to_mq.id,
+    aws_security_group.gocd_to_mq.id
+  ]
   subnet_ids                 = module.vpc.private_subnets
 
   logs {
