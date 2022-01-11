@@ -39,6 +39,6 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
       "sqs:SendMessage",
       "sqs:DeleteMessage"
     ]
-    resources = ["**-audit"]
+    resources = ["arn:aws:sqs:*:*:*-audit"]
   }
 }
