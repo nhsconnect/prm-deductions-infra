@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "splunk_trust_policy" {
 }
 
 resource "aws_iam_role" "splunk_sqs_forwarder" {
-  name               = "splunk_sqs_forwarder"
+  name               = "SplunkSqsForwarder"
   description        = "Role to allow repo to integrate with splunk"
   assume_role_policy = data.aws_iam_policy_document.splunk_trust_policy.json
 }
@@ -40,5 +40,10 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
       "sqs:DeleteMessage"
     ]
     resources = ["arn:aws:sqs:*:*:*-audit"]
+  }
+  statement {
+    effect = "Allow"
+    actions = ["kms:Decrypt"]
+    resources = ["*"]
   }
 }
