@@ -36,6 +36,9 @@ resource "aws_mq_broker" "deductor_mq_broker" {
     password = data.aws_ssm_parameter.mq-app-password.value
     console_access = false
   }
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 
   tags = {
     CreatedBy   = var.repo_name
