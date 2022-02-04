@@ -20,6 +20,12 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
+    actions = ["sqs:ListQueueTags"]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
     actions = [
       "secretsmanager:CreateSecret",
       "secretsmanager:DescribeSecret",
