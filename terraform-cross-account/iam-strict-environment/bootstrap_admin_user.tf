@@ -107,7 +107,16 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/bootstrap_admin_permissions_policy",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/repo_developer_permissions_policy"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:ListAliases"
+      ]
+    resources = ["*"]
+  }
 }
+
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {
   policy_arn = aws_iam_policy.bootstrap_admin_permissions_policy.arn
@@ -126,5 +135,10 @@ resource "aws_iam_role_policy_attachment" "ssm_read_only_access" {
 
 resource "aws_iam_role_policy_attachment" "sns_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_role_policy_attachment" "sqs_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
