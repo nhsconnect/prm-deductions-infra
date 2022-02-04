@@ -118,3 +118,8 @@ resource "aws_iam_role_policy_attachment" "terraform_plan_to_bootstrap_admin" {
   policy_arn = aws_iam_policy.terraform_plan_permissions_policy.arn
   role = aws_iam_role.bootstrap_admin.name
 }
+
+resource "aws_iam_role_policy_attachment" "ssm_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
