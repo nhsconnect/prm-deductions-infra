@@ -15,7 +15,6 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     resources = [
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/*",
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/*",
-      "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/prod/output/prm-deductions-pds-adaptor/service-url"
     ]
   }
 
