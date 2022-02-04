@@ -142,3 +142,10 @@ resource "aws_iam_role_policy_attachment" "sqs_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
+
+resource "aws_iam_role_policy_attachment" "dynamo_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
+
+
