@@ -123,3 +123,8 @@ resource "aws_iam_role_policy_attachment" "ssm_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
+
+resource "aws_iam_role_policy_attachment" "sns_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
