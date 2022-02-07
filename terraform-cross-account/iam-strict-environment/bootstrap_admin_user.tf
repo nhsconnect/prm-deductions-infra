@@ -11,7 +11,7 @@ resource "aws_iam_policy" "bootstrap_admin_permissions_policy" {
 data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
-    actions = ["ssm:PutParameter*", "ssm:DeleteParameter"]
+    actions = ["ssm:PutParameter*", "ssm:DeleteParameter*"]
     resources = [
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/user-input/*",
       "arn:aws:ssm:eu-west-2:${data.aws_caller_identity.current.account_id}:parameter/repo/*/user-input/*",
