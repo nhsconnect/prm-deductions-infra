@@ -10,6 +10,7 @@ data "aws_iam_policy_document" "ci_read_only_trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.test_account_id.value}:role/RepoAdmin",             # test environment (in test account)
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/RepoDeveloper",     # pre-prod environment RepoDeveloper (in pre-prod account)
         "arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/RepoDeveloper",
+        "arn:aws:iam::${data.aws_ssm_parameter.perf_account_id.value}:role/RepoDeveloper",
         # more accounts will follow for other environments...
       ]
     }
@@ -92,4 +93,8 @@ data "aws_ssm_parameter" "pre_prod_account_id" {
 
 data "aws_ssm_parameter" "prod_account_id" {
   name = "/repo/prod/user-input/external/aws-account-id"
+}
+
+data "aws_ssm_parameter" "perf_account_id" {
+  name = "/repo/perf/user-input/external/aws-account-id"
 }
