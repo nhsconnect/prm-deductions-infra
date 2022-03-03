@@ -64,17 +64,6 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:GetObject"
-    ]
-    resources = [
-      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
-      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
       "logs:Describe*",
       "logs:List*",
       "ec2:Describe*",
@@ -167,12 +156,6 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
 
   statement{
     effect = "Allow"
-    actions = ["s3:List*","s3:Get*"]
-    resources = ["arn:aws:s3:::${var.environment}-ehr-repo-bucket"]
-  }
-
-  statement{
-    effect = "Allow"
     actions = [
       "secretsmanager:DescribeSecret",
       "secretsmanager:GetResourcePolicy"
@@ -205,6 +188,21 @@ resource "aws_iam_role_policy_attachment" "sqs_read_only_to_repo_developer" {
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_readonly_access_to_repo_developer" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess"
+  role = aws_iam_role.repo_developer.name
+}
+
+resource "aws_iam_role_policy_attachment" "s3_deny_content_access" {
+  policy_arn = aws_iam_policy.s3_deny_content_access.arn
+  role = aws_iam_role.repo_developer.name
+}
+
+resource "aws_iam_role_policy_attachment" "s3_allow_terraform_state_content_access" {
+  policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
+  role = aws_iam_role.repo_developer.name
+}
+
+resource "aws_iam_role_policy_attachment" "s3_allow_ehr_repo_content_access" {
+  policy_arn = aws_iam_policy.s3_allow_ehr_repo_content_access.arn
   role = aws_iam_role.repo_developer.name
 }
 
