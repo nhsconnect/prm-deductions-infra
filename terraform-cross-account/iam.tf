@@ -8,10 +8,6 @@ module "environment_roles" {
   // TODO: Use condition with provision_strict_iam_roles
   count = var.provision_ci_account ? 0 : 1
   provision_strict_iam_roles = var.provision_strict_iam_roles
-
-  environment = var.environment
-  state_bucket_infix = var.state_bucket_infix
-
 }
 
 module "environment_strict_roles" {
