@@ -4,7 +4,7 @@ resource "aws_iam_policy" "s3_deny_content_access" {
 }
 
 resource "aws_iam_policy" "s3_allow_terraform_state_content_access" {
-  name = "s3_deny_content_access"
+  name = "s3_allow_terraform_state_content_access"
   policy = data.aws_iam_policy_document.s3_allow_terraform_state_content_access.json
 }
 
