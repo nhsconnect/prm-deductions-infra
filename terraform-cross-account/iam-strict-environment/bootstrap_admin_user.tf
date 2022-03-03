@@ -163,9 +163,3 @@ resource "aws_iam_role_policy_attachment" "dynamo_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
-
-resource "aws_iam_role_policy_attachment" "bootstrap_admin_s3_deny_content_access" {
-  policy_arn = aws_iam_policy.s3_deny_content_access.arn
-  role = aws_iam_role.bootstrap_admin.name
-}
-
