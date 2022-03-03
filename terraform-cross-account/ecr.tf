@@ -86,3 +86,11 @@ resource "aws_ecr_repository" "suspension-service" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ecr_repository" "pds-fhir-stub" {
+  name = "repo/pds-fhir-stub"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
