@@ -39,3 +39,15 @@ data "aws_ssm_parameter" "ci_account_id" {
 data "aws_ssm_parameter" "nhsd_identities_account_id" {
   name = "/repo/nhsd-identities/user-input/external/aws-account-id"
 }
+
+resource "aws_iam_role_policy_attachment" "repo_admin_s3_deny_content_access" {
+  count = var.provision_strict_iam_roles ? 0 : 1
+  policy_arn = aws_iam_policy.s3_deny_content_access.arn
+  role = aws_iam_role.repo_admin[0].name
+}
+
+resource "aws_iam_role_policy_attachment" "repo_admin_s3_allow_terraform_state_content_access" {
+  count = var.provision_strict_iam_roles ? 0 : 1
+  policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
+  role = aws_iam_role.repo_admin[0].name
+}
