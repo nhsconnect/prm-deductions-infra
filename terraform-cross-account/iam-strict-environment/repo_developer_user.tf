@@ -53,17 +53,6 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:Get*",
-      "s3:List*"
-    ]
-    resources = [
-      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state*"
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
       "logs:Describe*",
       "logs:List*",
       "ec2:Describe*",
