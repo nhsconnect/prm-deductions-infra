@@ -191,17 +191,17 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_readonly_access_to_repo_de
   role = aws_iam_role.repo_developer.name
 }
 
-resource "aws_iam_role_policy_attachment" "s3_deny_content_access" {
+resource "aws_iam_role_policy_attachment" "repo_developer_s3_deny_content_access" {
   policy_arn = aws_iam_policy.s3_deny_content_access.arn
   role = aws_iam_role.repo_developer.name
 }
 
-resource "aws_iam_role_policy_attachment" "s3_allow_terraform_state_content_access" {
+resource "aws_iam_role_policy_attachment" "repo_developer_s3_allow_terraform_state_content_access" {
   policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
   role = aws_iam_role.repo_developer.name
 }
 
-resource "aws_iam_role_policy_attachment" "s3_allow_ehr_repo_content_access" {
+resource "aws_iam_role_policy_attachment" "repo_developer_s3_allow_ehr_repo_content_access" {
   policy_arn = aws_iam_policy.s3_allow_ehr_repo_content_access.arn
   role = aws_iam_role.repo_developer.name
 }
