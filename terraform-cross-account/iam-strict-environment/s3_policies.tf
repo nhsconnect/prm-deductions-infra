@@ -8,6 +8,25 @@ resource "aws_iam_policy" "s3_allow_ehr_repo_content_access" {
   policy = data.aws_iam_policy_document.s3_allow_ehr_repo_content_access.json
 }
 
+resource "aws_iam_policy" "s3_allow_list_buckets" {
+  name = "s3_allow_list_buckets"
+  policy = data.aws_iam_policy_document.s3_allow_list_buckets.json
+}
+
+
+data "aws_iam_policy_document" "s3_allow_list_buckets" {
+  statement {
+    sid = "S3AllowListBuckets"
+    effect = "Allow"
+    actions = [
+      "s3:ListAllMyBuckets"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "s3_allow_terraform_state_content_access" {
   statement {
     sid = "S3AllowTerraformStateContentAccess"
@@ -36,4 +55,3 @@ data "aws_iam_policy_document" "s3_allow_ehr_repo_content_access" {
     resources = ["arn:aws:s3:::${var.environment}-ehr-repo-bucket"]
   }
 }
-
