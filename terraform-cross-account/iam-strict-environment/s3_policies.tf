@@ -35,7 +35,9 @@ data "aws_iam_policy_document" "s3_allow_terraform_state_content_access" {
       "s3:GetObject",
       "s3:GetObjectVersion",
       "s3:List*",
-      "s3:GetBucketPolicy"
+      "s3:GetBucket*",
+      "s3:GetLifecycleConfiguration",
+      "s3:GetEncryptionConfiguration"
     ]
     resources = [
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state*",
