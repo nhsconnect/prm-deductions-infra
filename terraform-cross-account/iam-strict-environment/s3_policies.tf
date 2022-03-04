@@ -42,7 +42,8 @@ data "aws_iam_policy_document" "s3_allow_terraform_state_content_access" {
     resources = [
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state*",
       "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state/*",
-      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*"
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store/*",
+      "arn:aws:s3:::prm-deductions-${var.state_bucket_infix}terraform-state-store*"
     ]
   }
 }
