@@ -42,6 +42,16 @@ pipelines:
                 NHS_ENVIRONMENT: test
               tasks:
                 *tasks
+      - deploy_perf:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: perf
+              tasks:
+                *tasks
       - deploy_pre_prod:
           clean_workspace: true
           jobs:
@@ -50,5 +60,15 @@ pipelines:
                 - docker
               environment_variables:
                 NHS_ENVIRONMENT: pre-prod
+              tasks:
+                *tasks
+      - deploy_prod:
+          clean_workspace: true
+          jobs:
+            apply:
+              resources:
+                - docker
+              environment_variables:
+                NHS_ENVIRONMENT: prod
               tasks:
                 *tasks
