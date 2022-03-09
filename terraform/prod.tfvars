@@ -26,4 +26,4 @@ inbound_sig_ips = ["18.132.56.40/32", "3.11.193.200/32", "35.176.248.137/32","3.
 
 deploy_prod_route53_zone = true
 
-grant_access_to_queues_through_vpn = true
+grant_access_to_queues_through_vpn = false
