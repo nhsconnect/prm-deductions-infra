@@ -147,3 +147,80 @@ resource "aws_vpc_endpoint" "s3" {
     }
 }
 
+resource "aws_vpc_endpoint" "sqs" {
+    vpc_id = module.vpc.vpc_id
+    service_name = "com.amazonaws.${var.region}.sqs"
+
+    subnet_ids = module.vpc.private_subnets
+    vpc_endpoint_type = "Interface"
+
+    security_group_ids = [aws_security_group.sqs-sg.id]
+
+    private_dns_enabled = true
+
+    tags = {
+        Name = "${var.environment}-${var.component_name}-sqs-endpoint"
+        CreatedBy = var.repo_name
+        Environment = var.environment
+    }
+}
+
+resource "aws_vpc_endpoint" "sns" {
+    vpc_id = module.vpc.vpc_id
+    service_name = "com.amazonaws.${var.region}.sns"
+
+    subnet_ids = module.vpc.private_subnets
+    vpc_endpoint_type = "Interface"
+
+    security_group_ids = [aws_security_group.sns-sg.id]
+
+    private_dns_enabled = true
+
+    tags = {
+        Name = "${var.environment}-${var.component_name}-sns-endpoint"
+        CreatedBy = var.repo_name
+        Environment = var.environment
+    }
+}
+
+resource "aws_security_group" "sqs-sg" {
+    name = "${var.environment}-${var.component_name}-sqs-endpoint-sg"
+    description = "Traffic for the sqs queues VPC endpoint."
+    vpc_id = module.vpc.vpc_id
+
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+
+        # Allow to log from the local network
+        cidr_blocks = [var.cidr]
+    }
+
+    tags = {
+        Name = "${var.environment}-${var.component_name}-sqs-sg"
+        CreatedBy = var.repo_name
+        Environment = var.environment
+    }
+}
+
+resource "aws_security_group" "sns-sg" {
+    name = "${var.environment}-${var.component_name}-sns-endpoint-sg"
+    description = "Traffic for the sns VPC endpoint."
+    vpc_id = module.vpc.vpc_id
+
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+
+        # Allow to log from the local network
+        cidr_blocks = [var.cidr]
+    }
+
+    tags = {
+        Name = "${var.environment}-${var.component_name}-sns-endpoint-sg"
+        CreatedBy = var.repo_name
+        Environment = var.environment
+    }
+}
