@@ -276,3 +276,13 @@ resource "aws_vpc_endpoint" "dynamodb_gateway_endpoint" {
         Environment = var.environment
     }
 }
+
+data "aws_prefix_list" "private_dynamodb" {
+    prefix_list_id = aws_vpc_endpoint.dynamodb_gateway_endpoint.prefix_list_id
+}
+
+resource "aws_ssm_parameter" "dynamodb_prefix_list_id" {
+    name = "/repo/${var.environment}/output/${var.repo_name}/dynamodb_prefix_list_id"
+    type = "String"
+    value = data.aws_prefix_list.private_dynamodb.id
+}
