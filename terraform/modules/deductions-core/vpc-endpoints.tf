@@ -127,6 +127,44 @@ resource "aws_vpc_endpoint" "monitoring" {
   }
 }
 
+resource "aws_vpc_endpoint" "dynamodb_gateway_endpoint" {
+  vpc_id = module.vpc.vpc_id
+  service_name = "com.amazonaws.${var.region}.dynamodb"
+  subnet_ids = module.vpc.private_subnets
+  vpc_endpoint_type = "Gateway"
+
+  security_group_ids = [aws_security_group.dynamodb-sg.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "${var.environment}-${var.component_name}-dynamo-endpoint"
+    CreatedBy = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "dynamodb-sg" {
+  name = "${var.environment}-${var.component_name}-dynamodb-endpoint-sg"
+  description = "Traffic for the dynamodb queues VPC endpoint."
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+
+    # Allow to log from the local network
+    cidr_blocks = [var.cidr]
+  }
+
+  tags = {
+    Name = "${var.environment}-${var.component_name}-dynamodb-sg"
+    CreatedBy = var.repo_name
+    Environment = var.environment
+  }
+}
+
 resource "aws_security_group" "sqs-sg" {
   name = "${var.environment}-${var.component_name}-sqs-endpoint-sg"
   description = "Traffic for the sqs queues VPC endpoint."
