@@ -190,7 +190,7 @@ data "aws_prefix_list" "s3" {
 }
 
 resource "aws_ssm_parameter" "s3_prefix_list_id" {
-  name = "/repo/${var.environment}/output/${var.repo_name}/s3_prefix_list_id"
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core/s3-prefix-list-id"
   type = "String"
   value = data.aws_prefix_list.s3.id
 }
