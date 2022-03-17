@@ -281,8 +281,18 @@ data "aws_prefix_list" "private_dynamodb" {
     prefix_list_id = aws_vpc_endpoint.dynamodb_gateway_endpoint.prefix_list_id
 }
 
+data "aws_prefix_list" "s3" {
+    prefix_list_id = aws_vpc_endpoint.s3.prefix_list_id
+}
+
 resource "aws_ssm_parameter" "dynamodb_prefix_list_id" {
     name = "/repo/${var.environment}/output/${var.repo_name}/dynamodb_prefix_list_id"
     type = "String"
     value = data.aws_prefix_list.private_dynamodb.id
+}
+
+resource "aws_ssm_parameter" "s3_prefix_list_id" {
+    name = "/repo/${var.environment}/output/${var.repo_name}/s3_prefix_list_id"
+    type = "String"
+    value = data.aws_prefix_list.s3.id
 }
