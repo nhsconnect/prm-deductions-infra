@@ -91,6 +91,24 @@ resource "aws_vpc_endpoint" "monitoring" {
   }
 }
 
+resource "aws_vpc_endpoint" "rds" {
+  vpc_id = module.vpc.vpc_id
+  service_name = "com.amazonaws.${var.region}.rds"
+
+  subnet_ids = module.vpc.private_subnets
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [aws_security_group.rds-sg.id]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "${var.environment}-${var.component_name}-rds-endpoint"
+    CreatedBy = var.repo_name
+    Environment = var.environment
+  }
+}
+
 resource "aws_security_group" "logs-endpoint-sg" {
   name = "${var.environment}-${var.component_name}-logs-endpoint-sg"
   description = "Traffic for the CloudWatch Logs VPC endpoint."
@@ -180,6 +198,27 @@ resource "aws_security_group" "monitoring-sg" {
 
   tags = {
     Name = "${var.environment}-${var.component_name}-monitoring-endpoint-sg"
+    CreatedBy = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_security_group" "rds-sg" {
+  name = "${var.environment}-${var.component_name}-rds-endpoint-sg"
+  description = "Traffic for the rds VPC endpoint."
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+
+    # Allow to log from the local network
+    cidr_blocks = [var.cidr]
+  }
+
+  tags = {
+    Name = "${var.environment}-${var.component_name}-rds-endpoint-sg"
     CreatedBy = var.repo_name
     Environment = var.environment
   }
