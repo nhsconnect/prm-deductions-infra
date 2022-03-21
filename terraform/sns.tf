@@ -12,6 +12,7 @@ resource "aws_sns_topic" "alarm_notifications" {
 resource "aws_kms_key" "alarm_notification" {
   description = "Custom KMS Key to enable server side encryption for alarm notifications"
   policy      = data.aws_iam_policy_document.alarm_notification_kms_key_policy_doc.json
+  enable_key_rotation = true
 
   tags = {
     Name        = "${var.environment}-alarm_notification-kms-key"
