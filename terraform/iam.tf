@@ -7,7 +7,7 @@ data "aws_iam_policy_document" "splunk_trust_policy" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = [data.aws_ssm_parameter.splunk_trusted_principal.value]
+      identifiers = split(",", data.aws_ssm_parameter.splunk_trusted_principal.value)
     }
   }
 }
