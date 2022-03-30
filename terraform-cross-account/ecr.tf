@@ -22,6 +22,14 @@ resource "aws_ecr_repository" "gp2gp-adaptor" {
   }
 }
 
+resource "aws_ecr_repository" "gp2gp-messenger" {
+  name = "deductions/gp2gp-messenger"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
+
 resource "aws_ecr_repository" "ehr-transfer-service" {
   name = "deductions/ehr-transfer-service"
   image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"

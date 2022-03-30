@@ -20,11 +20,11 @@ describe("convertUserListToUserListParamArray", () => {
         "/repo/dev/user-input/api-keys/gp-to-repo/api-key-user/michael.stone",
         "/repo/dev/user-input/api-keys/repo-to-gp/api-key-user/michael.stone",
         "/repo/dev/user-input/api-keys/ehr-repo/api-key-user/michael.stone",
-        "/repo/dev/user-input/api-keys/gp2gp-adaptor/api-key-user/michael.stone",
         "/repo/dev/user-input/api-keys/gp-to-repo/api-key-user/will.smith",
         "/repo/dev/user-input/api-keys/repo-to-gp/api-key-user/will.smith",
         "/repo/dev/user-input/api-keys/ehr-repo/api-key-user/will.smith",
-        "/repo/dev/user-input/api-keys/gp2gp-adaptor/api-key-user/will.smith",
+        "/repo/dev/user-input/api-keys/gp2gp-messenger/api-key-user/will.smith",
+        "/repo/dev/user-input/api-keys/gp2gp-messenger/api-key-user/michael.stone",
       ])
     );
   });
@@ -51,9 +51,9 @@ describe("convertUserListToUserListParamArray", () => {
     expect(result).toEqual(
       expect.not.arrayContaining([
         "/repo/dev/user-input/api-keys/repo-to-gp/api-key-user/michael.stone",
-        "/repo/dev/user-input/api-keys/gp2gp-adaptor/api-key-user/michael.stone",
         "/repo/dev/user-input/api-keys/repo-to-gp/api-key-user/will.smith",
-        "/repo/dev/user-input/api-keys/gp2gp-adaptor/api-key-user/will.smith",
+        "/repo/dev/user-input/api-keys/gp2gp-messenger/api-key-user/will.smith",
+        "/repo/dev/user-input/api-keys/gp2gp-messenger/api-key-user/michael.stone",
       ])
     );
   });
