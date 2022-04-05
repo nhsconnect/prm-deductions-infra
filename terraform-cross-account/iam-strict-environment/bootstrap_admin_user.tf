@@ -163,3 +163,8 @@ resource "aws_iam_role_policy_attachment" "dynamo_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSLambda_ReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
