@@ -102,3 +102,11 @@ resource "aws_ecr_repository" "pds-fhir-stub" {
     CreatedBy = var.repo_name
   }
 }
+
+resource "aws_ecr_repository" "gp_registrations_mi_forwarder" {
+  name = "repo/gp-registrations-mi-forwarder"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
