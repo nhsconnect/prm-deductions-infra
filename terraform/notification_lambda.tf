@@ -24,6 +24,15 @@ resource "aws_lambda_function" "alarm_notifications_lambda" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "alarm_notifications_lambda_logs" {
+  name = "/lambda/${aws_lambda_function.alarm_notifications_lambda.function_name}"
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
 resource "aws_iam_role" "alarm_notifications_lambda_role" {
   name               = "${var.environment}-alarm-notifications-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -36,6 +45,24 @@ data "aws_iam_policy_document" "lambda_assume_role" {
       type        = "Service"
       identifiers = ["lambda.amazonaws.com"]
     }
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_create_log" {
+  role   = aws_iam_role.alarm_notifications_lambda_role.id
+  policy = data.aws_iam_policy_document.lambda_create_log.json
+}
+
+data "aws_iam_policy_document" "lambda_create_log" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "arn:aws:logs:*:*:*"
+    ]
   }
 }
 
