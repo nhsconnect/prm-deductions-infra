@@ -8,15 +8,13 @@ resource "aws_lambda_function" "alarm_notifications_lambda" {
   function_name = "${var.environment}-alarm-notifications-lambda"
   role          = aws_iam_role.alarm_notifications_lambda_role.arn
   handler       = "main.lambda_handler"
+  source_code_hash = filebase64sha256(var.alarm_lambda_zip)
+  runtime = "python3.8"
+  timeout = 15
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name
   }
-
-  source_code_hash = filebase64sha256(var.alarm_lambda_zip)
-
-  runtime = "python3.8"
-
   environment {
     variables = {
       ALARM_WEBHOOK_URL_PARAM_NAME = local.alarm_webhook_ssm_path
