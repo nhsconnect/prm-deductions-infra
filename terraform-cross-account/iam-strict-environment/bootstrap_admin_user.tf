@@ -133,6 +133,49 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   }
 }
 
+data "aws_iam_policy_document" "bootstrap_update_service" {
+  statement {
+    effect  = "Allow"
+    actions = [
+      "ecs:ListClusters", "ecs:ListServices", "ecs:ListTaskDefinitionFamilies", "ecs:ListTaskDefinitions",
+      "ecs:ListAttributes",
+      "ecs:ListServices", "ecs:ListContainerInstances"
+    ]
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    effect  = "Allow"
+    actions = [
+      "ecs:DescribeCapacityProviders", "ecs:DescribeServices", "ecs:DescribeTaskSets", "ecs:DescribeClusters",
+      "ecs:DescribeTaskDefinition",
+      "ecs:ListAccountSettings", "ecs:DescribeContainerInstances", "ecs:DescribeTasks", "ecs:ListTagsForResource"
+    ]
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["ecs:UpdateService"]
+    resources = [
+      "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:service/${var.environment}-suspension-service-ecs-cluster/${var.environment}-suspension-service"
+    ]
+  }
+}
+
+resource "aws_iam_policy" "bootstrap_update_ecs" {
+  name = "update-ecs-service"
+  policy = data.aws_iam_policy_document.bootstrap_update_service.json
+}
+
+resource "aws_iam_role_policy_attachment" "bootstrap_update_service" {
+  policy_arn = aws_iam_policy.bootstrap_update_ecs.arn
+  role = aws_iam_role.bootstrap_admin.name
+}
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin" {
   policy_arn = aws_iam_policy.bootstrap_admin_permissions_policy.arn
