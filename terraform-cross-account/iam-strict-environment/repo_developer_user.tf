@@ -155,7 +155,7 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
 
   statement {
     effect = "Allow"
-    sid = "Ability to raise support cases"
+    sid = "AbilityToRaiseSupportCases"
     actions = ["support:*"]
     resources = ["*"]
   }
