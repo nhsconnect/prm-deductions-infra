@@ -13,7 +13,6 @@ data "aws_iam_policy_document" "ci_read_only_trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.perf_account_id.value}:role/RepoAdmin",
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/BootstrapAdmin",     # pre-prod environment RepoDeveloper (in pre-prod account)
         "arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/BootstrapAdmin",
-        "arn:aws:iam::${data.aws_ssm_parameter.perf_account_id.value}:role/BootstrapAdmin",
         # more accounts will follow for other environments...
       ]
     }
