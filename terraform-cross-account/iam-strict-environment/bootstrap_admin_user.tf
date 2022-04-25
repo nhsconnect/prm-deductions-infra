@@ -211,3 +211,8 @@ resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AWSLambda_ReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
+
+resource "aws_iam_role_policy_attachment" "bootsrap_admin_s3_allow_terraform_state_content_access" {
+  policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
+  role = aws_iam_role.bootstrap_admin.name
+}
