@@ -197,6 +197,11 @@ resource "aws_iam_role_policy_attachment" "repo_developer_s3_allow_ehr_repo_cont
   role = aws_iam_role.repo_developer.name
 }
 
+resource "aws_iam_role_policy_attachment" "repo_developer_s3_allow_ehr_repo_bucket_access" {
+  policy_arn = aws_iam_policy.s3_allow_ehr_repo_log_bucket_access.arn
+  role = aws_iam_role.repo_developer.name
+}
+
 resource "aws_iam_role_policy_attachment" "repo_developer_s3_allow_list_buckets" {
   policy_arn = aws_iam_policy.s3_allow_list_buckets.arn
   role = aws_iam_role.repo_developer.name
