@@ -68,6 +68,7 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
       "route53:GetHostedZoneCount",
       "route53-recovery-readiness:ListReadinessChecks",
       "route53-recovery-control-config:ListControlPanels",
+      "route54:GetHostedZone",
       "acm:Describe*",
       "acm:List*",
       "elasticloadbalancing:Describe*",
