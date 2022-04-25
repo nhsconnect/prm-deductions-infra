@@ -115,35 +115,36 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
     resources = ["arn:aws:iam::${data.aws_ssm_parameter.ci_account_id.value}:role/CiReadOnly"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
     actions = ["ecs:DescribeServices",]
     resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:service/${var.environment}*-ecs-cluster/${var.environment}*-service"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
     actions = ["kms:GetKeyRotationStatus",
       "kms:GetKeyPolicy",
       "kms:ListResourceTags",
-      "kms:Describe*"]
+      "kms:Describe*"
+    ]
     resources = ["arn:aws:kms:eu-west-2:${data.aws_caller_identity.current.account_id}:key/*"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
-    actions = ["ecs:DescribeClusters","ecs:ListAttributes", "ecs:ListClusters", "ecs:ListContainerInstances",
+    actions = ["ecs:DescribeClusters", "ecs:ListAttributes", "ecs:ListClusters", "ecs:ListContainerInstances",
       "ecs:ListServices", "ecs:ListTaskDefinitionFamilies", "ecs:ListTaskDefinitions", "ecs:ListTasks"]
     resources = ["arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
-    actions = ["cloudwatch:List*","cloudwatch:Describe*"]
+    actions = ["cloudwatch:List*", "cloudwatch:Describe*"]
     resources = ["arn:aws:cloudwatch:eu-west-2:${data.aws_caller_identity.current.account_id}:alarm:*"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
     actions = [
       "secretsmanager:DescribeSecret",
@@ -152,6 +153,12 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
     resources = ["arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:/repo/${var.environment}/user-input/*"]
   }
 
+  statement {
+    effect = "Allow"
+    sid = "Ability to raise support cases"
+    actions = ["support:*"]
+    resources = ["*"]
+  }
 }
 
 
@@ -209,7 +216,7 @@ data "aws_iam_policy_document" "aws_console_read" {
     resources = ["*"]
   }
 
-  statement{
+  statement {
     effect = "Allow"
     actions = [
       "secretsmanager:ListSecrets"
