@@ -12,7 +12,7 @@ resource "aws_mq_broker" "deductor_mq_broker" {
     aws_security_group.vpn_to_mq.id,
     aws_security_group.gocd_to_mq.id
   ]
-  subnet_ids                 = module.vpc.private_subnets
+  subnet_ids                 = var.active_mq_subnets
 
   logs {
     general = var.general_log

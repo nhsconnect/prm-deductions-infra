@@ -44,6 +44,10 @@ variable "deductions_private_database_subnets" {
   type = list
 }
 
+variable "deductions_private_active_mq_subnets" {
+  type = list
+}
+
 variable "deductions_private_azs" {
   type = list
 }
