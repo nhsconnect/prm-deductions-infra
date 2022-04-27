@@ -3,15 +3,15 @@ environment = "prod"
 deductions_private_cidr              = "10.23.0.0/16"
 deductions_core_cidr                 = "10.28.0.0/16"
 
-deductions_private_public_subnets    = ["10.23.101.0/24", "10.23.102.0/24"]
-deductions_private_private_subnets   = ["10.23.1.0/24", "10.23.2.0/24"]
-deductions_private_database_subnets  = ["10.23.111.0/24", "10.23.112.0/24"]
-deductions_private_azs               = ["eu-west-2b", "eu-west-2a"]
+deductions_private_public_subnets    = ["10.23.101.0/24", "10.23.102.0/24", "10.23.103.0/24"]
+deductions_private_private_subnets   = ["10.23.1.0/24", "10.23.2.0/24", "10.23.3.0/24"]
+deductions_private_database_subnets  = ["10.23.111.0/24", "10.23.112.0/24", "10.23.113.0/24"]
+deductions_private_azs               = ["eu-west-2b", "eu-west-2a", "eu-west-2c"]
 deductions_private_vpn_client_subnet = "10.233.200.0/22"
 
-deductions_core_private_subnets  = ["10.28.1.0/24", "10.28.2.0/24"]
-deductions_core_database_subnets = ["10.28.111.0/24", "10.28.112.0/24"]
-deductions_core_azs              = ["eu-west-2b", "eu-west-2a"]
+deductions_core_private_subnets  = ["10.28.1.0/24", "10.28.2.0/24", "10.28.3.0/24"]
+deductions_core_database_subnets = ["10.28.111.0/24", "10.28.112.0/24", "10.28.113.0/24"]
+deductions_core_azs              = ["eu-west-2b", "eu-west-2a", "eu-west-2c"]
 
 mhs_cidr_newbits=8
 
