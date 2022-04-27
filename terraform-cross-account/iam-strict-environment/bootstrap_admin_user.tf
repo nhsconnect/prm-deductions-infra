@@ -20,7 +20,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
-    actions = ["sqs:ListQueueTags"]
+    actions = ["sqs:ListQueueTags", "sns:GetSubscriptionAttributes"]
     resources = ["*"]
   }
 

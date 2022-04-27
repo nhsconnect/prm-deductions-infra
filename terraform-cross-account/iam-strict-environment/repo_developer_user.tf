@@ -78,7 +78,8 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
       "ecs:Describe*",
       "ecr:ListTagsForResource",
       "elasticache:Describe*",
-      "elasticache:List*"
+      "elasticache:List*",
+      "sns:GetSubscriptionAttributes"
     ]
     resources = ["*"]
   }
@@ -235,4 +236,9 @@ data "aws_iam_policy_document" "aws_console_read" {
     ]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "sns_read_only_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess"
+  role = aws_iam_role.repo_developer.name
 }
