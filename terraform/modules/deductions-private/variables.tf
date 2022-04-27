@@ -40,10 +40,6 @@ variable "database_subnets" {
   type = list
 }
 
-variable "active_mq_subnets" {
-  type = list
-}
-
 variable "azs" {
   type = list
 }

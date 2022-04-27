@@ -84,7 +84,6 @@ module "deductions-private" {
   public_subnets   = var.deductions_private_public_subnets
   private_subnets  = var.deductions_private_private_subnets
   database_subnets = var.deductions_private_database_subnets
-  active_mq_subnets = var.deductions_private_active_mq_subnets
   azs              = var.deductions_private_azs
   environment_private_zone  = aws_route53_zone.environment_private
   environment_public_zone = aws_route53_zone.environment_public

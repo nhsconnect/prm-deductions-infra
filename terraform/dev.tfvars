@@ -6,7 +6,6 @@ deductions_private_cidr              = "10.20.0.0/16"
 deductions_private_public_subnets    = ["10.20.101.0/24", "10.20.102.0/24"]
 deductions_private_private_subnets   = ["10.20.1.0/24", "10.20.2.0/24"]
 deductions_private_database_subnets  = ["10.20.111.0/24", "10.20.112.0/24"]
-deductions_private_active_mq_subnets = ["10.20.1.0/24", "10.20.2.0/24"]
 deductions_private_azs               = ["eu-west-2a", "eu-west-2b"]
 deductions_private_vpn_client_subnet = "10.233.232.0/22"
 
