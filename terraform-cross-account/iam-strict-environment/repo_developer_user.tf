@@ -106,6 +106,12 @@ data "aws_iam_policy_document" "terraform_plan_permissions" {
 
   statement {
     effect = "Allow"
+    actions =  ["iam:GetRolePolicy"]
+    resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/*"]
+  }
+
+  statement {
+    effect = "Allow"
     actions =  ["route53:GetHostedZone"]
     resources = ["arn:aws:route53:::hostedzone/*"]
   }
