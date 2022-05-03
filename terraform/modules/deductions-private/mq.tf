@@ -91,30 +91,6 @@ resource "aws_ssm_parameter" "amqp-endpoint-1" {
   }
 }
 
-resource "aws_ssm_parameter" "stomp-endpoint-0" {
-  name        = "/repo/${var.environment}/output/${var.repo_name}/stomp-endpoint-0"
-  description = "STOMP endpoint to MQ broker. Index: 0"
-  type        = "String"
-  value       = aws_mq_broker.deductor_mq_broker.instances.0.endpoints.2
-
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
-resource "aws_ssm_parameter" "stomp-endpoint-1" {
-  name        = "/repo/${var.environment}/output/${var.repo_name}/stomp-endpoint-1"
-  description = "STOMP endpoint to MQ broker. Index: 1"
-  type        = "String"
-  value       = aws_mq_broker.deductor_mq_broker.instances.1.endpoints.2
-
-  tags = {
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
 resource "aws_ssm_parameter" "openwire-endpoint-0" {
   name        = "/repo/${var.environment}/output/${var.repo_name}/openwire-endpoint-0"
   description = "OpenWire endpoint to MQ broker. Index: 0"
@@ -174,13 +150,13 @@ resource "aws_security_group" "vpn_to_mq" {
   }
 }
 
-resource "aws_security_group_rule" "vpn_to_mq_through_stomp" {
+resource "aws_security_group_rule" "vpn_to_mq_through_openwire" {
   count = var.grant_access_to_queues_through_vpn ? 1 : 0
   type = "ingress"
   protocol = "tcp"
-  from_port = "61614"
-  to_port = "61614"
-  description = "Allow traffic from VPN to MQ through STOMP"
+  from_port = "61617"
+  to_port = "61617"
+  description = "Allow traffic from VPN to MQ through OpenWire"
   security_group_id = aws_security_group.vpn_to_mq.id
   source_security_group_id = aws_security_group.vpn.id
 }
@@ -203,9 +179,9 @@ resource "aws_security_group" "gocd_to_mq" {
 
   ingress {
     protocol = "tcp"
-    from_port = "61614"
-    to_port = "61614"
-    description = "Allow traffic from gocd to MQ through STOMP"
+    from_port = "61617"
+    to_port = "61617"
+    description = "Allow traffic from gocd to MQ through OpenWire"
     security_groups = [data.aws_ssm_parameter.gocd_sg_id.value]
   }
 
