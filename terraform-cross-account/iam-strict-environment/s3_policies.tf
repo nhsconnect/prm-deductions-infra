@@ -61,7 +61,10 @@ data "aws_iam_policy_document" "s3_allow_ehr_repo_content_access" {
         "s3:List*",
         "s3:Get*"
     ]
-    resources = ["arn:aws:s3:::${var.environment}-ehr-repo-bucket"]
+    resources = [
+      "arn:aws:s3:::${var.environment}-ehr-repo",
+      "arn:aws:s3:::${var.environment}-ehr-repo-bucket"
+    ]
   }
 }
 
