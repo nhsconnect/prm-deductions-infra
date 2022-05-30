@@ -1,7 +1,7 @@
 resource "aws_sqs_queue" "splunk_audit_uploader" {
   name                       = "${var.environment}-splunk-audit-uploader"
   message_retention_seconds  = 1209600
-  kms_master_key_id = aws_kms_key.splunk_audit_uploader.id
+  kms_master_key_id = aws_kms_key.splunk_audit_uploader_kms_key.id
 
   tags = {
     Name = "${var.environment}-splunk-audit-uploader"
@@ -10,9 +10,9 @@ resource "aws_sqs_queue" "splunk_audit_uploader" {
   }
 }
 
-resource "aws_kms_key" "splunk_audit_uploader" {
+resource "aws_kms_key" "splunk_audit_uploader_kms_key" {
   description = "Custom KMS Key to enable server side encryption for Splunk audit uploader SQS queue"
-  policy      = data.aws_iam_policy_document.kms_key_policy_doc.json
+  policy      = data.aws_iam_policy_document.splunk_audit_uploader_kms_key_policy_doc.json
   enable_key_rotation = true
 
   tags = {
@@ -22,12 +22,12 @@ resource "aws_kms_key" "splunk_audit_uploader" {
   }
 }
 
-resource "aws_kms_alias" "splunk_audit_uploader_encryption" {
+resource "aws_kms_alias" "splunk_audit_uploader_key_alias" {
   name          = "alias/splunk-audit-uploader-encryption-kms-key"
-  target_key_id = aws_kms_key.splunk_audit_uploader.id
+  target_key_id = aws_kms_key.splunk_audit_uploader_kms_key.id
 }
 
-data "aws_iam_policy_document" "kms_key_policy_doc" {
+data "aws_iam_policy_document" "splunk_audit_uploader_kms_key_policy_doc" {
   statement {
     effect = "Allow"
 
