@@ -38,7 +38,6 @@ resource "aws_ecr_repository" "ehr-transfer-service" {
   }
 }
 
-
 resource "aws_ecr_repository" "ehr-repo" {
   name = "deductions/ehr-repo"
   image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
@@ -97,6 +96,14 @@ resource "aws_ecr_repository" "suspension-service" {
 
 resource "aws_ecr_repository" "pds-fhir-stub" {
   name = "repo/pds-fhir-stub"
+  image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
+
+resource "aws_ecr_repository" "re_registration_service" {
+  name = "repo/re-registration-service"
   image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
   tags = {
     CreatedBy = var.repo_name
