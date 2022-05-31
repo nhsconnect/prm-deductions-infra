@@ -3,8 +3,25 @@ resource "aws_sqs_queue" "splunk_audit_uploader" {
   message_retention_seconds  = 1209600
   kms_master_key_id = aws_kms_key.splunk_audit_uploader_kms_key.id
 
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.splunk_audit_uploader_dlq.arn
+    maxReceiveCount     = 4
+  })
+
   tags = {
     Name = "${var.environment}-splunk-audit-uploader"
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_sqs_queue" "splunk_audit_uploader_dlq" {
+  name                       = "${var.environment}-splunk-audit-uploader-dlq"
+  message_retention_seconds  = 1209600
+  kms_master_key_id = aws_kms_key.splunk_audit_uploader_kms_key.id
+
+  tags = {
+    Name = "${var.environment}-splunk-audit-uploader-dlq"
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
