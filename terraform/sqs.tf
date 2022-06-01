@@ -71,20 +71,4 @@ data "aws_iam_policy_document" "splunk_audit_uploader_kms_key_policy_doc" {
 
     resources = ["*"]
   }
-
-  statement {
-    effect = "Allow"
-
-    principals {
-      identifiers = ["cloudwatch.amazonaws.com"]
-      type        = "Service"
-    }
-
-    actions = [
-      "kms:Decrypt",
-      "kms:GenerateDataKey*"
-    ]
-
-    resources = ["*"]
-  }
 }
