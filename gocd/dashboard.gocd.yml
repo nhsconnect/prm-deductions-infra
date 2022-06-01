@@ -13,9 +13,9 @@ common:
         - ./tasks tf_apply_dashboard
 
 pipelines:
-  "prm-deductions-infra-dashboard":
+  repo-infra-dashboard:
     group: continuity-service
-    label_template: "${git[:8]}"
+    label_template: "${COUNT}-${git[:8]}"
     materials:
       git:
         type: configrepo
