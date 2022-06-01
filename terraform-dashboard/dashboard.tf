@@ -7,32 +7,36 @@ data "aws_lb_target_group" "pds_adaptor_target_group" {
 }
 
 locals {
-  all_widgets = concat([{
-    type = "metric"
-    properties = {
-      metrics = [
-        ["MeshForwarder", "MeshInboxMessageCount"]
-      ],
-      region = var.region
-      title  = "MESH Inbox Message Count"
-      view   = "timeSeries"
-      stat   = "Average"
-      yAxis = {
-        left = {
-          showUnits = false
-        }
-        right = {
-          showUnits = false
+  all_widgets = concat([
+    {
+      type       = "metric"
+      properties = {
+        metrics = [
+          ["MeshForwarder", "MeshInboxMessageCount"]
+        ],
+        region  = var.region
+        title   = "MESH Inbox Message Count"
+        view    = "timeSeries"
+        stat    = "Average"
+        yAxis   = {
+          left  = {
+            showUnits = false
+          }
+          right = {
+            showUnits = false
+          }
         }
       }
-    }}],
-    values(module.queue_metrics_widgets).*.widget,
-    values(module.error_count_widgets).*.widget,
-    [module.health_lb_widgets["mesh"].widget],
-    [module.health_widgets["nems"].widget],
-    [module.health_lb_widgets["pds_adaptor"].widget],
-    [module.health_widgets["suspensions"].widget],
-    values(module.task_widgets).*.widget
+    }
+  ],
+  values(module.queue_metrics_widgets).*.widget,
+  values(module.error_count_widgets).*.widget,
+  [module.health_lb_widgets["mesh"].widget],
+  [module.health_widgets["nems"].widget],
+  [module.health_lb_widgets["pds_adaptor"].widget],
+  [module.health_widgets["suspensions"].widget],
+  [module.health_widgets["re_registration_service"].widget],
+  values(module.task_widgets).*.widget
   )
 
   queue_widget_definitions = [
@@ -47,6 +51,10 @@ locals {
     {
       name  = "${var.environment}-suspension-service-suspensions-queue"
       title = "Suspension Service Incoming Queue"
+    },
+    {
+      name  = "${var.environment}-re-registration-service-re-registrations-queue"
+      title = "Re-registrations Queue"
     },
     {
       name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
@@ -69,14 +77,14 @@ locals {
       title = "Suspension Service MOF Updated Queue"
     }
   ]
-  mesh = {
+  mesh                     = {
     name         = "mesh-forwarder"
     title        = "MESH Forwarder"
     loadbalancer = "NA"
     targetgroup  = "NA"
   }
   # to be completed (removing NA) when health metrics will be available on load balancer (like PDS adaptor below)
-  mesh_na = {
+  mesh_na                  = {
     name         = "mesh-forwarder-na"
     title        = "(NA) MESH Forwarder"
     loadbalancer = "NA"
@@ -87,6 +95,7 @@ locals {
     name  = "nems-event-processor"
     title = "NEMS Event Processor"
   }
+
   pds_adaptor = {
     name         = "pds-adaptor"
     title        = "PDS Adaptor"
@@ -94,13 +103,20 @@ locals {
     targetgroup  = data.aws_lb_target_group.pds_adaptor_target_group.arn_suffix
   }
 
-  suspensions = {
+  suspension_service = {
     name  = "suspension-service"
     title = "Suspension Service"
   }
 
-  task_widget_components = [local.mesh, local.nems, local.pds_adaptor, local.suspensions]
-  task_widget_types      = ["cpu", "memory"]
+  re_registration_service = {
+    name  = "re-registration-service"
+    title = "Re-registration Service"
+  }
+
+  task_widget_components  = [
+    local.mesh, local.nems, local.pds_adaptor, local.suspension_service, local.re_registration_service
+  ]
+  task_widget_types       = ["cpu", "memory"]
   task_widget_definitions = [
     for pair in setproduct(local.task_widget_types, local.task_widget_components) : {
       component = pair[1]
@@ -110,7 +126,7 @@ locals {
 }
 
 module "task_widgets" {
-  for_each = {
+  for_each    = {
     for i, def in local.task_widget_definitions : i => def
   }
   source      = "./widgets/task_widget"
@@ -120,20 +136,22 @@ module "task_widgets" {
 }
 
 module "error_count_widgets" {
-  for_each = {
+  for_each  = {
     nems        = local.nems
     mesh        = local.mesh
     pds_adaptor = local.pds_adaptor
-    suspensions = local.suspensions
+    suspensions = local.suspension_service
+    re_registration_service = local.re_registration_service
   }
   source    = "./widgets/error_count_widget"
   component = each.value
 }
 
 module "health_widgets" {
-  for_each = {
+  for_each    = {
     nems        = local.nems
-    suspensions = local.suspensions
+    suspensions = local.suspension_service
+    re_registration_service = local.re_registration_service
   }
   source      = "./widgets/health_widget"
   component   = each.value
@@ -141,7 +159,7 @@ module "health_widgets" {
 }
 
 module "health_lb_widgets" {
-  for_each = {
+  for_each    = {
     mesh        = local.mesh_na
     pds_adaptor = local.pds_adaptor
   }
@@ -151,8 +169,8 @@ module "health_lb_widgets" {
 }
 
 module "queue_metrics_widgets" {
-  for_each = {
-    for i, def in local.queue_widget_definitions : i => def
+  for_each    = {
+  for i, def in local.queue_widget_definitions : i => def
   }
   source      = "./widgets/queue_metrics_widget"
   component   = each.value
