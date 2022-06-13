@@ -21,6 +21,11 @@ resource "aws_kms_key" "alarm_notification" {
   }
 }
 
+resource "aws_kms_alias" "alarm_notification_encryption" {
+  name          = "alias/alarm-notification-encryption-kms-key"
+  target_key_id = aws_kms_key.alarm_notification.id
+}
+
 data "aws_iam_policy_document" "alarm_notification_kms_key_policy_doc" {
   statement {
     effect = "Allow"
