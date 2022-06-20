@@ -7,59 +7,59 @@ locals {
 
   repo_queue_widget_definitions = [
     {
-      name  = "${var.environment}-re-registration-service-re-registrations-queue"
+      name  = "${var.environment}-re-registration-service-re-registrations"
       title = "Re-registrations Queue"
     },
     {
-      name  = "${var.environment}-negative-acknowledgments-queue"
+      name  = "${var.environment}-ehr-transfer-service-negative-acknowledgments"
       title = "Negative Acknowledgements Queue"
     },
     {
-      name  = "${var.environment}-negative-acknowledgments-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-negative-acknowledgments-observability"
       title = "Negative Acknowledgements Observability Queue"
     },
     {
-      name  = "${var.environment}-small-ehr-queue"
+      name  = "${var.environment}-ehr-transfer-service-small-ehr"
       title = "Small EHR Queue"
     },
     {
-      name  = "${var.environment}-small-ehr-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-small-ehr-observability"
       title = "Small EHR Observability Queue"
     },
     {
-      name  = "${var.environment}-large-ehr-queue"
+      name  = "${var.environment}-ehr-transfer-service-large-ehr"
       title = "Large EHR Queue"
     },
     {
-      name  = "${var.environment}-large-ehr-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-large-ehr-observability"
       title = "Large EHR Observability Queue"
     },
     {
-      name  = "${var.environment}-large-message-fragments-queue"
+      name  = "${var.environment}-ehr-transfer-service-large-message-fragments"
       title = "Large Fragments Queue"
     },
     {
-      name  = "${var.environment}-large-message-fragments-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-large-message-fragments-observability"
       title = "Large Fragments Observability Queue"
     },
     {
-      name  = "${var.environment}-positive-acknowledgements-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-positive-acknowledgements-observability"
       title = "Positive Acknowledgements Observability Queue"
     },
     {
-      name  = "${var.environment}-ehr-complete-queue"
+      name  = "${var.environment}-ehr-transfer-service-ehr-complete"
       title = "EHR Complete Queue"
     },
     {
-      name  = "${var.environment}-ehr-complete-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-ehr-complete-observability"
       title = "EHR Complete Observability Queue"
     },
     {
-      name  = "${var.environment}-transfer-complete-queue"
+      name  = "${var.environment}-ehr-transfer-service-transfer-complete"
       title = "Transfer Complete Queue"
     },
     {
-      name  = "${var.environment}-transfer-complete-observability-queue"
+      name  = "${var.environment}-ehr-transfer-service-transfer-complete-observability"
       title = "Transfer Complete Observability Queue"
     }
   ]
