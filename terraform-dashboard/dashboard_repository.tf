@@ -69,8 +69,14 @@ locals {
     title = "Re-registration Service"
   }
 
+  ehr_transfer_service = {
+    name  = "ehr-transfer-service"
+    title = "EHR Transfer Service"
+  }
+
   repo_task_widget_components  = [
-    local.re_registration_service
+    local.re_registration_service,
+    local.ehr_transfer_service
   ]
   repo_task_widget_types       = ["cpu", "memory"]
   repo_task_widget_definitions = [
@@ -84,6 +90,7 @@ locals {
 module "repo_error_count_widgets" {
   for_each  = {
     re_registration_service = local.re_registration_service
+    ehr_transfer_service = local.ehr_transfer_service
   }
   source    = "./widgets/error_count_widget"
   component = each.value
@@ -92,6 +99,7 @@ module "repo_error_count_widgets" {
 module "repo_health_widgets" {
   for_each    = {
     re_registration_service = local.re_registration_service
+    ehr_transfer_service = local.ehr_transfer_service
   }
   source      = "./widgets/health_widget"
   component   = each.value
