@@ -22,7 +22,7 @@ locals {
 
 resource "aws_cloudwatch_dashboard" "repository_dashboard" {
   dashboard_body = jsonencode({
-#    widgets = local.repo_all_widgets
+    widgets = []
   })
   dashboard_name = "RepositoryDashboard${title(var.environment)}"
 }
