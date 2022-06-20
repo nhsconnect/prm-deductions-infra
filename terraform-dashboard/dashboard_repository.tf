@@ -1,7 +1,7 @@
 locals {
   repo_all_widgets = concat(
-  values(module.repo_error_count_widgets).*.widget,
-  [module.repo_health_widgets["re_registration_service"].widget]
+    values(module.repo_error_count_widgets).*.widget,
+    [module.repo_health_widgets["re_registration_service"].widget]
   )
 
   repo_queue_widget_definitions = [
@@ -47,7 +47,7 @@ module "repo_health_widgets" {
 
 resource "aws_cloudwatch_dashboard" "repository_dashboard" {
   dashboard_body = jsonencode({
-    widgets = [local.repo_all_widgets]
+    widgets = local.repo_all_widgets
   })
   dashboard_name = "RepositoryDashboard${title(var.environment)}"
 }
