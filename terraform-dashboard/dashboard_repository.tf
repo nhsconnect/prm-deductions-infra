@@ -2,7 +2,8 @@ locals {
   repo_all_widgets = concat(
     values(module.repo_queue_metrics_widgets).*.widget,
     values(module.repo_error_count_widgets).*.widget,
-    [module.repo_health_widgets["re_registration_service"].widget]
+    [module.repo_health_widgets["re_registration_service"].widget],
+  values(module.repo_task_widgets).*.widget
   )
 
   repo_queue_widget_definitions = [
@@ -75,8 +76,7 @@ locals {
   }
 
   repo_task_widget_components  = [
-    local.re_registration_service,
-    local.ehr_transfer_service
+    local.re_registration_service, local.ehr_transfer_service
   ]
   repo_task_widget_types       = ["cpu", "memory"]
   repo_task_widget_definitions = [
@@ -85,6 +85,16 @@ locals {
     type      = pair[0]
   }
   ]
+}
+
+module "repo_task_widgets" {
+  for_each    = {
+  for i, def in local.repo_task_widget_definitions : i => def
+  }
+  source      = "./widgets/task_widget"
+  environment = var.environment
+  component   = each.value.component
+  metric_type = each.value.type
 }
 
 module "repo_error_count_widgets" {
