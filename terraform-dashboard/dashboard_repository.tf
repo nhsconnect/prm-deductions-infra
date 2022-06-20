@@ -75,8 +75,18 @@ locals {
     title = "EHR Transfer Service"
   }
 
+  ehr_repo = {
+    name  = "ehr-repo"
+    title = "EHR Repository Service"
+  }
+
+  gp2gp_messenger = {
+    name  = "gp2gp-messenger"
+    title = "GP2GP Messenger Service"
+  }
+
   repo_task_widget_components  = [
-    local.re_registration_service, local.ehr_transfer_service
+    local.re_registration_service, local.ehr_transfer_service, local.ehr_repo, local.gp2gp_messenger
   ]
   repo_task_widget_types       = ["cpu", "memory"]
   repo_task_widget_definitions = [
