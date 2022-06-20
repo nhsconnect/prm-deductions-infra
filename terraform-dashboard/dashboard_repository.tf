@@ -1,5 +1,6 @@
 locals {
   repo_all_widgets = concat(
+    values(module.repo_queue_metrics_widgets).*.widget,
     values(module.repo_error_count_widgets).*.widget,
     [module.repo_health_widgets["re_registration_service"].widget]
   )
@@ -8,6 +9,58 @@ locals {
     {
       name  = "${var.environment}-re-registration-service-re-registrations-queue"
       title = "Re-registrations Queue"
+    },
+    {
+      name  = "${var.environment}-negative-acknowledgments-queue"
+      title = "Negative Acknowledgements Queue"
+    },
+    {
+      name  = "${var.environment}-negative-acknowledgments-observability-queue"
+      title = "Negative Acknowledgements Observability Queue"
+    },
+    {
+      name  = "${var.environment}-small-ehr-queue"
+      title = "Small EHR Queue"
+    },
+    {
+      name  = "${var.environment}-small-ehr-observability-queue"
+      title = "Small EHR Observability Queue"
+    },
+    {
+      name  = "${var.environment}-large-ehr-queue"
+      title = "Large EHR Queue"
+    },
+    {
+      name  = "${var.environment}-large-ehr-observability-queue"
+      title = "Large EHR Observability Queue"
+    },
+    {
+      name  = "${var.environment}-large-message-fragments-queue"
+      title = "Large Fragments Queue"
+    },
+    {
+      name  = "${var.environment}-large-message-fragments-observability-queue"
+      title = "Large Fragments Observability Queue"
+    },
+    {
+      name  = "${var.environment}-positive-acknowledgements-observability-queue"
+      title = "Positive Acknowledgements Observability Queue"
+    },
+    {
+      name  = "${var.environment}-ehr-complete-queue"
+      title = "EHR Complete Queue"
+    },
+    {
+      name  = "${var.environment}-ehr-complete-observability-queue"
+      title = "EHR Complete Observability Queue"
+    },
+    {
+      name  = "${var.environment}-transfer-complete-queue"
+      title = "Transfer Complete Queue"
+    },
+    {
+      name  = "${var.environment}-transfer-complete-observability-queue"
+      title = "Transfer Complete Observability Queue"
     }
   ]
 
@@ -41,6 +94,15 @@ module "repo_health_widgets" {
     re_registration_service = local.re_registration_service
   }
   source      = "./widgets/health_widget"
+  component   = each.value
+  environment = var.environment
+}
+
+module "repo_queue_metrics_widgets" {
+  for_each    = {
+  for i, def in local.repo_queue_widget_definitions : i => def
+  }
+  source      = "./widgets/queue_metrics_widget"
   component   = each.value
   environment = var.environment
 }
