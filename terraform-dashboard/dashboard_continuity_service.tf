@@ -35,7 +35,6 @@ locals {
   [module.health_widgets["nems"].widget],
   [module.health_lb_widgets["pds_adaptor"].widget],
   [module.health_widgets["suspensions"].widget],
-  [module.health_widgets["re_registration_service"].widget],
   values(module.task_widgets).*.widget
   )
 
@@ -51,10 +50,6 @@ locals {
     {
       name  = "${var.environment}-suspension-service-suspensions-queue"
       title = "Suspension Service Incoming Queue"
-    },
-    {
-      name  = "${var.environment}-re-registration-service-re-registrations-queue"
-      title = "Re-registrations Queue"
     },
     {
       name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
@@ -108,13 +103,8 @@ locals {
     title = "Suspension Service"
   }
 
-  re_registration_service = {
-    name  = "re-registration-service"
-    title = "Re-registration Service"
-  }
-
   task_widget_components  = [
-    local.mesh, local.nems, local.pds_adaptor, local.suspension_service, local.re_registration_service
+    local.mesh, local.nems, local.pds_adaptor, local.suspension_service
   ]
   task_widget_types       = ["cpu", "memory"]
   task_widget_definitions = [
@@ -141,7 +131,6 @@ module "error_count_widgets" {
     mesh        = local.mesh
     pds_adaptor = local.pds_adaptor
     suspensions = local.suspension_service
-    re_registration_service = local.re_registration_service
   }
   source    = "./widgets/error_count_widget"
   component = each.value
@@ -151,7 +140,6 @@ module "health_widgets" {
   for_each    = {
     nems        = local.nems
     suspensions = local.suspension_service
-    re_registration_service = local.re_registration_service
   }
   source      = "./widgets/health_widget"
   component   = each.value
