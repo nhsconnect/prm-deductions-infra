@@ -2,8 +2,8 @@ locals {
   repo_all_widgets = concat(
     values(module.repo_queue_metrics_widgets).*.widget,
     values(module.repo_error_count_widgets).*.widget,
-    [module.repo_health_widgets["re_registration_service"].widget],
-  values(module.repo_task_widgets).*.widget
+    values(module.repo_health_widgets).*.widget,
+    values(module.repo_task_widgets).*.widget
   )
 
   repo_queue_widget_definitions = [
@@ -122,6 +122,8 @@ module "repo_health_widgets" {
   for_each    = {
     re_registration_service = local.re_registration_service
     ehr_transfer_service = local.ehr_transfer_service
+    gp2gp_messenger = local.gp2gp_messenger
+    ehr_repo = local.ehr_repo
   }
   source      = "./widgets/health_widget"
   component   = each.value
