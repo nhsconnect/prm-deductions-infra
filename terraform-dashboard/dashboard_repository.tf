@@ -1,16 +1,20 @@
 data "aws_lb" "gp2gp_messenger_load_balancer" {
+  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-gp2gp-messenger-alb-int"
 }
 
 data "aws_lb_target_group" "gp2gp_messenger_target_group" {
+  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-gp2gp-messenger-int-tg"
 }
 
 data "aws_lb" "ehr_repo_load_balancer" {
+  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-ehr-repo-alb-int"
 }
 
 data "aws_lb_target_group" "ehr_repo_target_group" {
+  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-ehr-repo-int-tg"
 }
 
@@ -95,15 +99,15 @@ locals {
   ehr_repo = {
     name  = "ehr-repo"
     title = "EHR Repository Service"
-    loadbalancer = data.aws_lb.ehr_repo_load_balancer.arn_suffix
-    targetgroup  = data.aws_lb_target_group.ehr_repo_target_group.arn_suffix
+    loadbalancer = data.aws_lb.ehr_repo_load_balancer[0].arn_suffix
+    targetgroup  = data.aws_lb_target_group.ehr_repo_target_group[0].arn_suffix
   }
 
   gp2gp_messenger = {
     name  = "gp2gp-messenger"
     title = "GP2GP Messenger Service"
-    loadbalancer = data.aws_lb.gp2gp_messenger_load_balancer.arn_suffix
-    targetgroup  = data.aws_lb_target_group.gp2gp_messenger_target_group.arn_suffix
+    loadbalancer = data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
+    targetgroup  = data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
   }
 
   repo_task_widget_components  = [
@@ -169,6 +173,7 @@ module "repo_queue_metrics_widgets" {
 }
 
 resource "aws_cloudwatch_dashboard" "repository_dashboard" {
+  count = var.environment == "perf" ? 0 : 1
   dashboard_body = jsonencode({
     widgets = local.repo_all_widgets
   })
