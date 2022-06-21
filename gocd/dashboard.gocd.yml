@@ -14,7 +14,7 @@ common:
 
 pipelines:
   repo-infra-dashboard:
-    group: continuity-service
+    group: deductions
     label_template: "${COUNT}-${git[:8]}"
     materials:
       git:
