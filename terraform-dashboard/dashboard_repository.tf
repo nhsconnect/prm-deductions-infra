@@ -111,6 +111,8 @@ module "repo_error_count_widgets" {
   for_each  = {
     re_registration_service = local.re_registration_service
     ehr_transfer_service = local.ehr_transfer_service
+    gp2gp_messenger = local.gp2gp_messenger
+    ehr_repo = local.ehr_repo
   }
   source    = "./widgets/error_count_widget"
   component = each.value
