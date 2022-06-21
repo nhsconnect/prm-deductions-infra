@@ -1,8 +1,25 @@
+data "aws_lb" "gp2gp_messenger_load_balancer" {
+  name = "${var.environment}-gp2gp-messenger-alb-int"
+}
+
+data "aws_lb_target_group" "gp2gp_messenger_target_group" {
+  name = "${var.environment}-gp2gp-messenger-int-tg"
+}
+
+data "aws_lb" "ehr_repo_load_balancer" {
+  name = "${var.environment}-ehr-repo-alb-int"
+}
+
+data "aws_lb_target_group" "ehr_repo_target_group" {
+  name = "${var.environment}-ehr-repo-int-tg"
+}
+
 locals {
   repo_all_widgets = concat(
     values(module.repo_queue_metrics_widgets).*.widget,
     values(module.repo_error_count_widgets).*.widget,
     values(module.repo_health_widgets).*.widget,
+    values(module.repo_health_lb_widgets).*.widget,
     values(module.repo_task_widgets).*.widget
   )
 
@@ -78,11 +95,15 @@ locals {
   ehr_repo = {
     name  = "ehr-repo"
     title = "EHR Repository Service"
+    loadbalancer = data.aws_lb.ehr_repo_load_balancer.arn_suffix
+    targetgroup  = data.aws_lb_target_group.ehr_repo_target_group.arn_suffix
   }
 
   gp2gp_messenger = {
     name  = "gp2gp-messenger"
     title = "GP2GP Messenger Service"
+    loadbalancer = data.aws_lb.gp2gp_messenger_load_balancer.arn_suffix
+    targetgroup  = data.aws_lb_target_group.gp2gp_messenger_target_group.arn_suffix
   }
 
   repo_task_widget_components  = [
@@ -122,10 +143,18 @@ module "repo_health_widgets" {
   for_each    = {
     re_registration_service = local.re_registration_service
     ehr_transfer_service = local.ehr_transfer_service
+  }
+  source      = "./widgets/health_widget"
+  component   = each.value
+  environment = var.environment
+}
+
+module "repo_health_lb_widgets" {
+  for_each    = {
     gp2gp_messenger = local.gp2gp_messenger
     ehr_repo = local.ehr_repo
   }
-  source      = "./widgets/health_widget"
+  source      = "./widgets/health_lb_widget"
   component   = each.value
   environment = var.environment
 }
