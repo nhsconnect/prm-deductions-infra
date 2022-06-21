@@ -99,15 +99,15 @@ locals {
   ehr_repo = {
     name  = "ehr-repo"
     title = "EHR Repository Service"
-    loadbalancer = data.aws_lb.ehr_repo_load_balancer[0].arn_suffix
-    targetgroup  = data.aws_lb_target_group.ehr_repo_target_group[0].arn_suffix
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.ehr_repo_load_balancer[0].arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.ehr_repo_target_group[0].arn_suffix
   }
 
   gp2gp_messenger = {
     name  = "gp2gp-messenger"
     title = "GP2GP Messenger Service"
-    loadbalancer = data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
-    targetgroup  = data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
   }
 
   repo_task_widget_components  = [
