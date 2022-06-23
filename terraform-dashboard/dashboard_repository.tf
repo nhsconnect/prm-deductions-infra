@@ -104,7 +104,7 @@ locals {
   }
 
   gp2gp_messenger = {
-    name  = "gp2gp-messenger"
+    name  = data.aws_ssm_parameter.gp2gp_messenger_error_log_metric_namespace.value
     title = "GP2GP Messenger Service"
     loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
     targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
@@ -120,6 +120,10 @@ locals {
     type      = pair[0]
   }
   ]
+}
+
+data aws_ssm_parameter "gp2gp_messenger_error_log_metric_namespace"{
+  name = "/repo/dev/output/prm-deductions-gp2gp-messenger/error_log_metric_namespace"
 }
 
 module "repo_task_widgets" {
