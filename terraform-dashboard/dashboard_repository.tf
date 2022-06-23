@@ -24,8 +24,34 @@ locals {
     values(module.repo_error_count_widgets).*.widget,
     values(module.repo_health_widgets).*.widget,
     values(module.repo_health_lb_widgets).*.widget,
-    values(module.repo_task_widgets).*.widget
+    values(module.repo_task_widgets).*.widget,
+    values(module.repo_mq_metrics_widgets).*.widget
   )
+
+  repo_mq_widget_definitions = [
+    {
+      name  = "inbound"
+      broker = "deductor-amq-broker-${var.environment}-1"
+      title = "Inbound MQueue"
+
+    },
+    {
+      name  = "unhandled-messages"
+      broker = "deductor-amq-broker-${var.environment}-1"
+      title = "Unhandled MQueue"
+    },
+    {
+      name  = "inbound"
+      broker = "deductor-amq-broker-${var.environment}-2"
+      title = "Inbound MQueue"
+
+    },
+    {
+      name  = "unhandled-messages"
+      broker = "deductor-amq-broker-${var.environment}-2"
+      title = "Unhandled MQueue"
+    }
+  ]
 
   repo_queue_widget_definitions = [
     {
@@ -104,7 +130,7 @@ locals {
   }
 
   gp2gp_messenger = {
-    name  = data.aws_ssm_parameter.gp2gp_messenger_error_log_metric_namespace.value
+    name  = "gp2gp-messenger"
     title = "GP2GP Messenger Service"
     loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
     targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
@@ -120,10 +146,6 @@ locals {
     type      = pair[0]
   }
   ]
-}
-
-data aws_ssm_parameter "gp2gp_messenger_error_log_metric_namespace"{
-  name = "/repo/dev/output/prm-deductions-gp2gp-messenger/error_log_metric_namespace"
 }
 
 module "repo_task_widgets" {
@@ -175,6 +197,16 @@ module "repo_queue_metrics_widgets" {
   component   = each.value
   environment = var.environment
 }
+
+module "repo_mq_metrics_widgets" {
+  for_each    = {
+  for i, def in local.repo_mq_widget_definitions : i => def
+  }
+  source      = "./widgets/mq_metrics_widget"
+  component   = each.value
+  environment = var.environment
+}
+
 
 resource "aws_cloudwatch_dashboard" "repository_dashboard" {
   count = var.environment == "perf" ? 0 : 1
