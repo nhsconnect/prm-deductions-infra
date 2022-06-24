@@ -18,6 +18,26 @@ data "aws_lb_target_group" "ehr_repo_target_group" {
   name = "${var.environment}-ehr-repo-int-tg"
 }
 
+data "aws_lb" "mhs_inbound_load_balancer" {
+  count = var.environment == "perf" ? 0 : 1
+  name = "${var.environment}-repo-mhs-inbound"
+}
+
+data "aws_lb_target_group" "mhs_inbound_target_group" {
+  count = var.environment == "perf" ? 0 : 1
+  name = "${var.environment}-repo-mhs-in-https"
+}
+
+data "aws_lb" "mhs_outbound_load_balancer" {
+  count = var.environment == "perf" ? 0 : 1
+  name = "${var.environment}-repo-mhs-out-alb"
+}
+
+data "aws_lb_target_group" "mhs_outbound_target_group" {
+  count = var.environment == "perf" ? 0 : 1
+  name = "${var.environment}-repo-mhs-outbound"
+}
+
 locals {
   repo_all_widgets = concat(
     values(module.repo_queue_metrics_widgets).*.widget,
@@ -25,7 +45,8 @@ locals {
     values(module.repo_health_widgets).*.widget,
     values(module.repo_health_lb_widgets).*.widget,
     values(module.repo_task_widgets).*.widget,
-    values(module.repo_mq_metrics_widgets).*.widget
+    values(module.repo_mq_metrics_widgets).*.widget,
+    values(module.repo_health_network_lb_widgets).*.widget
   )
 
   repo_mq_widget_definitions = [
@@ -136,6 +157,20 @@ locals {
     targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
   }
 
+  mhs_inbound = {
+    name  = "mhs-inbound"
+    title = "MHS Inbound Service"
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.mhs_inbound_load_balancer[0].arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.mhs_inbound_target_group[0].arn_suffix
+  }
+
+  mhs_outbound = {
+    name  = "mhs-outbound"
+    title = "MHS Outbound Service"
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.mhs_outbound_load_balancer[0].arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.mhs_outbound_target_group[0].arn_suffix
+  }
+
   repo_task_widget_components  = [
     local.re_registration_service, local.ehr_transfer_service, local.ehr_repo, local.gp2gp_messenger
   ]
@@ -183,8 +218,18 @@ module "repo_health_lb_widgets" {
   for_each    = {
     gp2gp_messenger = local.gp2gp_messenger
     ehr_repo = local.ehr_repo
+    mhs_outbound = local.mhs_outbound
   }
   source      = "./widgets/health_lb_widget"
+  component   = each.value
+  environment = var.environment
+}
+
+module "repo_health_network_lb_widgets" {
+  for_each    = {
+    mhs_inbound = local.mhs_inbound
+  }
+  source      = "./widgets/health_network_lb_widget"
   component   = each.value
   environment = var.environment
 }
