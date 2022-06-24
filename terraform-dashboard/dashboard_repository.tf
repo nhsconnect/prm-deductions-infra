@@ -84,11 +84,11 @@ locals {
     },
     {
       name  = "${var.environment}-ehr-transfer-service-large-message-fragments"
-      title = "Large Fragments Queue"
+      title = "Large Message Fragments Queue"
     },
     {
       name  = "${var.environment}-ehr-transfer-service-large-message-fragments-observability"
-      title = "Large Fragments Observability Queue"
+      title = "Large Message Fragments Observability Queue"
     },
     {
       name  = "${var.environment}-ehr-transfer-service-positive-acknowledgements-observability"
