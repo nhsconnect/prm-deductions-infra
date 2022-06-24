@@ -199,6 +199,8 @@ module "repo_error_count_widgets" {
     ehr_transfer_service = local.ehr_transfer_service
     gp2gp_messenger = local.gp2gp_messenger
     ehr_repo = local.ehr_repo
+    mhs_inbound = local.mhs_inbound
+    mhs_outbound = local.mhs_outbound
   }
   source    = "./widgets/error_count_widget"
   component = each.value
