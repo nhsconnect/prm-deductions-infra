@@ -19,9 +19,9 @@ locals {
     type = "metric"
     properties = {
       metrics = [
-        ["AWS/SQS", "ApproximateAgeOfOldestMessage", "QueueName", "${var.component.name}"],
+        ["AWS/SQS", "NumberOfMessagesReceived", "QueueName", "${var.component.name}"],
         [".", "NumberOfMessagesSent", ".", "."],
-        [".", "NumberOfMessagesReceived", ".", "."],
+        [".", "ApproximateAgeOfOldestMessage", ".", "."],
         [".", "ApproximateNumberOfMessagesVisible", ".", "."],
         [".", "SentMessageSize", ".", ".", { "yAxis": "right" } ]
       ],
