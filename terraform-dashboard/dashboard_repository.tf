@@ -172,7 +172,7 @@ locals {
   }
 
   repo_task_widget_components  = [
-    local.re_registration_service, local.ehr_transfer_service, local.ehr_repo, local.gp2gp_messenger
+    local.re_registration_service, local.ehr_transfer_service, local.ehr_repo, local.gp2gp_messenger, local.mhs_inbound, local.mhs_outbound
   ]
   repo_task_widget_types       = ["cpu", "memory"]
   repo_task_widget_definitions = [

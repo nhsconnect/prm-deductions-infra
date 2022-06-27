@@ -20,7 +20,9 @@ locals {
         ["AWS/AmazonMQ", "EnqueueCount", "Broker", "${var.component.broker}","Queue", "${var.component.name}"],
         [".", "InFlightCount", ".", ".", ".", "."],
         [".", "DequeueCount", ".", ".", ".", "."],
-        [".", "ConsumerCount", ".", ".", ".", "."]
+        [".", "ConsumerCount", ".", ".", ".", "."],
+        [".", "MemoryUsage", ".", ".", ".", "."],
+        [".", "CpuUtilization", ".", "."]
       ],
       region = var.region
       title  = "${var.component.title}"
