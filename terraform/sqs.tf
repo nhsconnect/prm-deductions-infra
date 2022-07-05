@@ -15,6 +15,12 @@ resource "aws_sqs_queue" "splunk_audit_uploader" {
   }
 }
 
+resource "aws_ssm_parameter" "splunk_audit_uploader_queue_arn" {
+  name =  "/repo/${var.environment}/output/${var.repo_name}/splunk-audit-uploader-queue-arn"
+  type  = "String"
+  value = aws_sqs_queue.splunk_audit_uploader.arn
+}
+
 resource "aws_sqs_queue" "splunk_audit_uploader_dlq" {
   name                       = "${var.environment}-splunk-audit-uploader-dlq"
   message_retention_seconds  = 1209600
