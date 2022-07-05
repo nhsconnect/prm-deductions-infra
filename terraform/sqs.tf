@@ -50,6 +50,12 @@ resource "aws_kms_alias" "splunk_audit_uploader_key_alias" {
   target_key_id = aws_kms_key.splunk_audit_uploader_kms_key.id
 }
 
+resource "aws_ssm_parameter" "splunk_audit_uploader_kms_key" {
+  name =  "/repo/${var.environment}/output/${var.repo_name}/splunk-audit-uploader-kms-key"
+  type  = "String"
+  value = aws_kms_key.splunk_audit_uploader_kms_key.id
+}
+
 data "aws_iam_policy_document" "splunk_audit_uploader_kms_key_policy_doc" {
   statement {
     effect = "Allow"
