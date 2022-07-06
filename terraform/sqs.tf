@@ -15,10 +15,10 @@ resource "aws_sqs_queue" "splunk_audit_uploader" {
   }
 }
 
-resource "aws_ssm_parameter" "splunk_audit_uploader_queue_arn" {
-  name =  "/repo/${var.environment}/output/${var.repo_name}/splunk-audit-uploader-queue-arn"
+resource "aws_ssm_parameter" "splunk_audit_uploader_queue_name" {
+  name =  "/repo/${var.environment}/output/${var.repo_name}/splunk-audit-uploader-queue-name"
   type  = "String"
-  value = aws_sqs_queue.splunk_audit_uploader.arn
+  value = aws_sqs_queue.splunk_audit_uploader.name
 }
 
 resource "aws_sqs_queue" "splunk_audit_uploader_dlq" {
