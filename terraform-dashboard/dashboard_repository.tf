@@ -124,11 +124,11 @@ locals {
       title = "EHR Complete Observability Queue"
     },
     {
-      name  = "${var.environment}-ehr-transfer-service-transfer-complete"
+      name  = "${var.environment}-end-of-transfer-service-transfer-complete"
       title = "Transfer Complete Queue"
     },
     {
-      name  = "${var.environment}-ehr-transfer-service-transfer-complete-observability"
+      name  = "${var.environment}-end-of-transfer-service-transfer-complete-observability"
       title = "Transfer Complete Observability Queue"
     }
   ]
