@@ -143,6 +143,11 @@ locals {
     title = "EHR Transfer Service"
   }
 
+  end_of_transfer_service = {
+    name  = "end-of-transfer-service"
+    title = "End of Transfer Service"
+  }
+
   ehr_repo = {
     name  = "ehr-repo"
     title = "EHR Repository Service"
@@ -172,7 +177,13 @@ locals {
   }
 
   repo_task_widget_components  = [
-    local.re_registration_service, local.ehr_transfer_service, local.ehr_repo, local.gp2gp_messenger, local.mhs_inbound, local.mhs_outbound
+    local.re_registration_service,
+    local.ehr_transfer_service,
+    local.end_of_transfer_service,
+    local.ehr_repo,
+    local.gp2gp_messenger,
+    local.mhs_inbound,
+    local.mhs_outbound
   ]
   repo_task_widget_types       = ["cpu", "memory"]
   repo_task_widget_definitions = [
@@ -197,6 +208,7 @@ module "repo_error_count_widgets" {
   for_each  = {
     re_registration_service = local.re_registration_service
     ehr_transfer_service = local.ehr_transfer_service
+    end_of_transfer_service = local.end_of_transfer_service
     gp2gp_messenger = local.gp2gp_messenger
     ehr_repo = local.ehr_repo
     mhs_inbound = local.mhs_inbound
@@ -210,6 +222,7 @@ module "repo_health_widgets" {
   for_each    = {
     re_registration_service = local.re_registration_service
     ehr_transfer_service = local.ehr_transfer_service
+    end_of_transfer_service = local.end_of_transfer_service
   }
   source      = "./widgets/health_widget"
   component   = each.value
