@@ -23,8 +23,16 @@ def lambda_handler(event, context):
     ssm = boto3.client("ssm")
     secret_manager = SsmSecretManager(ssm)
     alarm_webhook_url = secret_manager.get_secret(os.environ["ALARM_WEBHOOK_URL_PARAM_NAME"])
+    sns_message = json.loads(event['Records'][0]['Sns']['Message'])
+
+    ok_state = "OK"
+    insufficient_data_state = "INSUFFICIENT_DATA"
+    if sns_message['OldStateValue'] == insufficient_data_state and sns_message['NewStateValue'] == ok_state:
+        print("Transitioning from INSUFFICIENT_DATA to OK, no need to send notification")
+        return
+
     msg = {
-        "text": generate_markdown_message(json.loads(event['Records'][0]['Sns']['Message'])),
+        "text": generate_markdown_message(sns_message),
         "textFormat": "markdown"
     }
 
