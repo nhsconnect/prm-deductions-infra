@@ -203,3 +203,9 @@ resource "aws_security_group" "gocd_to_mq" {
 data "aws_ssm_parameter" "gocd_sg_id" {
   name = "/repo/${var.environment}/user-input/external/gocd-agent-sg-id"
 }
+
+resource "aws_ssm_parameter" "mq_broker_name" {
+  name = "/repo/${var.environment}/output/${var.repo_name}/broker-name"
+  type  = "String"
+  value = aws_mq_broker.deductor_mq_broker.broker_name
+}
