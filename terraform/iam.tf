@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
       "sqs:SendMessage",
       "sqs:DeleteMessage"
     ]
-    resources = ["arn:aws:sqs:*:*:*-audit"]
+    resources = ["arn:aws:sqs:*:*:*-audit", "arn:aws:sqs:*:*:*-audit-uploader"]
   }
   statement {
     effect = "Allow"
