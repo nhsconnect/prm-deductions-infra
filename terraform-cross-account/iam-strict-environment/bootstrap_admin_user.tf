@@ -83,7 +83,9 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:*"
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject"
     ]
     resources = [
       "arn:aws:s3:::${var.environment}-cost-and-usage/*"
@@ -91,9 +93,20 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   }
 
   statement {
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.environment}-cost-and-usage"
+    ]
+  }
+
+  statement {
     sid = "S3AllowListBuckets"
     effect = "Allow"
     actions = [
+      "s3:ListAllMyBuckets",
       "s3:ListAllMyBuckets"
     ]
     resources = [
