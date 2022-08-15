@@ -80,15 +80,15 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     ]
   }
 
-#  statement {
-#    effect = "Allow"
-#    actions = [
-#      "s3:*"
-#    ]
-#    resources = [
-#      "arn:aws:s3:::${var.environment}-cost-and-usage/*"
-#    ]
-#  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:*"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.environment}-cost-and-usage/*"
+    ]
+  }
 
   statement {
     effect = "Allow"
@@ -245,4 +245,9 @@ data "aws_iam_policy_document" "bootstrap_admin_billing_console_access" {
     ]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "bootstrap_admin_s3_allow_list_buckets" {
+  policy_arn = aws_iam_policy.s3_allow_list_buckets.arn
+  role = aws_iam_role.bootstrap_admin.name
 }
