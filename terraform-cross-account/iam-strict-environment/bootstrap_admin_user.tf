@@ -91,6 +91,17 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   }
 
   statement {
+    sid = "S3AllowListBuckets"
+    effect = "Allow"
+    actions = [
+      "s3:ListAllMyBuckets"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
     effect = "Allow"
     actions =  ["ec2:ExportClientVpnClientConfiguration", "ec2:ImportClientVpnClientCertificateRevocationList"]
     resources = ["arn:aws:ec2:eu-west-2:${data.aws_caller_identity.current.account_id}:client-vpn-endpoint/${data.aws_ssm_parameter.client-vpn-endpoint-id.value}"]
@@ -245,9 +256,4 @@ data "aws_iam_policy_document" "bootstrap_admin_billing_console_access" {
     ]
     resources = ["*"]
   }
-}
-
-resource "aws_iam_role_policy_attachment" "bootstrap_admin_s3_allow_list_buckets" {
-  policy_arn = aws_iam_policy.s3_allow_list_buckets.arn
-  role = aws_iam_role.bootstrap_admin.name
 }
