@@ -228,6 +228,21 @@ resource "aws_iam_role_policy_attachment" "bootsrap_admin_s3_allow_terraform_sta
 }
 
 resource "aws_iam_role_policy_attachment" "bootstrap_admin_billing_console_access" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSPurchaseOrdersServiceRolePolicy"
+  policy_arn = aws_iam_policy.bootstrap_admin_billing_console_access.arn
   role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_policy" "bootstrap_admin_billing_console_access" {
+  name = "${var.environment}-billing-console-access"
+  policy = data.aws_iam_policy_document.bootstrap_admin_billing_console_access.json
+}
+
+data "aws_iam_policy_document" "bootstrap_admin_billing_console_access" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "cur:DescribeReportDefinitions", "cur:PutReportDefinition", "cur:DeleteReportDefinition","cur:ModifyReportDefinition"
+    ]
+    resources = ["*"]
+  }
 }
