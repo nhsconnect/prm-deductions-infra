@@ -80,6 +80,16 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     ]
   }
 
+#  statement {
+#    effect = "Allow"
+#    actions = [
+#      "s3:*"
+#    ]
+#    resources = [
+#      "arn:aws:s3:::${var.environment}-cost-and-usage/*"
+#    ]
+#  }
+
   statement {
     effect = "Allow"
     actions =  ["ec2:ExportClientVpnClientConfiguration", "ec2:ImportClientVpnClientCertificateRevocationList"]
@@ -214,5 +224,10 @@ resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
 
 resource "aws_iam_role_policy_attachment" "bootsrap_admin_s3_allow_terraform_state_content_access" {
   policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
+  role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_role_policy_attachment" "bootstrap_admin_billing_console_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSPurchaseOrdersServiceRolePolicy"
   role = aws_iam_role.bootstrap_admin.name
 }
