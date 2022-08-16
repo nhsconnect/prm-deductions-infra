@@ -250,11 +250,11 @@ resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
 }
 
 resource "aws_iam_role_policy_attachment" "athena_access" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSQuicksightAthenaAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
 
-resource "aws_iam_role_policy_attachment" "bootsrap_admin_s3_allow_terraform_state_content_access" {
+resource "aws_iam_role_policy_attachment" "bootstrap_admin_s3_allow_terraform_state_content_access" {
   policy_arn = aws_iam_policy.s3_allow_terraform_state_content_access.arn
   role = aws_iam_role.bootstrap_admin.name
 }
@@ -273,7 +273,20 @@ data "aws_iam_policy_document" "bootstrap_admin_billing_console_access" {
   statement {
     effect = "Allow"
     actions = [
-      "cur:DescribeReportDefinitions", "cur:PutReportDefinition", "cur:DeleteReportDefinition","cur:ModifyReportDefinition"
+      "cur:DescribeReportDefinitions",
+      "cur:PutReportDefinition",
+      "cur:DeleteReportDefinition",
+      "cur:ModifyReportDefinition",
+      "aws-portal:ViewBilling",
+      "aws-portal:ViewAccount",
+      "aws-portal:ViewPaymentMethods",
+      "ce:CreateCostCategoryDefinition",
+      "ce:DescribeCostCategoryDefinition",
+      "ce:ListCostCategoryDefinitions",
+      "aws-portal:ViewUsage",
+      "pricing:DescribeServices",
+      "pricing:GetAttributeValues",
+      "pricing:GetProducts"
     ]
     resources = ["*"]
   }
