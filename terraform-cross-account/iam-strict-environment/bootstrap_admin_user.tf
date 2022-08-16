@@ -21,13 +21,13 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = ["ssm:Describe*", "ssm:Get*", "ssm:List*"]
-    resource= ["*"]
+    resources = ["*"]
     }
 
   statement {
     effect = "Allow"
     actions = [  "sns:GetTopicAttributes", "sns:List*"]
-    resource= ["*"]
+    resources = ["*"]
   }
 
   statement {
