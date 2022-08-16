@@ -250,7 +250,7 @@ resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
 }
 
 resource "aws_iam_role_policy_attachment" "athena_access" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSQuicksightAthenaAccess"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSQuicksightAthenaAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
 
