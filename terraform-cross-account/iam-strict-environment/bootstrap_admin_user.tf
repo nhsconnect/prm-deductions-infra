@@ -20,6 +20,18 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
+    actions = ["ssm:Describe*", "ssm:Get*", "ssm:List*"]
+    resource= ["*"]
+    }
+
+  statement {
+    effect = "Allow"
+    actions = [  "sns:GetTopicAttributes", "sns:List*"]
+    resource= ["*"]
+  }
+
+  statement {
+    effect = "Allow"
     actions = ["sqs:ListQueueTags", "sns:GetSubscriptionAttributes"]
     resources = ["*"]
   }
@@ -95,7 +107,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:ListBucket"
+      "s3:List*",
+      "s3:Get*"
     ]
     resources = [
       "arn:aws:s3:::${var.environment}-cost-and-usage"
@@ -221,16 +234,6 @@ resource "aws_iam_role_policy_attachment" "terraform_plan_to_bootstrap_admin" {
   role = aws_iam_role.bootstrap_admin.name
 }
 
-resource "aws_iam_role_policy_attachment" "ssm_read_only_access" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
-  role = aws_iam_role.bootstrap_admin.name
-}
-
-resource "aws_iam_role_policy_attachment" "sns_read_only_access" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSReadOnlyAccess"
-  role = aws_iam_role.bootstrap_admin.name
-}
-
 resource "aws_iam_role_policy_attachment" "sqs_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess"
   role = aws_iam_role.bootstrap_admin.name
@@ -243,6 +246,11 @@ resource "aws_iam_role_policy_attachment" "dynamo_read_only_access" {
 
 resource "aws_iam_role_policy_attachment" "lambda_read_only_access" {
   policy_arn = "arn:aws:iam::aws:policy/AWSLambda_ReadOnlyAccess"
+  role = aws_iam_role.bootstrap_admin.name
+}
+
+resource "aws_iam_role_policy_attachment" "athena_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSQuicksightAthenaAccess"
   role = aws_iam_role.bootstrap_admin.name
 }
 
