@@ -108,7 +108,8 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     effect = "Allow"
     actions = [
       "s3:List*",
-      "s3:Get*"
+      "s3:Get*",
+      "s3:PutBucketPolicy"
     ]
     resources = [
       "arn:aws:s3:::${var.environment}-cost-and-usage"
