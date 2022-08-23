@@ -40,23 +40,23 @@ locals {
 
   queue_widget_definitions = [
     {
-      name  = "${var.environment}-nems-event-processor-incoming-queue"
+      name  = "${var.environment}-nems-event-processor-incoming"
       title = "NEMS Event Processor Incoming Queue"
     },
     {
-      name  = "${var.environment}-nems-event-processor-suspensions-observability-queue"
+      name  = "${var.environment}-nems-event-processor-suspensions-observability"
       title = "NEMS Processor Suspensions Observability Queue"
     },
     {
-      name  = "${var.environment}-suspension-service-suspensions-queue"
+      name  = "${var.environment}-suspension-service-suspensions"
       title = "Suspension Service Incoming Queue"
     },
     {
-      name  = "${var.environment}-mesh-forwarder-nems-events-observability-queue"
+      name  = "${var.environment}-mesh-forwarder-nems-events-observability"
       title = "MESH Forwarder Observability Queue"
     },
     {
-      name  = "${var.environment}-nems-event-processor-unhandled-events-queue"
+      name  = "${var.environment}-nems-event-processor-unhandled-events"
       title = "NEMS Event Processor Unhandled Queue"
     },
     {
@@ -64,11 +64,11 @@ locals {
       title = "NEMS Event Processor DLQ"
     },
     {
-      name  = "${var.environment}-suspension-service-not-suspended-observability-queue"
+      name  = "${var.environment}-suspension-service-not-suspended-observability"
       title = "Suspension Service Not Suspended Observability Queue"
     },
     {
-      name  = "${var.environment}-suspension-service-mof-updated-queue"
+      name  = "${var.environment}-suspension-service-mof-updated"
       title = "Suspension Service MOF Updated Queue"
     }
   ]
