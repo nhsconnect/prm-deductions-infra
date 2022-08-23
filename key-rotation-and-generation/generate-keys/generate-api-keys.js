@@ -22,6 +22,7 @@ export const generateApiKeys = async (ssmPath, isService) => {
     );
 
     if (!isService) {
+      console.log("About to generate user keys...");
       const actualUserApiKeys = actualApiKeys.filter((apiKey) =>
         apiKey.includes("/api-key-user/")
       );
@@ -32,6 +33,7 @@ export const generateApiKeys = async (ssmPath, isService) => {
         actualUserApiKeys
       );
     } else {
+      console.log("About to generate service keys...");
       const actualServiceApiKeys = actualApiKeys.filter(
         (apiKey) => !apiKey.includes("/api-key-user/")
       );
@@ -53,6 +55,7 @@ async function generateKeys(expectedApiKeys, actualApiKeys) {
   const generatedApiKeys = [];
   for (const expectedKey of expectedApiKeys) {
     if (!actualApiKeys.includes(expectedKey)) {
+      console.log(`Generating value for key ${expectedKey}`);
       await generateApiKey(expectedKey);
       generatedApiKeys.push(expectedKey);
     }
