@@ -9,12 +9,10 @@ data "aws_lb_target_group" "gp2gp_messenger_target_group" {
 }
 
 data "aws_lb" "ehr_repo_load_balancer" {
-  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-ehr-repo-alb-int"
 }
 
 data "aws_lb_target_group" "ehr_repo_target_group" {
-  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-ehr-repo-int-tg"
 }
 
@@ -151,8 +149,8 @@ locals {
   ehr_repo = {
     name  = "ehr-repo"
     title = "EHR Repository Service"
-    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.ehr_repo_load_balancer[0].arn_suffix
-    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.ehr_repo_target_group[0].arn_suffix
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.ehr_repo_load_balancer.arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.ehr_repo_target_group.arn_suffix
   }
 
   gp2gp_messenger = {
@@ -267,9 +265,7 @@ module "repo_mq_metrics_widgets" {
   environment = var.environment
 }
 
-
 resource "aws_cloudwatch_dashboard" "repository_dashboard" {
-  count = var.environment == "perf" ? 0 : 1
   dashboard_body = jsonencode({
     widgets = local.repo_all_widgets
   })
