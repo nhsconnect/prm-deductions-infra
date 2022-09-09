@@ -1,10 +1,8 @@
 data "aws_lb" "gp2gp_messenger_load_balancer" {
-  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-gp2gp-messenger-alb-int"
 }
 
 data "aws_lb_target_group" "gp2gp_messenger_target_group" {
-  count = var.environment == "perf" ? 0 : 1
   name = "${var.environment}-gp2gp-messenger-int-tg"
 }
 
@@ -156,8 +154,8 @@ locals {
   gp2gp_messenger = {
     name  = "gp2gp-messenger"
     title = "GP2GP Messenger Service"
-    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.gp2gp_messenger_load_balancer[0].arn_suffix
-    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group[0].arn_suffix
+    loadbalancer = var.environment == "perf" ? "NA" : data.aws_lb.gp2gp_messenger_load_balancer.arn_suffix
+    targetgroup  = var.environment == "perf" ? "NA" : data.aws_lb_target_group.gp2gp_messenger_target_group.arn_suffix
   }
 
   mhs_inbound = {
