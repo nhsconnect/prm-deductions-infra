@@ -145,6 +145,14 @@ The newly created certificate should be associated with the VPN endpoint. If you
 
 After the deletion of the old VPN certificate, each VPN certificate should be recreated locally and the old certificates should be replaced. A developer can run ```NHS_ENVIRONMENT=dev ./tasks generate_vpn_server_crt``` locally to generate the new VPN certificate.
 
+## Troubleshooting
+
+For *prod* environment only there is a certificate revocation list (CRL) which could expire, causing a TLS error, *TLS handshake failed* as documented here:
+
+https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/troubleshooting.html#client-cannot-connect
+
+In case anyone is experiencing the issue, run the [Revoking VPN client keys](#revoking-vpn-client-keys) step above. You can do this targeting your own certs (which you'll have to regenerate via [Generating VPN client keys](#generating-vpn-client-keys)).
+
 # Useful CloudWatch Logs Insights Queries for Repository Codebases
 They will be also stored in a Repo folder in CloudWatch Insights. More information here:  https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_Insights-Saving-Queries.html
 
