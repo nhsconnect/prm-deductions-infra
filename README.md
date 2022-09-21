@@ -1,4 +1,4 @@
-# Infrastructure for the PRM Deductions Application
+# Shared infrastructure for Patient Record Migration services
 
 [Dojo](https://github.com/kudulab/dojo) docker image with tools needed to deploy infrastructure in scope of deductions team.
 
