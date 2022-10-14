@@ -1,14 +1,16 @@
 resource "aws_s3_bucket" "cost_and_usage_bucket" {
   bucket = "${var.environment}-cost-and-usage"
   acl    = "private"
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
+        sse_algorithm = "aws:kms"
         kms_master_key_id = aws_kms_key.cost_and_usage_kms_key.arn
       }
     }
   }
+
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
@@ -75,4 +77,5 @@ data "aws_iam_policy_document" "kms_key_policy_doc" {
 
     resources = ["*"]
   }
+
 }
