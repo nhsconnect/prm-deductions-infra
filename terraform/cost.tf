@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
     }
   }
   versioning {
-    enabled = false
+    enabled = true
     mfa_delete = true
   }
   tags = {
