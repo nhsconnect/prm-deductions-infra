@@ -8,6 +8,10 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
       }
     }
   }
+  versioning {
+    enabled = false
+    mfa_delete = true
+  }
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
