@@ -23,6 +23,12 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.mhs_vpc.id
 }
 
+// We do not use the default VPC NACL. This resource removes all ingress/egress rules from it for security reasons.
+resource "aws_default_network_acl" "default" {
+  default_network_acl_id = aws_vpc.mhs_vpc.default_network_acl_id
+  # no rules defined, deny all traffic in this ACL
+}
+
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
   count      = var.mhs_vpc_additional_cidr_block == "" ? 0 : 1
   vpc_id     = aws_vpc.mhs_vpc.id
