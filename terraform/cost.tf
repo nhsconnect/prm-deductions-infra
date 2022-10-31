@@ -29,7 +29,10 @@ resource "aws_s3_bucket_policy" "cost_and_usage_bucket_policy" {
           "s3:GetBucketPolicy",
           "s3:PutObject"
         ],
-        "Resource": "${aws_s3_bucket.cost_and_usage_bucket.arn}/*",
+        Resource: [
+          aws_s3_bucket.cost_and_usage_bucket.arn,
+          "${aws_s3_bucket.cost_and_usage_bucket.arn}/*"
+        ]
         Condition: {
           Bool: {
             "aws:SecureTransport": "false"
