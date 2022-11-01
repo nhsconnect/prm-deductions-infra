@@ -31,6 +31,7 @@ resource "aws_default_network_acl" "default" {
     protocol  = "tcp"
     from_port = 0
     to_port   = 0
+    cidr_block = "0.0.0.0/0"
     rule_no   = 100
   }
 
@@ -39,6 +40,7 @@ resource "aws_default_network_acl" "default" {
     protocol  = "tcp"
     from_port = 0
     to_port   = 0
+    cidr_block = "0.0.0.0/0"
     rule_no   = 100
   }
 }
