@@ -30,6 +30,26 @@ resource "aws_default_security_group" "default" {
     vpc_id = module.vpc.vpc_id
 }
 
+resource "aws_default_network_acl" "default" {
+    default_network_acl_id = module.vpc.default_network_acl_id
+
+    ingress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 0
+        to_port   = 0
+        rule_no   = 100
+    }
+
+    egress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 0
+        to_port   = 0
+        rule_no   = 100
+    }
+}
+
 resource "aws_route" "private_private_to_core" {
     route_table_id            = module.vpc.private_route_table_ids[0]
     destination_cidr_block    = var.deductions_core_cidr

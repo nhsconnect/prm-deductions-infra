@@ -25,6 +25,26 @@ resource "aws_default_security_group" "default" {
     vpc_id = module.vpc.vpc_id
 }
 
+resource "aws_default_network_acl" "default" {
+    default_network_acl_id = module.vpc.default_network_acl_id
+
+    ingress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 0
+        to_port   = 0
+        rule_no   = 100
+    }
+
+    egress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 0
+        to_port   = 0
+        rule_no   = 100
+    }
+}
+
 resource "aws_route" "core_to_private" {
     count = length(module.vpc.private_route_table_ids)
     route_table_id            = module.vpc.private_route_table_ids[count.index]

@@ -23,6 +23,26 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.mhs_vpc.id
 }
 
+resource "aws_default_network_acl" "default" {
+  default_network_acl_id = aws_vpc.mhs_vpc.default_network_acl_id
+
+  ingress {
+    action    = "allow"
+    protocol  = "tcp"
+    from_port = 0
+    to_port   = 0
+    rule_no   = 100
+  }
+
+  egress {
+    action    = "allow"
+    protocol  = "tcp"
+    from_port = 0
+    to_port   = 0
+    rule_no   = 100
+  }
+}
+
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
   count      = var.mhs_vpc_additional_cidr_block == "" ? 0 : 1
   vpc_id     = aws_vpc.mhs_vpc.id
