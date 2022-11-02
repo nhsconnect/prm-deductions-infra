@@ -36,8 +36,26 @@ resource "aws_default_network_acl" "default" {
     ingress {
         action    = "allow"
         protocol  = "tcp"
-        from_port = 0
-        to_port   = 65535
+        from_port = 443
+        to_port   = 443
+        cidr_block = "0.0.0.0/0"
+        rule_no   = 100
+    }
+
+    ingress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 61617
+        to_port   = 61617
+        cidr_block = "0.0.0.0/0"
+        rule_no   = 101
+    }
+
+    egress {
+        action    = "allow"
+        protocol  = "tcp"
+        from_port = 443
+        to_port   = 443
         cidr_block = "0.0.0.0/0"
         rule_no   = 100
     }
@@ -45,10 +63,10 @@ resource "aws_default_network_acl" "default" {
     egress {
         action    = "allow"
         protocol  = "tcp"
-        from_port = 0
-        to_port   = 65535
+        from_port = 61617
+        to_port   = 61617
         cidr_block = "0.0.0.0/0"
-        rule_no   = 100
+        rule_no   = 101
     }
 }
 
