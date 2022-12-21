@@ -13,33 +13,3 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
     Environment = var.environment
   }
 }
-
-resource "aws_s3_bucket_policy" "cost_and_usage_bucket_policy" {
-  bucket = aws_s3_bucket.cost_and_usage_bucket.id
-  policy = jsonencode({
-    "Version": "2008-10-17"
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "billingreports.amazonaws.com"
-        },
-        "Action": [
-          "s3:GetBucketAcl",
-          "s3:GetBucketPolicy",
-          "s3:PutObject"
-        ],
-        Resource: [
-          aws_s3_bucket.cost_and_usage_bucket.arn,
-          "${aws_s3_bucket.cost_and_usage_bucket.arn}/*"
-        ]
-        Condition: {
-          Bool: {
-            "aws:SecureTransport": "false"
-          }
-        }
-      }
-    ]
-  })
-
-}
