@@ -14,8 +14,8 @@ resource "aws_ecr_repository" "repo-to-gp" {
   }
 }
 
-resource "aws_ecr_repository" "ehr-out-service" {
-  name = "deductions/repo-to-gp"
+resource "aws_ecr_repository" "ehr_out_service" {
+  name = "deductions/ehr-out-service"
   image_tag_mutability = "IMMUTABLE"
   tags = {
     CreatedBy = var.repo_name
