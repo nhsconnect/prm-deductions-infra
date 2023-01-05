@@ -14,6 +14,14 @@ resource "aws_ecr_repository" "repo-to-gp" {
   }
 }
 
+resource "aws_ecr_repository" "ehr-out-service" {
+  name = "deductions/repo-to-gp"
+  image_tag_mutability = "IMMUTABLE"
+  tags = {
+    CreatedBy = var.repo_name
+  }
+}
+
 resource "aws_ecr_repository" "gp2gp-adaptor" {
   name = "deductions/gp2gp-adaptor"
   image_tag_mutability = var.immutable_ecr_repositories ? "IMMUTABLE" : "MUTABLE"
