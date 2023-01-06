@@ -47,3 +47,44 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
     resources = ["*"]
   }
 }
+
+resource "aws_iam_role" "scheduled-cost-report-role" {
+  name = "ScheduledCostReportLambdaExecution"
+  description        = "Role to run the scheduled cost report"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "scheduled-cost-report-role-policy" {
+  name   = "scheduled_cost_report"
+  policy = data.aws_iam_policy_document.scheduled_cost_report_policy_document.json
+}
+
+data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole",
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "scheduled-cost-report-policy-attachment" {
+  role       = aws_iam_role.scheduled-cost-report-role.name
+  policy_arn = aws_iam_policy.scheduled-cost-report-role-policy.arn
+}
