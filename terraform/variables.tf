@@ -180,3 +180,9 @@ variable "alarm_lambda_zip" {
   description = "path to zipfile containing lambda code to dispatch alarm notifications to MS Teams"
   default     = "../notification-lambda/build/alarm.zip"
 }
+
+variable "schedule_cost_report_lambda_zip" {
+  type        = string
+  description = "path to zip file containing lambda code to schedule cost report"
+  default     = "../aws-cost-script/build/scheduled-cost-report.zip"
+}
