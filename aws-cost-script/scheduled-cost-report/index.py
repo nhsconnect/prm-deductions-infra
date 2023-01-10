@@ -2,6 +2,7 @@ import os
 import yaml
 import datetime
 import re
+import boto3
 
 # TODO Set environment using terraform
 os.environ["ENVIRONMENT"] = "dev"
@@ -13,11 +14,11 @@ def path_constructor(loader, node):
   match = path_matcher.match(value)
   return match.group(1) + os.environ.get(match.group(2)) + value[match.end():]
 
-yaml.add_implicit_resolver('!path', path_matcher)
-yaml.add_constructor('!path', path_constructor)
+yaml.SafeLoader.add_implicit_resolver('!path', path_matcher, None)
+yaml.SafeLoader.add_constructor('!path', path_constructor)
 
 with open("config.yml", 'r') as ymlfile:
-    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+    cfg = yaml.load(ymlfile, Loader=yaml.SafeLoader)
 
 # TODO remove following lines.
 print(os.environ.get('ENVIRONMENT')) ## /home/abc
