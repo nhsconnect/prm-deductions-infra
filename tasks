@@ -350,9 +350,28 @@ function build_lambda_scheduled_cur {
     popd
 }
 
+function schedule_aws_cost_script_build_lambda_with_dependencies {
+
+  cd aws-cost-script/scheduled-cost-report/package
+  zip -r ../my-deployment-package.zip .
+  cd ..
+
+  build_dir=build/scheduled-cost-report
+  rm -rf $build_dir
+  mkdir -p $build_dir
+
+  zip my-deployment-package.zip index.py
+  mv  my-deployment-package.zip $build_dir
+
+  source myvenv/bin/activate
+  pip install aws-cost-script/scheduled-cost-report/requirements.txt
+  deactivate
+  cd myvenv/lib/python3.8/site-packages
+  zip -r ../../../../my-deployment-package.zip .
+}
+
 function build_lambdas {
     build_lambda alarm
-    build_lambda_scheduled_cur scheduled-cost-report
 }
 
 command="$1"
