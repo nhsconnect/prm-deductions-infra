@@ -11,4 +11,9 @@ resource "aws_lambda_function" "scheduled_cost_report" {
     Environment = var.environment
     CreatedBy   = var.repo_name
   }
+  environment {
+    variables = {
+      ENVIRONMENT = var.environment
+    }
+  }
 }

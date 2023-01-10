@@ -1,14 +1,31 @@
 import os
 import yaml
 import datetime
+import re
+
+# TODO Set environment using terraform
+os.environ["ENVIRONMENT"] = "dev"
+
+path_matcher = re.compile(r'(.*)\$\{([^}^{]+)\}')
+def path_constructor(loader, node):
+  ''' Extract the matched value, expand env variable, and replace the match '''
+  value = node.value
+  match = path_matcher.match(value)
+  return match.group(1) + os.environ.get(match.group(2)) + value[match.end():]
+
+yaml.add_implicit_resolver('!path', path_matcher)
+yaml.add_constructor('!path', path_constructor)
 
 with open("config.yml", 'r') as ymlfile:
-    cfg = yaml.safe_load(ymlfile)
+    cfg = yaml.load(ymlfile, Loader=yaml.FullLoader)
+
+# TODO remove following lines.
+print(os.environ.get('ENVIRONMENT')) ## /home/abc
+print(cfg['CUR_Output_Location'])
+print(cfg['CUR_DB'])
+print(cfg['CUR_Report_Name'])
 
 # Import environment variable defined in Lambda, if it's not existed, use values defined in config.yml
-region = os.environ.get('REGION')
-if not region:
-    region = cfg['Region']
 curOutLoc = os.environ.get('CUR_OUTPUT_LOCATION')
 if not curOutLoc:
     curOutLoc = cfg['CUR_Output_Location']

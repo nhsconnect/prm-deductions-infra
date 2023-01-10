@@ -1,6 +1,6 @@
-CUR_Output_Location: s3://${NHS_ENVIRONMENT}-cost-and-usage/reports/aws-cost-report/manual-test-results/
+CUR_Output_Location: s3://${ENVIRONMENT}-cost-and-usage/reports/aws-cost-report/manual-test-results/
 CUR_DB: <repo-aws-cost>.<aws_cost_report>
-CUR_Report_Name: ${NHS_ENVIRONMENT}_cost_and_usage_report.xlsx
+CUR_Report_Name: ${ENVIRONMENT}_cost_and_usage_report.xlsx
 Query_String_List:
   - Cost_By_Service: SELECT year,
       month(line_item_usage_start_date) month,

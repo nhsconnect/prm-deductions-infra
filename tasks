@@ -360,7 +360,7 @@ function schedule_aws_cost_script_build_lambda_with_dependencies {
   rm -rf $build_dir
   mkdir -p $build_dir
 
-  zip my-deployment-package.zip index.py
+  zip my-deployment-package.zip index.py config.yml
   mv  my-deployment-package.zip $build_dir
 
   source myvenv/bin/activate
@@ -391,6 +391,7 @@ case "${command}" in
   tf_plan)
       check_env
       build_lambdas
+      schedule_aws_cost_script_build_lambda_with_dependencies
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)
