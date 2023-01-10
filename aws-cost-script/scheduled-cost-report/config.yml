@@ -1,83 +1,20 @@
 CUR_Output_Location: s3://${ENVIRONMENT}-cost-and-usage/reports/aws-cost-report/manual-test-results/
-CUR_DB: <repo-aws-cost>.<aws_cost_report>
+CUR_DB: >-
+  "repo-aws-cost"."aws_cost_report"
 CUR_Report_Name: ${ENVIRONMENT}_cost_and_usage_report.xlsx
 Query_String_List:
-  - Cost_By_Service: SELECT year,
-      month(line_item_usage_start_date) month,
-      product_product_name AS "Product_Name",
-      sum("line_item_unblended_cost") AS "Cost($)"
-      FROM CUR_DB
-      WHERE (year='CUR_YEAR' AND month='CUR_MONTH') OR
-      (year='CUR_OR_LAST_YEAR' AND month='LAST_MONTH') OR
-      (year='LAST_YEAR' AND month='PRE_LAST_MONTH')
-      GROUP BY  1,2,3
-      ORDER BY  1,2,3
-  - Data_Cost_By_Service: SELECT year,
-      month(line_item_usage_start_date) month,
-      line_item_product_code,
-      line_item_usage_type,
-      product_from_location,
-      product_to_location,
-      sum(line_item_usage_amount)/1024 AS "TB's", sum(line_item_unblended_cost) AS "Cost($)"
-      FROM CUR_DB
-      WHERE line_item_usage_type LIKE '%Bytes%'
-      AND (line_item_usage_type LIKE '%In%'
-      OR line_item_usage_type LIKE '%Out%'
-      OR line_item_usage_type LIKE '%Regional%')
-      AND ((year='CUR_YEAR' AND month='CUR_MONTH') OR
-      (year='CUR_OR_LAST_YEAR' AND month='LAST_MONTH') OR
-      (year='LAST_YEAR' AND month='PRE_LAST_MONTH'))
-      GROUP BY  1,2,3,4,5,6
-      ORDER BY  sum(line_item_unblended_cost) desc
-  - MoM_Inter_AZ_DT_Chart: SELECT *
-      , ("Usage_This_Month(GB)" - "Usage_Last_Month(GB)") as Diff_Usage_From_Last_Month,("Cost_This_Month($)" - "Cost_Last_Month($)") as Diff_Cost_From_Last_Month FROM (
-      SELECT
-      year
-      ,month(line_item_usage_start_date) month
-      ,sum(line_item_usage_amount) as "Usage_This_Month(GB)"
-      ,sum(line_item_unblended_cost)  as "Cost_This_Month($)"
-      ,lag(sum(line_item_usage_amount),1) over (order by year,month(line_item_usage_start_date)) as "Usage_Last_Month(GB)"
-      ,lag(sum(line_item_unblended_cost),1) over (order by year,month(line_item_usage_start_date)) as "Cost_Last_Month($)"
-      FROM
-      CUR_DB
-      WHERE
-      line_item_usage_type like '%-DataTransfer-Regional-Bytes%'  AND
-      line_item_product_code = 'AmazonEC2'  AND
-      ((year='CUR_YEAR' AND month='CUR_MONTH') OR
-      (year='CUR_OR_LAST_YEAR' AND month='LAST_MONTH') OR
-      (year='LAST_YEAR' AND month='PRE_LAST_MONTH'))
-      GROUP BY
-      1,2
-      ORDER BY
-      1,2)
-  - MTD_S3_By_Bucket: SELECT year,
-      month(line_item_usage_start_date) month,
-      line_item_usage_type,
-      line_item_resource_id AS "S3_Bucket",
-      sum(line_item_usage_amount) AS "Usage", sum(line_item_unblended_cost) AS "Cost($)"
-      FROM CUR_DB
-      WHERE product_product_name = 'Amazon Simple Storage Service'
-      AND year='CUR_YEAR' AND month='CUR_MONTH'
-      GROUP BY  1,2,3,4
-      ORDER BY  sum(line_item_unblended_cost) DESC
-  - MTD_ELB_By_Name: SELECT year,
-      month(line_item_usage_start_date) month,
-      replace(split_part("line_item_resource_id",':',6),'loadbalancer/') AS "Load Balancer",
-      split_part("line_item_resource_id",':',4) AS Region, sum("line_item_unblended_cost") AS "Cost($)"
-      FROM CUR_DB
-      WHERE "line_item_resource_id" LIKE '%loadbalancer%'
-      AND year='CUR_YEAR' AND month='CUR_MONTH'
-      GROUP BY  1,2,3,4
-      ORDER BY  3 DESC
-  - MTD_CF_By_Distribution: SELECT year,
-      month(line_item_usage_start_date) month,
-      line_item_usage_type,
-      line_item_resource_id AS distribution,
-      product_from_location,
-      sum(line_item_usage_amount)AS "Usage",
-      sum(line_item_unblended_cost) AS "Cost($)"
-      FROM CUR_DB
-      WHERE product_product_name = 'Amazon CloudFront'
-      AND year='CUR_YEAR' AND month='CUR_MONTH'
-      GROUP BY  1,2,3,4,5
-      ORDER BY  sum(line_item_unblended_cost) desc
+  - ORIGINAL_QUERY: SELECT  product_product_name AS ServiceName, ROUND (SUM (pricing_public_on_demand_cost), 3) as Cost FROM CUR_DB
+      WHERE (resource_tags_user_created_by like '%prm-deductions-ehr-repository%'
+      OR resource_tags_user_created_by like '%end-of-transfer-service%'
+      OR resource_tags_user_created_by like '%prm-deductions-nems-event-processor%'
+      OR resource_tags_user_created_by like '%prm-deductions-gp-to-repo%'
+      OR resource_tags_user_created_by like '%suspension-service%'
+      OR resource_tags_user_created_by like '%prm-deductions-infra%'
+      OR resource_tags_user_created_by like '%prm-deductions-gp2gp-messenger%'
+      OR resource_tags_user_created_by like '%prm-deductions-mesh-forwarder%'
+      OR resource_tags_user_created_by like '%prm-repo-re-registration-service%'
+      OR resource_tags_user_created_by like '%prm-mhs-infra%'
+      OR resource_tags_user_created_by like '%prm-deductions-support-infra%'
+      OR resource_tags_user_created_by like '%prm-deductions-repo-to-gp%')
+      GROUP BY product_product_name
+      ORDER BY Cost DESC;

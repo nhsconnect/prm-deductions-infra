@@ -3,6 +3,8 @@ import yaml
 import datetime
 import re
 import boto3
+import signal
+import time
 
 # TODO Set environment using terraform
 os.environ["ENVIRONMENT"] = "dev"
@@ -104,6 +106,7 @@ def queryCUR(queryList, targetLocation):
     client = boto3.client('athena')
     print("Starting query CUR ... ")
     for i in range(len(queryList)):
+        print("Query is: " + queryList[i]['queryString'])
         resp = client.start_query_execution(
             QueryString=queryList[i]['queryString'],
             ResultConfiguration={
@@ -111,7 +114,6 @@ def queryCUR(queryList, targetLocation):
             })
         queryList[i]['queryId'] = resp['QueryExecutionId']
         print("Query " + queryList[i]['name'] + ' cost, queryId is ' + queryList[i]['queryId'])
-    return queryList.values()
 
 
 # Recursively load query status untill all query status is SUCCEEDED
@@ -149,8 +151,5 @@ def waitQueryExecution(time, qList):
 
 
 def lambda_handler(event, context):
-    response = queryCUR(qStrList, curOutLoc)
+    queryCUR(qStrList, curOutLoc)
     waitQueryExecution(queryExpiration, qStrList)
-    return {
-        'message': response
-    }
