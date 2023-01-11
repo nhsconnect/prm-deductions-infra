@@ -336,19 +336,19 @@ function build_lambda {
     popd
 }
 
+#TODO: Needs optimization and proper reuse of existing code.
 function build_lambda_scheduled_cur {
-    lambda_name=$1
-
-    build_dir=aws-cost-script/build/$lambda_name
+    build_dir=aws-cost-script/build/scheduled-cost-report
     rm -rf $build_dir
     mkdir -p $build_dir
 
-    cp aws-cost-script/$lambda_name/*.py $build_dir
+    cp aws-cost-script/scheduled-cost-report/*.py $build_dir
 
     pushd $build_dir
-    zip -r -X ../$lambda_name.zip .
+    zip -r -X ../scheduled-cost-report.zip .
     popd
 }
+
 
 function schedule_aws_cost_script_build_lambda_with_dependencies {
 
@@ -362,12 +362,6 @@ function schedule_aws_cost_script_build_lambda_with_dependencies {
 
   zip my-deployment-package.zip index.py config.yml
   mv  my-deployment-package.zip $build_dir
-
-  source myvenv/bin/activate
-  pip install aws-cost-script/scheduled-cost-report/requirements.txt
-  deactivate
-  cd myvenv/lib/python3.8/site-packages
-  zip -r ../../../../my-deployment-package.zip .
 }
 
 function build_lambdas {
@@ -391,6 +385,7 @@ case "${command}" in
   tf_plan)
       check_env
       build_lambdas
+      build_lambda_scheduled_cur
       schedule_aws_cost_script_build_lambda_with_dependencies
       dojo "./tasks _tf_plan $2"
       ;;
