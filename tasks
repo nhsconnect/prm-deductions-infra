@@ -336,36 +336,19 @@ function build_lambda {
     popd
 }
 
-#TODO: Needs optimization and proper reuse of existing code.
-function build_lambda_scheduled_cur {
-    build_dir=aws-cost-script/build/scheduled-cost-report
-    rm -rf $build_dir
-    mkdir -p $build_dir
-
-    cp aws-cost-script/scheduled-cost-report/*.py $build_dir
-
-    pushd $build_dir
-    zip -r -X ../scheduled-cost-report.zip .
-    popd
-}
-
-
 function schedule_aws_cost_script_build_lambda_with_dependencies {
-
-  cd aws-cost-script/scheduled-cost-report/package
-  zip -r ../my-deployment-package.zip .
-  cd ..
-
+  cd aws-cost-script
   build_dir=build/scheduled-cost-report
-  rm -rf $build_dir
-  mkdir -p $build_dir
-
-  zip my-deployment-package.zip index.py config.yml
-  mv  my-deployment-package.zip $build_dir
+  rm -rf build
+  mkdir -p build/scheduled-cost-report
+  cp -r scheduled-cost-report/package/* scheduled-cost-report/index.py scheduled-cost-report/config.yml $build_dir
+  zip -r build/scheduled-cost-report.zip $build_dir
+  cd ..
 }
 
 function build_lambdas {
     build_lambda alarm
+    schedule_aws_cost_script_build_lambda_with_dependencies
 }
 
 command="$1"
@@ -385,7 +368,6 @@ case "${command}" in
   tf_plan)
       check_env
       build_lambdas
-      schedule_aws_cost_script_build_lambda_with_dependencies
       dojo "./tasks _tf_plan $2"
       ;;
   _tf_plan_cross_account)

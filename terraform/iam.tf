@@ -78,12 +78,12 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "ssm:GetParameter"
     ]
     resources = [
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.sender_cost_report_email_id}",
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.receiver_cost_report_email_id}"
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.sender_cost_report_email_id.name}",
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.receiver_cost_report_email_id.name}"
     ]
-  },
-  statement
-  {
+  }
+
+  statement {
     effect = "Allow"
     actions = [
       "sts:AssumeRole",
@@ -92,9 +92,9 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "logs:PutLogEvents"
     ]
     resources = ["arn:aws:logs:*:*:*"]
-  },
-  statement
-  {
+  }
+
+  statement {
     effect = "Allow"
     actions = [
       "s3:PutObject",
@@ -105,9 +105,9 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/manual-test-results",
       "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/manual-test-results/*"
     ]
-  },
-  statement
-  {
+  }
+
+  statement {
     effect = "Allow"
     actions = [
       "s3:GetObject",
@@ -118,9 +118,9 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "arn:aws:s3:::dev-cost-and-usage",
       "arn:aws:s3:::dev-cost-and-usage/*"
     ]
-  },
-  statement
-  {
+  }
+
+  statement {
     effect = "Allow"
     actions = [
       "athena:StartQueryExecution",
@@ -136,16 +136,16 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "arn:aws:glue:eu-west-2:416874859154:database/repo-aws-cost",
       "arn:aws:glue:eu-west-2:416874859154:catalog"
     ]
-  },
-  statement
-  {
+  }
+
+  statement {
     effect = "Allow"
     actions = [
       "ses:SendRawEmail",
       "ses:SendEmail"
     ]
     resources = [
-      "arn:aws:ses:eu-west-2:416874859154:identity/${data.aws_ssm_parameter.sender_cost_report_email_id}"
+      "arn:aws:ses:eu-west-2:416874859154:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.name}"
     ]
   }
 
