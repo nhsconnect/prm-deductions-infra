@@ -13,7 +13,9 @@ resource "aws_lambda_function" "scheduled_cost_report" {
   }
   environment {
     variables = {
-      ENVIRONMENT = var.environment
+      ENVIRONMENT = var.environment,
+      SENDER_EMAIL = data.aws_ssm_parameter.sender_cost_report_email_id,
+      RECEIVER_EMAIL = split(",", data.aws_ssm_parameter.receiver_cost_report_email_id.value)
     }
   }
 }

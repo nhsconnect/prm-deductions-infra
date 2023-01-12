@@ -18,13 +18,8 @@ Query_String_List:
       OR resource_tags_user_created_by like '%prm-deductions-repo-to-gp%')
       GROUP BY product_product_name
       ORDER BY Cost DESC;
-#SES configuration
 Region: eu-west-2
 Subject: Test Email
-#TODO: Insert actual configuration emails here.
-#i.e. 'john@example.com'
-Sender: 'abc@xyz.com'
-#If there are mulitple recipients, seperate them by commas. i.e. 'john@example.com,alice@example.com'
-Recipient: 'abc@xyz.com'
-#Mail body
+Sender: ${SENDER_EMAIL}
+Recipient: ${RECEIVER_EMAIL}
 Body_Text: "Hi, you've successfully received email!"

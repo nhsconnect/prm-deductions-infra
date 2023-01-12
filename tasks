@@ -385,7 +385,6 @@ case "${command}" in
   tf_plan)
       check_env
       build_lambdas
-      build_lambda_scheduled_cur
       schedule_aws_cost_script_build_lambda_with_dependencies
       dojo "./tasks _tf_plan $2"
       ;;
