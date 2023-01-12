@@ -336,8 +336,24 @@ function build_lambda {
     popd
 }
 
+#TODO: Needs optimization and proper reuse of existing code.
+function build_lambda_scheduled_cur {
+
+    #default     = "../aws-cost-script/build/scheduled-cost-report.zip"
+    build_dir=build/scheduled-cost-report
+    rm -rf $build_dir
+    mkdir -p $build_dir
+
+    cp aws-cost-script/scheduled-cost-report/*.py $build_dir
+
+    pushd $build_dir
+    zip -r -X ../scheduled-cost-report.zip .
+    popd
+}
+
 function schedule_aws_cost_script_build_lambda_with_dependencies {
   cd aws-cost-script
+  #  default     = "../aws-cost-script/build/scheduled-cost-report.zip"
   build_dir=build/scheduled-cost-report
   rm -rf build
   mkdir -p build/scheduled-cost-report
@@ -348,7 +364,7 @@ function schedule_aws_cost_script_build_lambda_with_dependencies {
 
 function build_lambdas {
     build_lambda alarm
-    schedule_aws_cost_script_build_lambda_with_dependencies
+    #schedule_aws_cost_script_build_lambda_with_dependencies
 }
 
 command="$1"
