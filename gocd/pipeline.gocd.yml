@@ -5,6 +5,9 @@ common:
       - build:
           source: notification-lambda/build/alarm.zip
           destination: notification-lambda/build/
+      - build:
+          source: aws-cost-script/build/scheduled-cost-report.zip
+          destination: aws-cost-script/build/
     resources:
       - docker
     tasks:
@@ -230,6 +233,9 @@ pipelines:
                 - build:
                     source: notification-lambda/build/alarm.zip
                     destination: notification-lambda/build/
+                - build:
+                    source: aws-cost-script/build/scheduled-cost-report.zip
+                    destination: aws-cost-script/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -280,6 +286,12 @@ pipelines:
                     job: plan
                     source: notification-lambda/build/alarm.zip
                     destination: notification-lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: aws-cost-script/build/scheduled-cost-report.zip
+                    destination: aws-cost-script/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash

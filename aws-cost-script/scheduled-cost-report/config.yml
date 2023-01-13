@@ -20,6 +20,6 @@ Query_String_List:
       ORDER BY Cost DESC;
 Region: eu-west-2
 Subject: Test Email
-Sender: ${SENDER_EMAIL}
-Recipient: ${RECEIVER_EMAIL}
+Sender_Email_Ssm_Parameter: ${SENDER_EMAIL_SSM_PARAMETER}
+Recipient_Email_Ssm_Parameter: ${RECEIVER_EMAIL_SSM_PARAMETER}
 Body_Text: "Hi, you've successfully received email!"
