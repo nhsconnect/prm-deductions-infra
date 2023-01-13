@@ -358,7 +358,10 @@ function schedule_aws_cost_script_build_lambda_with_dependencies {
   rm -rf build
   mkdir -p build/scheduled-cost-report
   cp -r scheduled-cost-report/package/* scheduled-cost-report/index.py scheduled-cost-report/config.yml $build_dir
-  zip -r build/scheduled-cost-report.zip $build_dir
+
+  pushd $build_dir
+  zip -r -q -m -X ../scheduled-cost-report.zip .
+  popd
   cd ..
 }
 

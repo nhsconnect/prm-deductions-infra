@@ -145,7 +145,7 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "ses:SendEmail"
     ]
     resources = [
-      "arn:aws:ses:eu-west-2:416874859154:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.name}"
+      "arn:aws:ses:eu-west-2:416874859154:identity${data.aws_ssm_parameter.sender_cost_report_email_id.name}"
     ]
   }
 
