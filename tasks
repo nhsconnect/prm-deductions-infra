@@ -342,7 +342,7 @@ function build_scheduled_cost_report_lambda {
   rm -rf build
   mkdir -p build/scheduled-cost-report
 
-  pip install --target $build_dir -r scheduled-cost-report/requirements.txt
+  python3 -m pip install --target $build_dir -r scheduled-cost-report/requirements.txt
   cp scheduled-cost-report/index.py scheduled-cost-report/config.yml $build_dir
 
   pushd $build_dir
