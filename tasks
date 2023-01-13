@@ -342,9 +342,6 @@ function build_scheduled_cost_report_lambda {
   rm -rf build
   mkdir -p build/scheduled-cost-report
 
-  python3 -m ensurepip --upgrade
-  python3 --version
-  python3 -m pip --version
   python3 -m pip install --target $build_dir -r scheduled-cost-report/requirements.txt
   cp scheduled-cost-report/index.py scheduled-cost-report/config.yml $build_dir
 
@@ -356,7 +353,7 @@ function build_scheduled_cost_report_lambda {
 
 function build_lambdas {
     build_lambda alarm
-    build_scheduled_cost_report_lambda
+#    build_scheduled_cost_report_lambda
 }
 
 command="$1"
