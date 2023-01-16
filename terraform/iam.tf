@@ -136,10 +136,10 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "glue:GetPartition"
     ]
     resources = [
-      "arn:aws:athena:eu-west-2:416874859154:workgroup/primary",
-      "arn:aws:glue:eu-west-2:416874859154:table/repo-aws-cost/aws_cost_report",
-      "arn:aws:glue:eu-west-2:416874859154:database/repo-aws-cost",
-      "arn:aws:glue:eu-west-2:416874859154:catalog"
+      "arn:aws:athena:${var.region}:${local.account_id}:workgroup/primary",
+      "arn:aws:glue:${var.region}:${local.account_id}:table/repo-aws-cost/aws_cost_report",
+      "arn:aws:glue:${var.region}:${local.account_id}:database/repo-aws-cost",
+      "arn:aws:glue:${var.region}:${local.account_id}:catalog"
     ]
   }
 
