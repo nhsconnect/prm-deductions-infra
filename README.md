@@ -194,3 +194,14 @@ They will be also stored in a Repo folder in CloudWatch Insights. More informati
 `fields @timestamp, @message, service, correlationId`<br/>
 `| filter queue = 'raw-inbound'`<br/>
 `| sort @timestamp desc`
+
+# Querying value metrics
+
+To get the repo value metrics calculations from prod, do following (updating week-ending date appropriately):
+
+```
+eval $(assume-role prod)
+./value-metrics/query-continuity-service-counts.sh `2023-01-13`
+```
+
+This script currently assumes your aws profile for production is called `prod`. 
