@@ -38,21 +38,11 @@ with open("cost-report-configuration.yml", 'r') as ymlfile:
 
 # Import environment variable defined in Lambda, if it's not existed, use values defined in cost-report-configuration.yml
 ENVIRONMENT = os.environ.get('ENVIRONMENT')
-report_output_location = os.environ.get('CUR_OUTPUT_LOCATION')
-if not report_output_location:
-    report_output_location = cfg['cur_output_location']
-glue_db = os.environ.get('CUR_DB')
-if not glue_db:
-    glue_db = cfg['cur_db']
-cur_report_name = os.environ.get('CUR_REPORT_NAME')
-if not cur_report_name:
-    cur_report_name = cfg['cur_report_name']
-subject = os.environ.get('SUBJECT')
-if not subject:
-    subject = cfg['subject']
-body_text = os.environ.get('BODY_TEXT')
-if not body_text:
-    body_text = cfg['body_text']
+report_output_location = cfg['cur_output_location']
+glue_db = cfg['cur_db']
+cur_report_name = cfg['cur_report_name']
+subject = cfg['subject']
+body_text = cfg['body_text']
 region = os.environ.get('REGION')
 if not region:
     region = cfg['region']
@@ -66,7 +56,7 @@ tempPath = '/tmp'
 # Target bucket and key for CUR query results in s3
 cur_bucket = report_output_location.split('//')[1].split('/')[0]
 cur_key_path = report_output_location.split('//')[1].lstrip(cur_bucket).lstrip('/')
-query_execution_month_parameter = datetime.datetime.now().month - 1
+query_execution_month_parameter = datetime.datetime.now().month
 query_execution_year_parameter = datetime.datetime.now().year - 1 if query_execution_month_parameter == 12 \
     else datetime.datetime.now().year
 
@@ -99,8 +89,13 @@ for index in range(len(athena_queries)):
 
 
 def get_var_char_values(d):
-    return [obj['VarCharValue'] for obj in d['Data']]
-
+    rowList = []
+    for obj in d['Data']:
+        if obj.get('VarCharValue'):
+            rowList.append(obj['VarCharValue'])
+        else:
+            rowList.append("")
+    return rowList
 
 def execute_cur_queries_on_athena():
     client = boto3.client('athena', region_name=region)
@@ -141,7 +136,6 @@ def execute_cur_queries_on_athena():
         elif status == AthenaQueryExecutionStatus.SUCCEEDED:
             location = response_get_query_details['QueryExecution']['ResultConfiguration']['OutputLocation']
             print("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
-            print("Location is: " + location)
 
             # Function to get output results
             response_query_result = client.get_query_results(
@@ -151,8 +145,8 @@ def execute_cur_queries_on_athena():
                 print("Query response result is more than one row, splitting header and rows!")
                 header = response_query_result['ResultSet']['Rows'][0]
                 rows = response_query_result['ResultSet']['Rows'][1:]
-
                 header = [obj['VarCharValue'] for obj in header['Data']]
+                print(location)
                 result = [dict(zip(header, get_var_char_values(row))) for row in rows]
 
                 return location, result
@@ -213,3 +207,5 @@ def lambda_handler(event, context):
     fetch_cost_report_into_lambda_directory(cur_bucket, cur_key_path, queries_to_execute)
     response = send_report_via_email(region, subject, sender, recipient, file_name, body_text)
     return response
+
+lambda_handler(None, None)
