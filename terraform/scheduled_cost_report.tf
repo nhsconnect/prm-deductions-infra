@@ -4,7 +4,7 @@ resource "aws_lambda_function" "scheduled_cost_report" {
   role          = aws_iam_role.scheduled-cost-report-role.arn
   handler       = "index.lambda_handler"
   source_code_hash = filebase64sha256(var.schedule_cost_report_lambda_zip)
-  runtime       = "python3.9"
+  runtime       = "python3.8"
   timeout       = 15
   memory_size   = 448
   tags = {
