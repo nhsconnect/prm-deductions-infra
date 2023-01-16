@@ -181,8 +181,8 @@ variable "alarm_lambda_zip" {
   default     = "../notification-lambda/build/alarm.zip"
 }
 
-variable "schedule_cost_report_lambda_zip" {
+variable "generate_cost_report_lambda_zip" {
   type        = string
   description = "path to zip file containing lambda code to schedule cost report"
-  default     = "../aws-cost-script/build/scheduled-cost-report.zip"
+  default     = "../generate-cost-report-lambda/build/generate-cost-report-lambda.zip"
 }

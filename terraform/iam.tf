@@ -53,9 +53,9 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
   }
 }
 
-resource "aws_iam_role" "scheduled-cost-report-role" {
-  name = "ScheduledCostReportLambdaExecution"
-  description        = "Role to run the scheduled cost report"
+resource "aws_iam_role" "generate-cost-report-role" {
+  name = "GenerateCostReportLambdaExecution"
+  description        = "Role to generate the cost report"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -71,12 +71,12 @@ resource "aws_iam_role" "scheduled-cost-report-role" {
   })
 }
 
-resource "aws_iam_policy" "scheduled-cost-report-role-policy" {
-  name   = "scheduled_cost_report"
-  policy = data.aws_iam_policy_document.scheduled_cost_report_policy_document.json
+resource "aws_iam_policy" "generate-cost-report-role-policy" {
+  name   = "generate_cost_report"
+  policy = data.aws_iam_policy_document.generate_cost_report_lambda_policy_document.json
 }
 
-data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
+data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
   statement {
     sid = "GetSSMParameter"
     actions = [
@@ -155,7 +155,7 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
 
 }
 
-resource "aws_iam_role_policy_attachment" "scheduled-cost-report-policy-attachment" {
-  role       = aws_iam_role.scheduled-cost-report-role.name
-  policy_arn = aws_iam_policy.scheduled-cost-report-role-policy.arn
+resource "aws_iam_role_policy_attachment" "generate-cost-report-policy-attachment" {
+  role       = aws_iam_role.generate-cost-report-role.name
+  policy_arn = aws_iam_policy.generate-cost-report-role-policy.arn
 }
