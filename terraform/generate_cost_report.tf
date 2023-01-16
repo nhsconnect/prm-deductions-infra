@@ -19,3 +19,27 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
     }
   }
 }
+
+resource "aws_cloudwatch_event_rule" "generate_cost_report_end_of_every_month" {
+  name                = "generate-cost-report-end-of-every-month"
+  description         = "Invokes cost report lambda function end of every month"
+  schedule_expression = "cron(55 23 L * ? *)"
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_cloudwatch_event_target" "invoke_generate_cost_report_lambda" {
+  rule      =  aws_cloudwatch_event_rule.generate_cost_report_end_of_every_month.name
+  target_id = "InvokeLambda"
+  arn       =  aws_lambda_function.generate_cost_report_lambda.arn
+}
+
+resource "aws_lambda_permission" "allow_invocation_from_event_bridge_rule" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.generate_cost_report_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.generate_cost_report_end_of_every_month.arn
+}
