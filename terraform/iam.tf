@@ -1,3 +1,8 @@
+locals {
+  receiver_email_arns = split(",","arn:aws:ses:eu-west-2:416874859154:identity/${join(",arn:aws:ses:eu-west-2:416874859154:identity/",split(",",data.aws_ssm_parameter.receiver_cost_report_email_id.value))}")
+  sender_email_arn = ["arn:aws:ses:eu-west-2:416874859154:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
+}
+
 data "aws_ssm_parameter" "splunk_trusted_principal" {
   name = "/repo/user-input/external/splunk-trusted-principal"
 }
@@ -144,10 +149,8 @@ data "aws_iam_policy_document" "scheduled_cost_report_policy_document" {
       "ses:SendRawEmail",
       "ses:SendEmail"
     ]
-    resources = [
-      "arn:aws:ses:eu-west-2:416874859154:identity${data.aws_ssm_parameter.sender_cost_report_email_id.value}",
-      "arn:aws:ses:eu-west-2:416874859154:identity${data.aws_ssm_parameter.receiver_cost_report_email_id.value}"
-    ]
+    resources = concat(local.receiver_email_arns, local.sender_email_arn)
+
   }
 
 }

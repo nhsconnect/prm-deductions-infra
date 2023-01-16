@@ -353,7 +353,7 @@ function build_scheduled_cost_report_lambda {
 
 function build_lambdas {
     build_lambda alarm
-#    build_scheduled_cost_report_lambda
+    build_scheduled_cost_report_lambda
 }
 
 command="$1"
@@ -368,12 +368,15 @@ case "${command}" in
       ;;
   _tf_plan)
       _assume_environment_role $NHS_ENVIRONMENT
+      build_lambdas
       tf_plan "$2"
       ;;
   tf_plan)
       check_env
-      build_lambdas
       dojo "./tasks _tf_plan $2"
+      ;;
+  build_lambdas)
+      build_lambdas
       ;;
   _tf_plan_cross_account)
       if [[ $NHS_ENVIRONMENT != "ci" ]]; then
