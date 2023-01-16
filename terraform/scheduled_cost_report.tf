@@ -2,7 +2,7 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
   filename      = var.generate_cost_report_lambda_zip
   function_name = "${var.environment}-generate-cost-report-lambda"
   role          = aws_iam_role.generate-cost-report-role.arn
-  handler       = "index.lambda_handler"
+  handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.generate_cost_report_lambda_zip)
   runtime       = "python3.8"
   timeout       = 15

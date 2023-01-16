@@ -343,7 +343,7 @@ function build_generate_cost_report_lambda {
   mkdir -p build/generate-cost-report-lambda
 
   python3 -m pip install --target $build_dir -r requirements.txt
-  cp index.py config.yml $build_dir
+  cp main.py cost-report-configuration.yml $build_dir
 
   pushd $build_dir
   zip -r -q -m -X ../generate-cost-report-lambda.zip .
