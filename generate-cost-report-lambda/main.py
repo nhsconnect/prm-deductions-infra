@@ -37,9 +37,11 @@ with open("cost-report-configuration.yml", 'r') as ymlfile:
     cfg = yaml.load(ymlfile, Loader=yaml.SafeLoader)
 
 # Import environment variable defined in Lambda, if it's not existed, use values defined in cost-report-configuration.yml
-ENVIRONMENT = os.environ.get('ENVIRONMENT')
+environment = cfg['environment']
+account_id = cfg['account_id']
 report_output_location = cfg['cur_output_location']
 glue_db = cfg['cur_db']
+glue_table = cfg['cur_table']
 cur_report_name = cfg['cur_report_name']
 subject = cfg['subject']
 body_text = cfg['body_text']
@@ -57,11 +59,10 @@ tempPath = '/tmp'
 cur_bucket = report_output_location.split('//')[1].split('/')[0]
 cur_key_path = report_output_location.split('//')[1].lstrip(cur_bucket).lstrip('/')
 query_execution_month_parameter = datetime.datetime.now().month
-query_execution_year_parameter = datetime.datetime.now().year - 1 if query_execution_month_parameter == 12 \
-    else datetime.datetime.now().year
+query_execution_year_parameter = datetime.datetime.now().year
 
 current_date = (datetime.date.today()).strftime('%Y-%m-%d')
-file_name = f'ORC-{ENVIRONMENT}-aws-cost-and-usage-report-{current_date}.csv'
+file_name = f'{environment}-{account_id}-aws-cost-and-usage-report-{current_date}.csv'
 
 
 class AthenaQueryExecutionStatus(str, Enum):
@@ -80,6 +81,7 @@ def populate_query_parameters(query, substitutions):
 
 query_parameters = {
     'CUR_DB': glue_db,
+    'CUR_TABLE': glue_table,
     'CUR_YEAR': str(query_execution_year_parameter),
     'CUR_MONTH': str(query_execution_month_parameter)
 }

@@ -16,6 +16,7 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
       ENVIRONMENT = var.environment,
       SENDER_EMAIL_SSM_PARAMETER = data.aws_ssm_parameter.sender_cost_report_email_id.name,
       RECEIVER_EMAIL_SSM_PARAMETER = data.aws_ssm_parameter.receiver_cost_report_email_id.name
+      ACCOUNT_ID = data.aws_caller_identity.current.account_id
     }
   }
 }

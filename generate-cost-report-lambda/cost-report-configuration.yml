@@ -1,9 +1,12 @@
+environment: ${ENVIRONMENT}
 cur_output_location: s3://${ENVIRONMENT}-cost-and-usage/reports/aws-cost-report/manual-test-results/
-cur_db: >-
-    "repo-aws-cost"."aws_cost_report"
+cur_db: ${ENVIRONMENT}-generate-cost-report-catalog-database
+cur_table: aws_cost_report
 cur_report_name: ${ENVIRONMENT}_cost_and_usage_report.xlsx
 query_string_list:
-    - original_query: SELECT  product_product_name AS ServiceName, bill_billing_period_start_date, bill_billing_period_end_date, resource_tags_user_created_by, ROUND (SUM (pricing_public_on_demand_cost), 3) as Cost FROM CUR_DB
+    - original_query: SELECT  product_product_name AS ServiceName, bill_billing_period_start_date,
+          bill_billing_period_end_date, resource_tags_user_created_by, ROUND (SUM (pricing_public_on_demand_cost), 3) as Cost
+          FROM "CUR_DB"."CUR_TABLE"
           WHERE month='CUR_MONTH' AND year='CUR_YEAR'
           GROUP BY product_product_name,
           bill_billing_period_start_date, bill_billing_period_end_date, resource_tags_user_created_by
@@ -12,4 +15,5 @@ region: eu-west-2
 subject: PRM - Cost and Usage Report
 sender_email_ssm_parameter: ${SENDER_EMAIL_SSM_PARAMETER}
 recipient_email_ssm_parameter: ${RECEIVER_EMAIL_SSM_PARAMETER}
+account_id: ${ACCOUNT_ID}
 body_text: "Hi, please find attached cost and usage report"
