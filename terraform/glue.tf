@@ -50,7 +50,7 @@ data "aws_iam_policy_document" "generate_cost_report_glue_assume_role_policy" {
 
 resource "aws_iam_role_policy_attachment" "generate_cost_report_glue_attachment" {
   for_each = toset([
-    aws_iam_policy.generate_cost_report_glue_role_policy.arn,
+    format("arn:aws:iam::%s:policy/%s", data.aws_caller_identity.current.account_id, aws_iam_policy.generate_cost_report_glue_role_policy.name),
     "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
   ])
 
