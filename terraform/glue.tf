@@ -20,7 +20,7 @@ resource "aws_glue_crawler" "generate_cost_report_crawler" {
 resource "aws_iam_role" "generate_cost_report_glue_role" {
   name = "${var.environment}-generate-cost-report-glue-role"
   description        = "Glue Role to allow access to the billing reports"
-  assume_role_policy = data.aws_iam_policy_document.generate_cost_report_glue_policy_document.json
+  assume_role_policy = data.aws_iam_policy_document.generate_cost_report_glue_assume_role_policy.json
 }
 
 resource "aws_iam_policy" "generate_cost_report_glue_role_policy" {
@@ -29,7 +29,18 @@ resource "aws_iam_policy" "generate_cost_report_glue_role_policy" {
 }
 
 data "aws_iam_policy_document" "generate_cost_report_glue_policy_document" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/*"
+    ]
+  }
+}
 
+data "aws_iam_policy_document" "generate_cost_report_glue_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -39,15 +50,5 @@ data "aws_iam_policy_document" "generate_cost_report_glue_policy_document" {
         "glue.amazonaws.com"
       ]
     }
-  }
-
-  statement {
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject"
-    ]
-    resources = [
-      "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/*"
-    ]
   }
 }
