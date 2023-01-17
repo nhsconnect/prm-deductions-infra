@@ -1,6 +1,6 @@
 locals {
-  receiver_email_arns = split(",","arn:aws:ses:eu-west-2:416874859154:identity/${join(",arn:aws:ses:eu-west-2:416874859154:identity/",split(",",data.aws_ssm_parameter.receiver_cost_report_email_id.value))}")
-  sender_email_arn = ["arn:aws:ses:eu-west-2:416874859154:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
+  receiver_email_arns = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.receiver_cost_report_email_id.value))}")
+  sender_email_arn = ["arn:aws:ses:${var.region}:${local.account_id}:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
 }
 
 data "aws_ssm_parameter" "splunk_trusted_principal" {
