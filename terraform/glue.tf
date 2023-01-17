@@ -9,6 +9,8 @@ resource "aws_glue_catalog_table" "generate_cost_report_table" {
   parameters = {
     EXTERNAL              = "TRUE"
     "parquet.compression" = "SNAPPY"
+    classification = "parquet"
+    typeOfData = "file"
   }
   storage_descriptor {
     location      = "s3://${aws_s3_bucket.cost_and_usage_bucket.bucket}/reports/aws-cost-report/aws-cost-report/"
