@@ -137,8 +137,7 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
     ]
     resources = [
       "arn:aws:athena:${var.region}:${local.account_id}:workgroup/primary",
-      "arn:aws:glue:${var.region}:${local.account_id}:table/${var.environment}-generate-cost-report-catalog-database
-      /aws_cost_report",
+      "arn:aws:glue:${var.region}:${local.account_id}:table/${var.environment}-generate-cost-report-catalog-database/aws_cost_report",
       "arn:aws:glue:${var.region}:${local.account_id}:database/${var.environment}-generate-cost-report-catalog-database",
       "arn:aws:glue:${var.region}:${local.account_id}:catalog"
     ]
