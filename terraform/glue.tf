@@ -2,31 +2,6 @@ resource "aws_glue_catalog_database" "generate_cost_report_database" {
   name = "${var.environment}-generate-cost-report-catalog-database"
 }
 
-resource "aws_glue_catalog_table" "generate_cost_report_table" {
-  name          = "${var.environment}-generate-cost-report-table"
-  database_name = aws_glue_catalog_database.generate_cost_report_database.name
-  table_type = "EXTERNAL_TABLE"
-  parameters = {
-    EXTERNAL              = "TRUE"
-    "parquet.compression" = "SNAPPY"
-    classification = "parquet"
-    typeOfData = "file"
-  }
-  storage_descriptor {
-    location      = "s3://${aws_s3_bucket.cost_and_usage_bucket.bucket}/reports/aws-cost-report/aws-cost-report/"
-    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
-    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
-
-    ser_de_info {
-      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
-
-      parameters = {
-        "serialization.format" = 1
-      }
-    }
-  }
-}
-
 resource "aws_glue_crawler" "generate_cost_report_crawler" {
   database_name = aws_glue_catalog_database.generate_cost_report_database.name
   name          = "${var.environment}-generate-cost-report-crawler"
