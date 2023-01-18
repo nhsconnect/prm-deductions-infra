@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "generate_cost_report_glue_policy_document" {
       "s3:PutObject"
     ]
     resources = [
-      "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/*"
+      "arn:aws:s3:::${var.environment}-cost-and-usage/reports/aws-cost-report/*"
     ]
   }
 }

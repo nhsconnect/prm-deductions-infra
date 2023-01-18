@@ -107,8 +107,8 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "s3:GetBucketLocation"
     ]
     resources = [
-      "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/manual-test-results",
-      "arn:aws:s3:::dev-cost-and-usage/reports/aws-cost-report/manual-test-results/*"
+      "arn:aws:s3:::${var.environment}-cost-and-usage/reports/aws-cost-report/manual-test-results",
+      "arn:aws:s3:::${var.environment}-cost-and-usage/reports/aws-cost-report/manual-test-results/*"
     ]
   }
 
@@ -120,8 +120,8 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "s3:GetBucketLocation"
     ]
     resources = [
-      "arn:aws:s3:::dev-cost-and-usage",
-      "arn:aws:s3:::dev-cost-and-usage/*"
+      "arn:aws:s3:::${var.environment}-cost-and-usage",
+      "arn:aws:s3:::${var.environment}-cost-and-usage/*"
     ]
   }
 
