@@ -199,6 +199,32 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       ]
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "glue:GetCrawler",
+      "glue:GetTables",
+      "glue:GetDatabases",
+      "glue:GetTable",
+      "glue:ListSchemas",
+      "glue:SearchTables",
+      "glue:GetPartitions",
+      "glue:GetDatabase",
+      "glue:GetPartition",
+      "glue:ListCrawlers",
+      "glue:ListCrawls",
+      "glue:GetCrawlers"
+    ]
+    resources = [
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:table/${var.environment}-generate-cost-report-catalog-database/aws-cost-report",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:crawler/${var.environment}-generate-cost-report-crawler",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:database/${var.environment}-generate-cost-report-catalog-database",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:catalog",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:catalog/*",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:crawler/*"
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "bootstrap_update_service" {
