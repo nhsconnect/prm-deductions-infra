@@ -11,6 +11,9 @@ import boto3
 import botocore
 import yaml
 from botocore.exceptions import ClientError
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 path_matcher = re.compile(r'(.*)\$\{([^}^{]+)\}')
 
@@ -23,7 +26,6 @@ def yaml_constructor_for_environment_variables(loader, node):
 
 
 def get_ssm_parameter(parameter_name):
-    print(parameter_name)
     client = boto3.client('ssm', region_name=region)
     return client.get_parameter(
         Name=parameter_name
@@ -101,18 +103,17 @@ def get_var_char_values(d):
 
 def execute_cur_queries_on_athena():
     client = boto3.client('athena', region_name=region)
-    print("Starting query CUR ... ")
+    logger.info("Starting CUR query execution ... ")
     resp = None
     for query_index in range(len(queries_to_execute)):
-        print("Query is: " + queries_to_execute[query_index]['queryString'])
         resp = client.start_query_execution(
             QueryString=queries_to_execute[query_index]['queryString'],
             ResultConfiguration={
                 'OutputLocation': report_output_location
             })
         queries_to_execute[query_index]['queryId'] = resp['QueryExecutionId']
-        print(
-            "Query " + queries_to_execute[query_index]['name'] + ' cost, queryId is ' + queries_to_execute[query_index][
+        logger.info(
+            "Query to execute is: " + queries_to_execute[query_index]['queryString'] + " QueryId is: " + queries_to_execute[query_index][
                 'queryId'])
 
     wait_for_query_execution_seconds = 5
@@ -124,39 +125,36 @@ def execute_cur_queries_on_athena():
             QueryExecutionId=resp['QueryExecutionId']
         )
         status = response_get_query_details['QueryExecution']['Status']['State']
-        print("Current Query Execution Status is: " + status)
         if (status == AthenaQueryExecutionStatus.FAILED) or (status == AthenaQueryExecutionStatus.CANCELLED):
             failure_reason = response_get_query_details['QueryExecution']['Status']['StateChangeReason']
-            print("Query either FAILED or CANCELED, reason is: " + failure_reason)
+            logger.error("Query either FAILED or CANCELED, reason is: " + failure_reason)
+            #Add new function here for handling failure
             return False, False
 
         elif status == AthenaQueryExecutionStatus.QUEUED:
-            time.sleep(1)
-            print('Waiting 100ms for execution!')
-            continue
+            time.sleep(wait_for_query_execution_seconds)
+            logger.info('Waiting 100ms for query execution!')
 
         elif status == AthenaQueryExecutionStatus.SUCCEEDED:
             location = response_get_query_details['QueryExecution']['ResultConfiguration']['OutputLocation']
-            print("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
+            logger.info("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
 
             # Function to get output results
             response_query_result = client.get_query_results(
                 QueryExecutionId=resp['QueryExecutionId']
             )
             if len(response_query_result['ResultSet']['Rows']) > 1:
-                print("Query response result is more than one row, splitting header and rows!")
+                logger.info("Query response result is more than one row, splitting header and rows!")
                 header = response_query_result['ResultSet']['Rows'][0]
                 rows = response_query_result['ResultSet']['Rows'][1:]
                 header = [obj['VarCharValue'] for obj in header['Data']]
-                print(location)
+                logger.info("Query result output location is: " + location)
                 result = [dict(zip(header, get_var_char_values(row))) for row in rows]
 
                 return location, result
             else:
-                print("No results found!")
+                logger.info("No results found!")
                 return location, None
-    else:
-        time.sleep(wait_for_query_execution_seconds)
 
     return False
 
@@ -165,22 +163,23 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
     os.chdir(tempPath)
     s3 = boto3.resource('s3')
     for i in range(len(query_list)):
-        print("Copy query result: s3://" + bucket_name + "/" + key_path + query_list[i]['queryId'] + ".csv")
+        logger.info("Copying query result from output source location: s3://" + bucket_name + "/" + key_path + query_list[i]['queryId'] + ".csv")
         try:
             s3.Bucket(bucket_name).download_file(key_path + query_list[i]['queryId'] + '.csv',
                                                  file_name)
             is_file_downloaded = os.path.isfile('/tmp/' + file_name)
-            print(f"Successfully downloaded the report:  {is_file_downloaded}")
+            logger.info(f"Successfully copied the report:  {is_file_downloaded}")
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
-                print("The target query result file does not exist.")
+                logger.error("The target query result file does not exist.")
+                #Send email to support team
             else:
                 raise
 
 
 def send_report_via_email(ses_region, email_subject, email_sender, email_receivers, report_name, email_body):
     os.chdir(tempPath)
-    print("Sending test email via SES... ")
+    logger.info("Emailing cost and usage report via SES... ")
     client = boto3.client('ses', region_name=ses_region)
     message = MIMEMultipart('mixed')
     message['Subject'] = email_subject
@@ -201,7 +200,8 @@ def send_report_via_email(ses_region, email_subject, email_sender, email_receive
         )
         return response
     except ClientError as e:
-        print(e.response['Error']['Message'])
+        logger.error(e.response['Error']['Message'])
+        #Send email to support team
 
 
 def lambda_handler(event, context):
