@@ -117,6 +117,22 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   }
 
   statement {
+    effect = "Allow"
+    actions = [
+      "glue:GetPartitions",
+      "glue:GetTable",
+      "glue:SearchTables",
+      "glue:GetPartition",
+      "glue:GetDatabase"
+    ]
+    resources = [
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:table/${var.environment}-generate-cost-report-catalog-database/aws_cost_report",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:database/${var.environment}-generate-cost-report-catalog-database",
+      "arn:aws:glue:eu-west-2:${data.aws_caller_identity.current.account_id}:catalog"
+    ]
+  }
+
+  statement {
     sid = "S3AllowListBuckets"
     effect = "Allow"
     actions = [
