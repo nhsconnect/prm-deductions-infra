@@ -133,7 +133,8 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "athena:GetQueryExecution",
       "glue:GetPartitions",
       "glue:GetTable",
-      "glue:GetPartition"
+      "glue:GetPartition",
+      "glue:GetDatabase"
     ]
     resources = [
       "arn:aws:athena:${var.region}:${local.account_id}:workgroup/primary",
