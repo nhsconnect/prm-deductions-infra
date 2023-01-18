@@ -5,7 +5,11 @@ resource "aws_iam_role" "bootstrap_admin" {
 
 resource "aws_iam_policy" "bootstrap_admin_permissions_policy" {
   name = "bootstrap_admin_permissions_policy"
-  policy = data.aws_iam_policy_document.bootstrap_admin_permissions.json
+  for_each = toset([
+    data.aws_iam_policy_document.bootstrap_admin_permissions.json,
+    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+  ])
+  policy = each.value
 }
 
 data "aws_iam_policy_document" "bootstrap_admin_permissions" {
