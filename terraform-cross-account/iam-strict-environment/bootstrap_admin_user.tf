@@ -38,6 +38,33 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
 
   statement {
     effect = "Allow"
+    actions = ["events:ListRules"]
+    resources = ["arn:aws:events:eu-west-2:${data.aws_caller_identity.current.account_id}:rule/generate-cost-report-end-of-every-month"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = ["lambda:InvokeFunction"]
+    resources = ["arn:aws:lambda:eu-west-2:${data.aws_caller_identity.current.account_id}:function:dev-generate-cost-report-lambda"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ses:ListIdentities",
+      "ses:ListVerifiedEmailAddresses",
+      "ses:DeleteIdentity",
+      "ses:VerifyEmailAddress",
+      "ses:VerifyEmailIdentity",
+      "ses:GetAccount",
+      "ses:ListConfigurationSets",
+      "ses:CreateEmailIdentity"
+    ]
+    resources = ["arn:aws:ses:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+  }
+
+  statement {
+    effect = "Allow"
     actions = [
       "secretsmanager:CreateSecret",
       "secretsmanager:DescribeSecret",
