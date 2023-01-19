@@ -134,9 +134,7 @@ def execute_cur_queries_on_athena():
         if (status == AthenaQueryExecutionStatus.FAILED) or (status == AthenaQueryExecutionStatus.CANCELLED):
             failure_reason = response_get_query_details['QueryExecution']['Status']['StateChangeReason']
             logger.error("Query either FAILED or CANCELED, reason is: " + failure_reason, exc_info=True)
-            send_error_details_to_support("Athena query either FAILED or CANCELED with reason " + failure_reason)
-            #TODO raise user exception
-            raise
+            raise Exception("Athena query either FAILED or CANCELED with reason " + failure_reason)
 
         elif status == AthenaQueryExecutionStatus.QUEUED:
             logger.info('Query queued, waiting for query execution to begin')
@@ -174,14 +172,15 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 logger.error("The target query result file does not exist.", exc_info=True)
-                send_error_details_to_support("The query result file does not exist")
+                raise e
             else:
-                raise
+                logger.error("Unexpected error while fetching cost report into Lambda directory.", exc_info=True)
+                raise e
 
 
 def send_error_details_to_support(error_message):
     email_body = f"There was an error generating the cost and usage report. Please find details below: \n\n" \
-                 f"Error description: {error_message}\n\n" \
+                 f"Error description: \n{error_message}\n\n" \
                  f"Error stack trace:\n" \
                  f"{traceback.format_exc()} "
     send_email("Error generating PRM cost and usage report", sender_email, support_email_address, None, email_body)
@@ -218,7 +217,7 @@ def lambda_handler(event, context):
         execute_cur_queries_on_athena()
         fetch_cost_report_into_lambda_directory(cur_bucket, cur_key_path, queries_to_execute)
     except Exception as e:
-        send_error_details_to_support("Unexpected exception while generating cost and usage report")
+        send_error_details_to_support("Unexpected exception while generating cost and usage report. \n" + str(e))
     else:
         response = send_email(subject, sender_email, recipient_emails, file_name, body_text)
         return response
