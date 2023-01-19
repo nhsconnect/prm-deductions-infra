@@ -139,6 +139,7 @@ def execute_cur_queries_on_athena():
         elif status == AthenaQueryExecutionStatus.QUEUED:
             logger.info('Query queued, waiting for query execution to begin')
             time.sleep(wait_for_query_execution_seconds)
+            continue
 
         elif status == AthenaQueryExecutionStatus.SUCCEEDED:
             logger.info("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
@@ -148,14 +149,10 @@ def execute_cur_queries_on_athena():
                 QueryExecutionId=resp['QueryExecutionId']
             )
             if len(response_query_result['ResultSet']['Rows']) > 1:
-                logger.info("Query response result is more than one row, splitting header and rows!")
-                header = response_query_result['ResultSet']['Rows'][0]
-                rows = response_query_result['ResultSet']['Rows'][1:]
-                header = [obj['VarCharValue'] for obj in header['Data']]
-                logger.info("Query result output location is: " + location)
-                result = [dict(zip(header, get_var_char_values(row))) for row in rows]
+                logger.info("Query execution completed. Result location is: " + location)
             else:
                 logger.info("No results found!")
+            break
 
 
 def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
@@ -197,11 +194,11 @@ def send_email(email_subject, email_sender, email_receivers, report_name, email_
     message['Subject'] = email_subject
     message['From'] = email_sender
     message['To'] = email_receivers
+    message.attach(MIMEText(email_body))
     if report_name:
         email_attachment = MIMEApplication(open(report_name, 'rb').read())
         email_attachment.add_header('Content-Disposition', 'attachment', filename=os.path.basename(report_name))
         message.attach(email_attachment)
-    message.attach(MIMEText(email_body))
     try:
         response = client.send_raw_email(
             Source=email_sender,
