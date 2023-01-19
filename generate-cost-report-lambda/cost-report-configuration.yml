@@ -15,5 +15,6 @@ region: eu-west-2
 subject: PRM - Cost and Usage Report
 sender_email_ssm_parameter: ${SENDER_EMAIL_SSM_PARAMETER}
 recipient_email_ssm_parameter: ${RECEIVER_EMAIL_SSM_PARAMETER}
+support_email_ssm_parameter: ${SUPPORT_EMAIL_SSM_PARAMETER}
 account_id: ${ACCOUNT_ID}
-body_text: "Hi, please find attached cost and usage report"
+body_text: "Hi, \nPlease find attached cost and usage report. \n\nRegards, \nPRM Team"

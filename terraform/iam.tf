@@ -1,5 +1,6 @@
 locals {
   receiver_email_arns = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.receiver_cost_report_email_id.value))}")
+  support_email_arns = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.support_cost_report_email_id.value))}")
   sender_email_arn = ["arn:aws:ses:${var.region}:${local.account_id}:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
 }
 
@@ -84,7 +85,8 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
     ]
     resources = [
       "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.sender_cost_report_email_id.name}",
-      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.receiver_cost_report_email_id.name}"
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.receiver_cost_report_email_id.name}",
+      "arn:aws:ssm:${var.region}:${local.account_id}:parameter${data.aws_ssm_parameter.support_cost_report_email_id.name}"
     ]
   }
 
@@ -150,7 +152,7 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "ses:SendRawEmail",
       "ses:SendEmail"
     ]
-    resources = concat(local.receiver_email_arns, local.sender_email_arn)
+    resources = concat(local.receiver_email_arns, local.sender_email_arn, local.support_email_arns)
 
   }
 

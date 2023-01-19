@@ -54,10 +54,10 @@ if not region:
     region = cfg['region']
 sender_email_ssm_parameter = cfg['sender_email_ssm_parameter']
 recipient_email_ssm_parameter = cfg['recipient_email_ssm_parameter']
+support_email_ssm_parameter = cfg['support_email_ssm_parameter']
 sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
 recipient_emails = get_ssm_parameter(recipient_email_ssm_parameter)['Parameter']['Value']
-# TODO add support email SSM parameter
-support_email_address = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
+support_email_address = get_ssm_parameter(support_email_ssm_parameter)['Parameter']['Value']
 athena_queries = cfg['query_string_list']
 queries_to_execute = []
 tempPath = '/tmp'
@@ -179,10 +179,13 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
 
 
 def send_error_details_to_support(error_message):
-    email_body = f"There was an error generating the cost and usage report. Please find details below: \n\n" \
+    email_body = f"Hi, \n" \
+                 f"There was an error generating the cost and usage report. Please find details below: \n\n" \
                  f"Error description: \n{error_message}\n\n" \
                  f"Error stack trace:\n" \
-                 f"{traceback.format_exc()} "
+                 f"{traceback.format_exc()} \n\n" \
+                 f"Regards, \n" \
+                 f"PRM Team"
     send_email("Error generating PRM cost and usage report", sender_email, support_email_address, None, email_body)
 
 
