@@ -149,9 +149,9 @@ def execute_cur_queries_on_athena():
                 QueryExecutionId=resp['QueryExecutionId']
             )
             if len(response_query_result['ResultSet']['Rows']) > 1:
-                logger.info("Query execution completed. Result location is: " + location)
+                logger.info("Query generated results at location: " + location)
             else:
-                logger.info("No results found!")
+                logger.info("Query did not generate any results")
             break
 
 
@@ -210,8 +210,6 @@ def send_email(email_subject, email_sender, email_receivers, report_name, email_
         return response
     except ClientError as e:
         logger.error(e.response['Error']['Message'], exc_info=True)
-    finally:
-        client.close()
 
 
 def lambda_handler(event, context):
