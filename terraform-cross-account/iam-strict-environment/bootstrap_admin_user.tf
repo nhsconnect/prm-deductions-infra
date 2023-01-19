@@ -39,13 +39,13 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
   statement {
     effect = "Allow"
     actions = ["events:ListRules"]
-    resources = ["arn:aws:events:eu-west-2:${data.aws_caller_identity.current.account_id}:rule/generate-cost-report-end-of-every-month"]
+    resources = ["arn:aws:events:eu-west-2:${data.aws_caller_identity.current.account_id}:rule/*"]
   }
 
   statement {
     effect = "Allow"
     actions = ["lambda:InvokeFunction"]
-    resources = ["arn:aws:lambda:eu-west-2:${data.aws_caller_identity.current.account_id}:function:dev-generate-cost-report-lambda"]
+    resources = ["arn:aws:lambda:eu-west-2:${data.aws_caller_identity.current.account_id}:function:${var.environment}-generate-cost-report-lambda"]
   }
 
   statement {
@@ -53,12 +53,14 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
     actions = [
       "ses:ListIdentities",
       "ses:ListVerifiedEmailAddresses",
+      "ses:ListEmailIdentities",
       "ses:DeleteIdentity",
       "ses:VerifyEmailAddress",
       "ses:VerifyEmailIdentity",
       "ses:GetAccount",
       "ses:ListConfigurationSets",
-      "ses:CreateEmailIdentity"
+      "ses:CreateEmailIdentity",
+      "ses:TagResource"
     ]
     resources = ["arn:aws:ses:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
   }

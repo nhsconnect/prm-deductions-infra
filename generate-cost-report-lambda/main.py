@@ -213,6 +213,8 @@ def send_email(email_subject, email_sender, email_receivers, report_name, email_
         return response
     except ClientError as e:
         logger.error(e.response['Error']['Message'], exc_info=True)
+    finally:
+        client.close()
 
 
 def lambda_handler(event, context):
@@ -224,6 +226,3 @@ def lambda_handler(event, context):
     else:
         response = send_email(subject, sender_email, recipient_emails, file_name, body_text)
         return response
-
-
-lambda_handler(None, None)
