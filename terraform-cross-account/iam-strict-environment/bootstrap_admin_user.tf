@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "ses:CreateEmailIdentity",
       "ses:TagResource"
     ]
-    resources = ["arn:aws:ses:eu-west-2:${data.aws_caller_identity.current.account_id}:*"]
+    resources = ["*"]
   }
 
   statement {
