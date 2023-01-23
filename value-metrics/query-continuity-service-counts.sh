@@ -3,16 +3,20 @@ if [ "$1" == "" ]; then
   echo please pass week ending date as first parameter
   exit 1
 fi
+if [ "$NHS_ENVIRONMENT" == "" ]; then
+  echo please ensure NHS_ENVIRONMENT variable is set
+  exit 1
+fi
 
 export WEEK_ENDING=$1
-ENVIRONMENT=$ASSUMED_ROLE
+ENVIRONMENT=$NHS_ENVIRONMENT
 
 export COUNT_ACCOUNT=$(aws sts get-caller-identity | jq -r .'Account')
 
 echo getting counts for week ending $WEEK_ENDING from environment $ENVIRONMENT account no $COUNT_ACCOUNT
 
-export END_TIME=$(date -d ${WEEK_ENDING} +%s)
-export START_TIME=$(date -d "${WEEK_ENDING}-7 days" +%s)
+export END_TIME=$(python -c "import datetime; d = datetime.datetime.fromisoformat('$WEEK_ENDING'); print(int(d.timestamp()))")
+export START_TIME=$(python -c "import datetime; d = datetime.datetime.fromisoformat('$WEEK_ENDING') - datetime.timedelta(days=7); print(int(d.timestamp()))")
 
 echo
 
