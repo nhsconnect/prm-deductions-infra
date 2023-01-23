@@ -1,9 +1,9 @@
-import datetime
 import logging
 import os
 import re
 import time
 import traceback
+from datetime import date, datetime
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -55,19 +55,16 @@ if not region:
 sender_email_ssm_parameter = cfg['sender_email_ssm_parameter']
 recipient_email_ssm_parameter = cfg['recipient_email_ssm_parameter']
 support_email_ssm_parameter = cfg['support_email_ssm_parameter']
-sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
-recipient_emails = get_ssm_parameter(recipient_email_ssm_parameter)['Parameter']['Value']
-support_email_address = get_ssm_parameter(support_email_ssm_parameter)['Parameter']['Value']
 athena_queries = cfg['query_string_list']
 queries_to_execute = []
 tempPath = '/tmp'
 # Target bucket and key for CUR query results in s3
 cur_bucket = report_output_location.split('//')[1].split('/')[0]
 cur_key_path = report_output_location.split('//')[1].lstrip(cur_bucket).lstrip('/')
-query_execution_month_parameter = datetime.datetime.now().month
-query_execution_year_parameter = datetime.datetime.now().year
+query_execution_month_parameter = date.today().month
+query_execution_year_parameter = date.today().year
 
-current_date = (datetime.date.today()).strftime('%Y-%m-%d')
+current_date = (date.today()).strftime('%Y-%m-%d')
 file_name = f'{environment}-{account_id}-aws-cost-and-usage-report-{current_date}.csv'
 
 
@@ -77,6 +74,28 @@ class AthenaQueryExecutionStatus(str, Enum):
     SUCCEEDED = 'SUCCEEDED'
     FAILED = 'FAILED'
     CANCELLED = 'CANCELLED'
+
+
+class Clock:
+    def date_now(self):
+        return date.today()
+
+
+def resolve_report_date(year, month, clock=Clock()):
+    if year or month:
+        try:
+            specified_date = datetime.strptime(f"{year}-{month}", '%Y-%m')
+            return {specified_date.year, specified_date.month}
+        except ValueError:
+            raise ValueError("Incorrect data format, should be YYYY-MM")
+    else:
+        date_now = clock.date_now()
+        # If month is Jan run report for Dec of previous year
+        if date_now.month == 1:
+            return {date_now.year - 1, 12}
+        else:
+            # else run report for previous month of same year
+            return {date_now.year, date_now.month - 1}
 
 
 def populate_query_parameters(query, substitutions):
@@ -176,6 +195,9 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
 
 
 def send_error_details_to_support(error_message):
+    sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
+    support_email_address = get_ssm_parameter(support_email_ssm_parameter)['Parameter']['Value']
+
     email_body = f"Hi, \n" \
                  f"There was an error generating the cost and usage report. Please find details below: \n\n" \
                  f"Error description: \n{error_message}\n\n" \
@@ -219,5 +241,7 @@ def lambda_handler(event, context):
     except Exception as e:
         send_error_details_to_support("Unexpected exception while generating cost and usage report. \n" + str(e))
     else:
+        sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
+        recipient_emails = get_ssm_parameter(recipient_email_ssm_parameter)['Parameter']['Value']
         response = send_email(subject, sender_email, recipient_emails, file_name, body_text)
         return response
