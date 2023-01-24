@@ -11,52 +11,21 @@ from enum import Enum
 
 import boto3
 import botocore
-import yaml
 from botocore.exceptions import ClientError
 from dateutil.relativedelta import relativedelta
 
+from configuration import Configuration
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-path_matcher = re.compile(r'(.*)\$\{([^}^{]+)\}')
-
-
-def yaml_constructor_for_environment_variables(loader, node):
-    """ Extract the matched value, expand env variable, and replace the match """
-    value = node.value
-    match = path_matcher.match(value)
-    return match.group(1) + os.environ.get(match.group(2)) + value[match.end():]
-
-
-yaml.SafeLoader.add_implicit_resolver('!path', path_matcher, None)
-yaml.SafeLoader.add_constructor('!path', yaml_constructor_for_environment_variables)
-
-with open("cost-report-configuration.yml", 'r') as ymlfile:
-    cfg = yaml.load(ymlfile, Loader=yaml.SafeLoader)
-
-# Import environment variable defined in Lambda, if it's not existed, use values defined in cost-report-configuration.yml
-environment = cfg['environment']
-account_id = cfg['account_id']
-report_output_location = cfg['cur_output_location']
-glue_db = cfg['cur_db']
-glue_table = cfg['cur_table']
-cur_report_name = cfg['cur_report_name']
-subject = cfg['subject']
-body_text = cfg['body_text']
-region = os.environ.get('REGION')
-if not region:
-    region = cfg['region']
-sender_email_ssm_parameter = cfg['sender_email_ssm_parameter']
-recipient_email_ssm_parameter = cfg['recipient_email_ssm_parameter']
-support_email_ssm_parameter = cfg['support_email_ssm_parameter']
-athena_queries = cfg['query_string_list']
 tempPath = '/tmp'
-# Target bucket and key for CUR query results in s3
-cur_bucket = report_output_location.split('//')[1].split('/')[0]
-cur_key_path = report_output_location.split('//')[1].lstrip(cur_bucket).lstrip('/')
+config = Configuration("cost-report-configuration.yml")
 
-current_date = (date.today()).strftime('%Y-%m-%d')
-file_name = f'{environment}-{account_id}-aws-cost-and-usage-report-{current_date}.csv'
+
+def get_cost_report_file_name():
+    current_date = (date.today()).strftime('%Y-%m-%d')
+    file_name = f'{config.get_environment()}-{config.get_account_id()}-aws-cost-and-usage-report-{current_date}.csv'
+    return file_name
 
 
 class AthenaQueryExecutionStatus(str, Enum):
@@ -103,7 +72,7 @@ def get_var_char_values(d):
 
 def execute_cur_queries_on_athena():
     queries_to_execute = get_queries_to_execute()
-    client = boto3.client('athena', region_name=region)
+    client = boto3.client('athena', region_name=config.get_region())
     logger.info("Starting CUR query execution ... ")
     wait_for_query_execution_seconds = 5
     query_execution_duration = 60  # 5 minutes
@@ -113,7 +82,7 @@ def execute_cur_queries_on_athena():
         resp = client.start_query_execution(
             QueryString=queries_to_execute[query_index]['queryString'],
             ResultConfiguration={
-                'OutputLocation': report_output_location
+                'OutputLocation': config.get_report_output_location()
             })
         query_id = resp['QueryExecutionId']
         query_ids.append(query_id)
@@ -154,29 +123,34 @@ def execute_cur_queries_on_athena():
 
 def get_queries_to_execute():
     queries_to_execute = []
-    report_date = resolve_report_date(cfg['generate_report_for_year'], cfg['generate_report_for_month'])
+    report_date = resolve_report_date(config.get_generate_report_for_year(),
+                                      config.get_generate_report_for_month())
     query_parameters = {
-        'CUR_DB': glue_db,
-        'CUR_TABLE': glue_table,
+        'CUR_DB': config.get_glue_db(),
+        'CUR_TABLE': config.get_glue_table(),
         'CUR_YEAR': str(report_date['year']),
         'CUR_MONTH': str(report_date['month'])
     }
+    athena_queries = config.get_athena_queries()
     for index in range(len(athena_queries)):
         query = populate_query_parameters(list(athena_queries[index].values())[0], query_parameters)
         queries_to_execute.append({'name': list(athena_queries[index].keys())[0], 'queryString': query})
     return queries_to_execute
 
 
-def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_ids):
+def fetch_cost_report_into_lambda_directory(query_ids):
+    # Target bucket and key for CUR query results in s3
+    cur_bucket = config.get_report_output_location().split('//')[1].split('/')[0]
+    cur_key_path = config.get_report_output_location().split('//')[1].lstrip(cur_bucket).lstrip('/')
     os.chdir(tempPath)
     s3 = boto3.resource('s3')
     for i in range(len(query_ids)):
         logger.info(
-            "Copying query result from output source location: s3://" + bucket_name + "/" + key_path + query_ids[
+            "Copying query result from output source location: s3://" + cur_bucket + "/" + cur_key_path + query_ids[
                 i] + ".csv")
         try:
-            s3.Bucket(bucket_name).download_file(key_path + query_ids[i] + '.csv', file_name)
-            is_file_downloaded = os.path.isfile('/tmp/' + file_name)
+            s3.Bucket(cur_bucket).download_file(cur_key_path + query_ids[i] + '.csv', get_cost_report_file_name())
+            is_file_downloaded = os.path.isfile('/tmp/' + get_cost_report_file_name())
             logger.info(f"Successfully copied the report:  {is_file_downloaded}")
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
@@ -188,15 +162,15 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_ids):
 
 
 def get_ssm_parameter(parameter_name):
-    client = boto3.client('ssm', region_name=region)
+    client = boto3.client('ssm', region_name=config.get_region())
     return client.get_parameter(
         Name=parameter_name
     )
 
 
 def send_error_details_to_support(error_message):
-    sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
-    support_email_address = get_ssm_parameter(support_email_ssm_parameter)['Parameter']['Value']
+    sender_email = get_ssm_parameter(config.get_sender_email_ssm_parameter())['Parameter']['Value']
+    support_email_address = get_ssm_parameter(config.get_support_email_ssm_parameter())['Parameter']['Value']
 
     email_body = f"Hi, \n" \
                  f"There was an error generating the cost and usage report. Please find details below: \n\n" \
@@ -211,7 +185,7 @@ def send_error_details_to_support(error_message):
 def send_email(email_subject, email_sender, email_receivers, report_name, email_body):
     logger.info("Sending email via SES")
     os.chdir(tempPath)
-    client = boto3.client('ses', region_name=region)
+    client = boto3.client('ses', region_name=config.get_region())
     message = MIMEMultipart('mixed')
     message['Subject'] = email_subject
     message['From'] = email_sender
@@ -237,11 +211,12 @@ def send_email(email_subject, email_sender, email_receivers, report_name, email_
 def lambda_handler(event, context):
     try:
         query_ids = execute_cur_queries_on_athena()
-        fetch_cost_report_into_lambda_directory(cur_bucket, cur_key_path, query_ids)
+        fetch_cost_report_into_lambda_directory(query_ids)
     except Exception as e:
         send_error_details_to_support("Unexpected exception while generating cost and usage report. \n" + str(e))
     else:
-        sender_email = get_ssm_parameter(sender_email_ssm_parameter)['Parameter']['Value']
-        recipient_emails = get_ssm_parameter(recipient_email_ssm_parameter)['Parameter']['Value']
-        response = send_email(subject, sender_email, recipient_emails, file_name, body_text)
+        sender_email = get_ssm_parameter(config.get_sender_email_ssm_parameter())['Parameter']['Value']
+        recipient_emails = get_ssm_parameter(config.get_recipient_email_ssm_parameter())['Parameter']['Value']
+        response = send_email(config.get_subject(), sender_email, recipient_emails, get_cost_report_file_name(),
+                              config.get_body_text())
         return response
