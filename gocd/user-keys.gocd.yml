@@ -123,6 +123,7 @@ pipelines:
                       - -c
                       - ./tasks rotate_user_keys
       - prod_env:
+          approval: manual
           clean_workspace: true
           jobs:
             generate_keys:
