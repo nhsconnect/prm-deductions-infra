@@ -1,0 +1,22 @@
+format_version: 4
+pipelines:
+  rename-service:
+    group: repository
+    label_template: "${git[:8]}"
+    materials:
+      git:
+        type: configrepo
+    stages:
+      - dev_expand:
+          approval: manual
+          clean_workspace: true
+          resources:
+            - docker
+          environment_variables:
+            NHS_ENVIRONMENT: dev
+          tasks:
+            - exec:
+                command: /bin/bash
+                arguments:
+                  - -c
+                  - ./tasks copy_api_keys
