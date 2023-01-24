@@ -25,7 +25,7 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
 resource "aws_cloudwatch_event_rule" "generate_cost_report_end_of_every_month" {
   name                = "generate-cost-report-end-of-every-month"
   description         = "Invokes cost report lambda function end of every month"
-  schedule_expression = "cron(50 12 * * ? *)"
+  schedule_expression = "cron(10 11 * * ? *)"
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
