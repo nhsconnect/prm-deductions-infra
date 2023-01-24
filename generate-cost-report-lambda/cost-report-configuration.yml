@@ -4,19 +4,17 @@ cur_db: ${ENVIRONMENT}-generate-cost-report-catalog-database
 cur_table: aws_cost_report
 cur_report_name: ${ENVIRONMENT}_cost_and_usage_report.xlsx
 query_string_list:
-    - original_query: SELECT  product_product_name AS ServiceName, bill_billing_period_start_date,
-          bill_billing_period_end_date, resource_tags_user_created_by, ROUND (SUM (pricing_public_on_demand_cost), 3) as Cost
+    - original_query: SELECT  product_product_name AS ServiceName, DATE(bill_billing_period_start_date) AS StartDate,
+          DATE(bill_billing_period_end_date) AS EndDate, resource_tags_user_created_by AS ResourceTag, ROUND (SUM (pricing_public_on_demand_cost), 3) as Cost
           FROM "CUR_DB"."CUR_TABLE"
           WHERE month='CUR_MONTH' AND year='CUR_YEAR'
           GROUP BY product_product_name,
           bill_billing_period_start_date, bill_billing_period_end_date, resource_tags_user_created_by
           ORDER BY Cost DESC;
 region: eu-west-2
-subject: PRM - Cost and Usage Report
 sender_email_ssm_parameter: ${SENDER_EMAIL_SSM_PARAMETER}
 recipient_email_ssm_parameter: ${RECEIVER_EMAIL_SSM_PARAMETER}
 support_email_ssm_parameter: ${SUPPORT_EMAIL_SSM_PARAMETER}
 account_id: ${ACCOUNT_ID}
-body_text: "Hi, \nPlease find attached cost and usage report. \n\nRegards, \nPRM Team"
 generate_report_for_year: ${GENERATE_REPORT_FOR_YEAR}
 generate_report_for_month: ${GENERATE_REPORT_FOR_MONTH}

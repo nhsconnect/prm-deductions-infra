@@ -22,10 +22,31 @@ tempPath = '/tmp'
 config = Configuration("cost-report-configuration.yml")
 
 
+def get_formatted_report_date():
+    report_date = resolve_report_date(config.get_generate_report_for_year(),
+                                      config.get_generate_report_for_month())
+    formatted_date = datetime(report_date['year'], report_date['month'], 1).strftime("%b-%Y")
+    return formatted_date
+
+
 def get_cost_report_file_name():
+    return f'{get_formatted_report_date()}-{config.get_environment()}-{config.get_account_id()}-aws-cost-and-usage-report.csv'
+
+
+def get_subject():
+    subject = f'{get_formatted_report_date()}-{config.get_environment()} PRM Cost and Usage Report'
+    return subject
+
+
+def get_body_text():
     current_date = (date.today()).strftime('%Y-%m-%d')
-    file_name = f'{config.get_environment()}-{config.get_account_id()}-aws-cost-and-usage-report-{current_date}.csv'
-    return file_name
+    email_body = f"Hi, \n" \
+                 f"Please find attached cost and usage report. \n\n" \
+                 f"This report was generated on : {current_date}\n" \
+                 f"For the month of : {get_formatted_report_date()}\n\n" \
+                 f"Regards, \n" \
+                 f"PRM Team"
+    return email_body
 
 
 class AthenaQueryExecutionStatus(str, Enum):

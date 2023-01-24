@@ -41,12 +41,6 @@ class Configuration:
     def get_cur_report_name(self):
         return self.cfg['cur_report_name']
 
-    def get_subject(self):
-        return self.cfg['subject']
-
-    def get_body_text(self):
-        return self.cfg['body_text']
-
     def get_region(self):
         region = os.environ.get('REGION')
         if not region:
