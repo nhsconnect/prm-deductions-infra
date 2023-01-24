@@ -205,3 +205,32 @@ eval $(assume-role prod)
 ```
 
 This script currently assumes your aws profile for production is called `prod`. 
+
+# Key generation and rotation
+
+There are two types of api keys in use in the Repository team services.  They are maintained by manual update of certain
+SSM parameters and running of the `service-api-keys` and `user-api-keys` pipelines.
+
+## Service api keys
+
+These are for non-user clients to access a service, including access from other services.  The list of service-client
+api key pairs is specified in an env-specific list in SSM (`.../service-api-keys`). 
+
+The format of the list is of full service api key SSM parameter keys for that environment. It can be newline-delimited
+instead of comma-delimited for readability.
+
+For improved readability - esp. considering this is access security config - moving to a more pared-down JSON format
+might be appropriate.
+
+## User api keys
+
+These are for individual user access to services.  The list of users that user api keys will be generated for is an
+env-specific parameter in SSM (`.../repo-dev-list`).
+
+## Pipeline handling of generation and rotation
+
+When the `service-api-keys` or `user-api-keys` pipelines run they will generate any missing keys and remove ones not in
+their related initial list.
+
+Setting `RotateApiKey` tag on one of these SSM parameters will cause it to be rotated when the pipeline runs, but looks
+like that shouldn't be done if there are any outstanding add/deletes as generation runs in parallel to rotation. 

@@ -1,6 +1,7 @@
 import { convertUserListToUserListParamArray } from "../";
 import { when } from "jest-when";
 import { initializeConfig } from "../../config";
+import { convertStringListToArray } from '../';
 
 jest.mock("../../config");
 
@@ -64,3 +65,17 @@ describe("convertUserListToUserListParamArray", () => {
     );
   });
 });
+
+describe('convertStringListToArray', () => {
+  it('should split comma separated list into array', () => {
+    expect(convertStringListToArray('a,b,c')).toEqual(['a', 'b', 'c'])
+  });
+
+  it('should split newline separated list into array', () => {
+    expect(convertStringListToArray('a\nb\nd')).toEqual(['a', 'b', 'd'])
+  });
+
+  it('should split comma and newline separated list into array', () => {
+    expect(convertStringListToArray('c,\nb,\ne')).toEqual(['c', 'b', 'e'])
+  });
+})
