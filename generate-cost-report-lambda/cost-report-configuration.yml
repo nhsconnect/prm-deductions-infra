@@ -18,3 +18,5 @@ recipient_email_ssm_parameter: ${RECEIVER_EMAIL_SSM_PARAMETER}
 support_email_ssm_parameter: ${SUPPORT_EMAIL_SSM_PARAMETER}
 account_id: ${ACCOUNT_ID}
 body_text: "Hi, \nPlease find attached cost and usage report. \n\nRegards, \nPRM Team"
+generate_report_for_year: ${GENERATE_REPORT_FOR_YEAR}
+generate_report_for_month: ${GENERATE_REPORT_FOR_MONTH}

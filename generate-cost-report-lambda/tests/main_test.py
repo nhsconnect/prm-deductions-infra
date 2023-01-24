@@ -15,7 +15,7 @@ class StubClock:
 
 def test_resolve_report_date_returns_specified_month_if_overridden():
     report_date = resolve_report_date('2023', '02')
-    assert report_date == {2, 2023}
+    assert report_date == {"month": 2, "year": 2023}
 
 
 def test_resolve_report_date_throws_error_if_date_format_invalid():
@@ -26,10 +26,10 @@ def test_resolve_report_date_throws_error_if_date_format_invalid():
 def test_resolve_report_date_returns_last_month_if_not_overridden():
     april_clock = StubClock(date(2023, 4, 3))
     report_date = resolve_report_date(None, None, april_clock)
-    assert report_date == {3, 2023}
+    assert report_date == {"month": 3, "year": 2023}
 
 
 def test_resolve_report_date_returns_dec_of_last_year_if_current_month_is_jan():
-    jan_clock = StubClock(date(2023, 1, 3))
+    jan_clock = StubClock(date(2023, 1, 31))
     report_date = resolve_report_date(None, None, jan_clock)
-    assert report_date == {12, 2022}
+    assert report_date == {"month": 12, "year": 2022}

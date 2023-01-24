@@ -13,6 +13,7 @@ import boto3
 import botocore
 import yaml
 from botocore.exceptions import ClientError
+from dateutil.relativedelta import relativedelta
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -25,13 +26,6 @@ def yaml_constructor_for_environment_variables(loader, node):
     value = node.value
     match = path_matcher.match(value)
     return match.group(1) + os.environ.get(match.group(2)) + value[match.end():]
-
-
-def get_ssm_parameter(parameter_name):
-    client = boto3.client('ssm', region_name=region)
-    return client.get_parameter(
-        Name=parameter_name
-    )
 
 
 yaml.SafeLoader.add_implicit_resolver('!path', path_matcher, None)
@@ -56,13 +50,10 @@ sender_email_ssm_parameter = cfg['sender_email_ssm_parameter']
 recipient_email_ssm_parameter = cfg['recipient_email_ssm_parameter']
 support_email_ssm_parameter = cfg['support_email_ssm_parameter']
 athena_queries = cfg['query_string_list']
-queries_to_execute = []
 tempPath = '/tmp'
 # Target bucket and key for CUR query results in s3
 cur_bucket = report_output_location.split('//')[1].split('/')[0]
 cur_key_path = report_output_location.split('//')[1].lstrip(cur_bucket).lstrip('/')
-query_execution_month_parameter = date.today().month
-query_execution_year_parameter = date.today().year
 
 current_date = (date.today()).strftime('%Y-%m-%d')
 file_name = f'{environment}-{account_id}-aws-cost-and-usage-report-{current_date}.csv'
@@ -85,34 +76,19 @@ def resolve_report_date(year, month, clock=Clock()):
     if year or month:
         try:
             specified_date = datetime.strptime(f"{year}-{month}", '%Y-%m')
-            return {specified_date.year, specified_date.month}
+            return {"year": specified_date.year, "month": specified_date.month}
         except ValueError:
-            raise ValueError("Incorrect data format, should be YYYY-MM")
+            raise ValueError(f"Incorrect date format {year}-{month}, should be YYYY-MM")
     else:
         date_now = clock.date_now()
-        # If month is Jan run report for Dec of previous year
-        if date_now.month == 1:
-            return {date_now.year - 1, 12}
-        else:
-            # else run report for previous month of same year
-            return {date_now.year, date_now.month - 1}
+        report_date = date_now - relativedelta(months=1)
+        return {"year": report_date.year, "month": report_date.month}
 
 
 def populate_query_parameters(query, substitutions):
     substrings = sorted(substitutions, key=len, reverse=True)
     regex = re.compile('|'.join(map(re.escape, substrings)))
     return regex.sub(lambda match: substitutions[match.group(0)], query)
-
-
-query_parameters = {
-    'CUR_DB': glue_db,
-    'CUR_TABLE': glue_table,
-    'CUR_YEAR': str(query_execution_year_parameter),
-    'CUR_MONTH': str(query_execution_month_parameter)
-}
-for index in range(len(athena_queries)):
-    query = populate_query_parameters(list(athena_queries[index].values())[0], query_parameters)
-    queries_to_execute.append({'name': list(athena_queries[index].keys())[0], 'queryString': query})
 
 
 def get_var_char_values(d):
@@ -126,63 +102,80 @@ def get_var_char_values(d):
 
 
 def execute_cur_queries_on_athena():
+    queries_to_execute = get_queries_to_execute()
     client = boto3.client('athena', region_name=region)
     logger.info("Starting CUR query execution ... ")
-    resp = None
+    wait_for_query_execution_seconds = 5
+    query_execution_duration = 60  # 5 minutes
+    query_ids = []
+
     for query_index in range(len(queries_to_execute)):
         resp = client.start_query_execution(
             QueryString=queries_to_execute[query_index]['queryString'],
             ResultConfiguration={
                 'OutputLocation': report_output_location
             })
-        queries_to_execute[query_index]['queryId'] = resp['QueryExecutionId']
+        query_id = resp['QueryExecutionId']
+        query_ids.append(query_id)
         logger.info(
-            "Query to execute is: " + queries_to_execute[query_index]['queryString'] + " QueryId is: " +
-            queries_to_execute[query_index][
-                'queryId'])
+            "Query to execute is: " + queries_to_execute[query_index]['queryString'] + " QueryId is: " + query_id)
 
-    wait_for_query_execution_seconds = 5
-    query_execution_duration = 60  # 5 minutes
-
-    while query_execution_duration > 0:
-        query_execution_duration = query_execution_duration - 1
-        response_get_query_details = client.get_query_execution(
-            QueryExecutionId=resp['QueryExecutionId']
-        )
-        status = response_get_query_details['QueryExecution']['Status']['State']
-        if (status == AthenaQueryExecutionStatus.FAILED) or (status == AthenaQueryExecutionStatus.CANCELLED):
-            failure_reason = response_get_query_details['QueryExecution']['Status']['StateChangeReason']
-            logger.error("Query either FAILED or CANCELED, reason is: " + failure_reason, exc_info=True)
-            raise Exception("Athena query either FAILED or CANCELED with reason " + failure_reason)
-
-        elif status == AthenaQueryExecutionStatus.QUEUED:
-            logger.info('Query queued, waiting for query execution to begin')
-            time.sleep(wait_for_query_execution_seconds)
-            continue
-
-        elif status == AthenaQueryExecutionStatus.SUCCEEDED:
-            logger.info("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
-            location = response_get_query_details['QueryExecution']['ResultConfiguration']['OutputLocation']
-
-            response_query_result = client.get_query_results(
+        while query_execution_duration > 0:
+            query_execution_duration = query_execution_duration - 1
+            response_get_query_details = client.get_query_execution(
                 QueryExecutionId=resp['QueryExecutionId']
             )
-            if len(response_query_result['ResultSet']['Rows']) > 1:
-                logger.info("Query generated results at location: " + location)
-            else:
-                logger.info("Query did not generate any results")
-            break
+            status = response_get_query_details['QueryExecution']['Status']['State']
+            if (status == AthenaQueryExecutionStatus.FAILED) or (status == AthenaQueryExecutionStatus.CANCELLED):
+                failure_reason = response_get_query_details['QueryExecution']['Status']['StateChangeReason']
+                logger.error("Query either FAILED or CANCELED, reason is: " + failure_reason, exc_info=True)
+                raise Exception("Athena query either FAILED or CANCELED with reason " + failure_reason)
+
+            elif status == AthenaQueryExecutionStatus.QUEUED:
+                logger.info('Query queued, waiting for query execution to begin')
+                time.sleep(wait_for_query_execution_seconds)
+                continue
+
+            elif status == AthenaQueryExecutionStatus.SUCCEEDED:
+                logger.info("Query execution succeeded, the query ID is: " + resp['QueryExecutionId'])
+                location = response_get_query_details['QueryExecution']['ResultConfiguration']['OutputLocation']
+
+                response_query_result = client.get_query_results(
+                    QueryExecutionId=resp['QueryExecutionId']
+                )
+                if len(response_query_result['ResultSet']['Rows']) > 1:
+                    logger.info("Query generated results at location: " + location)
+                else:
+                    logger.info("Query did not generate any results")
+                break
+
+    return query_ids
 
 
-def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
+def get_queries_to_execute():
+    queries_to_execute = []
+    report_date = resolve_report_date(cfg['generate_report_for_year'], cfg['generate_report_for_month'])
+    query_parameters = {
+        'CUR_DB': glue_db,
+        'CUR_TABLE': glue_table,
+        'CUR_YEAR': str(report_date['year']),
+        'CUR_MONTH': str(report_date['month'])
+    }
+    for index in range(len(athena_queries)):
+        query = populate_query_parameters(list(athena_queries[index].values())[0], query_parameters)
+        queries_to_execute.append({'name': list(athena_queries[index].keys())[0], 'queryString': query})
+    return queries_to_execute
+
+
+def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_ids):
     os.chdir(tempPath)
     s3 = boto3.resource('s3')
-    for i in range(len(query_list)):
+    for i in range(len(query_ids)):
         logger.info(
-            "Copying query result from output source location: s3://" + bucket_name + "/" + key_path + query_list[i][
-                'queryId'] + ".csv")
+            "Copying query result from output source location: s3://" + bucket_name + "/" + key_path + query_ids[
+                i] + ".csv")
         try:
-            s3.Bucket(bucket_name).download_file(key_path + query_list[i]['queryId'] + '.csv', file_name)
+            s3.Bucket(bucket_name).download_file(key_path + query_ids[i] + '.csv', file_name)
             is_file_downloaded = os.path.isfile('/tmp/' + file_name)
             logger.info(f"Successfully copied the report:  {is_file_downloaded}")
         except botocore.exceptions.ClientError as e:
@@ -192,6 +185,13 @@ def fetch_cost_report_into_lambda_directory(bucket_name, key_path, query_list):
             else:
                 logger.error("Unexpected error while fetching cost report into Lambda directory.", exc_info=True)
                 raise e
+
+
+def get_ssm_parameter(parameter_name):
+    client = boto3.client('ssm', region_name=region)
+    return client.get_parameter(
+        Name=parameter_name
+    )
 
 
 def send_error_details_to_support(error_message):
@@ -236,8 +236,8 @@ def send_email(email_subject, email_sender, email_receivers, report_name, email_
 
 def lambda_handler(event, context):
     try:
-        execute_cur_queries_on_athena()
-        fetch_cost_report_into_lambda_directory(cur_bucket, cur_key_path, queries_to_execute)
+        query_ids = execute_cur_queries_on_athena()
+        fetch_cost_report_into_lambda_directory(cur_bucket, cur_key_path, query_ids)
     except Exception as e:
         send_error_details_to_support("Unexpected exception while generating cost and usage report. \n" + str(e))
     else:

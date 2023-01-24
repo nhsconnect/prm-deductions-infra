@@ -18,6 +18,8 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
       RECEIVER_EMAIL_SSM_PARAMETER = data.aws_ssm_parameter.receiver_cost_report_email_id.name
       SUPPORT_EMAIL_SSM_PARAMETER = data.aws_ssm_parameter.support_cost_report_email_id.name
       ACCOUNT_ID = data.aws_caller_identity.current.account_id
+      GENERATE_REPORT_FOR_YEAR = ""
+      GENERATE_REPORT_FOR_MONTH = ""
     }
   }
 }
