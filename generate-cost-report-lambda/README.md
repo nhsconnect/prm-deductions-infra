@@ -1,6 +1,6 @@
-#Generate AWS Cost and Usage Report
+# Generate AWS Cost and Usage Report
 
-##What are AWS Cost and Usage Reports?
+## What are AWS Cost and Usage Reports?
 The AWS Cost and Usage Reports (AWS CUR) contains the most comprehensive set of cost and usage data available. You can use Cost and Usage Reports to publish your AWS billing reports to an Amazon Simple Storage Service (Amazon S3) bucket that you own. AWS updates the report in your bucket once a day in comma-separated value (CSV) format.
 
 AWS Cost and Usage Reports tracks your AWS usage and provides estimated charges associated with your account. Each report contains line items for each unique combination of AWS products, usage type, and operation that you use in your AWS account. You can customize the AWS Cost and Usage Reports to aggregate the information either by the hour, day, or month.
@@ -10,12 +10,12 @@ AWS Cost and Usage Reports can do the following:
 * Update the report up to three times a day
 * Create, retrieve, and delete your reports using the AWS CUR API Reference
 
-##Automated CUR  architecture diagram:
+## Automated CUR  architecture diagram:
 <img height="300" src="automated-cur-architecture.svg" width="500"/>
 
 
-##Automated AWS Cost and Usage Monthly Report
-###AWS Components configured in the automation process:
+## Automated AWS Cost and Usage Monthly Report
+### AWS Components configured in the automation process:
 * AWS Billing Service 
    - The Billing Service generates a monthly report in Amazon S3 
    - This is configured manually via the AWS console
