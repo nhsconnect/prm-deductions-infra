@@ -238,6 +238,6 @@ def lambda_handler(event, context):
     else:
         sender_email = get_ssm_parameter(config.get_sender_email_ssm_parameter())['Parameter']['Value']
         recipient_emails = get_ssm_parameter(config.get_recipient_email_ssm_parameter())['Parameter']['Value']
-        response = send_email(config.get_subject(), sender_email, recipient_emails, get_cost_report_file_name(),
-                              config.get_body_text())
+        response = send_email(get_subject(), sender_email, recipient_emails, get_cost_report_file_name(),
+                              get_body_text())
         return response
