@@ -19,4 +19,4 @@ pipelines:
                 command: /bin/bash
                 arguments:
                   - -c
-                  - ./tasks copy_api_keys
+                  - ./tasks copy_parameters

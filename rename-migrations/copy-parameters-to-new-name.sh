@@ -30,7 +30,7 @@ copy_param () {
   echo copy result is $copy_result
 }
 
-ensure_param_copied () {
+ensure_param_copied () {api-keys
   local original_key=$1
   local new_key=$(copied_key_name $original_key)
   if [[ "$ALL_KEYS" == *"$new_key"* ]]; then
@@ -44,12 +44,20 @@ ensure_param_copied () {
 export EXISTING_SERVICE_NAME
 export NEw_SERVICE_NAME
 export NHS_ENVIRONMENT
+
+echo xxx copying manual input parameters
+
+MANUAL_PARAM_KEYS=$(aws ssm describe-parameters | jq -r '.Parameters[].Name | select(contains("/repo/" + env.NHS_ENVIRONMENT + "/user-input/" + env.EXISTING_SERVICE_NAME))')
+for manual_param_key in $MANUAL_PARAM_KEYS
+do
+  copy_param $manual_param_key
+done
+
+echo xxx copying service and user api keys
+
 ALL_KEYS=$(aws ssm describe-parameters | jq -r '.Parameters[].Name | select(contains("/repo/" + env.NHS_ENVIRONMENT + "/user-input/api-keys/"))')
 export ALL_KEYS
 EXISTING_SERVICE_NAME_KEYS=$(echo $ALL_KEYS | xargs -n 1 | grep $EXISTING_SERVICE_NAME)
-
-echo all keys $ALL_KEYS
-echo
 
 for existing_service_name_key in $EXISTING_SERVICE_NAME_KEYS
 do

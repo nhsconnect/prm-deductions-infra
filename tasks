@@ -502,13 +502,13 @@ case "${command}" in
       _assume_environment_role $NHS_ENVIRONMENT
       dojo -c Dojofile-node "./tasks _generate_service_keys"
       ;;
-  _copy_api_keys)
-      ./rename-migrations/copy-api-keys-to-new-name.sh repo-to-gp ehr-out-service
+  _copy_parameters)
+      ./rename-migrations/copy-parameters-to-new-name.sh repo-to-gp ehr-out-service
       ;;
-  copy_api_keys)
+  copy_parameters)
       check_env
       _assume_environment_role $NHS_ENVIRONMENT
-      dojo "./tasks _copy_api_keys"
+      dojo "./tasks _copy_parameters"
       ;;
   _generate_user_keys)
       cd key-rotation-and-generation
