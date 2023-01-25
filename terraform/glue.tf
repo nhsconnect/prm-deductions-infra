@@ -6,7 +6,7 @@ resource "aws_glue_crawler" "generate_cost_report_crawler" {
   database_name = aws_glue_catalog_database.generate_cost_report_database.name
   name          = "${var.environment}-generate-cost-report-crawler"
   role          = aws_iam_role.generate_cost_report_glue_role.arn
-  schedule      = "cron(50 23 L * ? *)"
+  schedule      = "cron(0 8 8 * ? *)"
   s3_target {
     path = "s3://${aws_s3_bucket.cost_and_usage_bucket.bucket}/reports/aws-cost-report/aws-cost-report/"
   }
