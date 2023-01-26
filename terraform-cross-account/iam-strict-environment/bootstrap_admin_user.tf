@@ -367,8 +367,3 @@ data "aws_iam_policy_document" "bootstrap_admin_billing_console_access" {
     resources = ["*"]
   }
 }
-
-resource "aws_iam_role_policy_attachment" "bootstrap_admin_s3_allow_ehr_repo_bucket_access" {
-  policy_arn = aws_iam_policy.s3_allow_ehr_repo_log_bucket_access.arn
-  role = aws_iam_role.bootstrap_admin.name
-}
