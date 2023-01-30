@@ -201,7 +201,7 @@ To get the repo value metrics calculations from prod, do following (updating wee
 
 ```
 eval $(assume-role prod)
-./value-metrics/query-continuity-service-counts.sh `2023-01-13`
+NHS_ENVIRONMENT=prod ./tasks get_value_metrics "2023-01-27"
 ```
 
 This script currently assumes your aws profile for production is called `prod`. 

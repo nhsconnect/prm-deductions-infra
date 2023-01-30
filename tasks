@@ -540,6 +540,14 @@ case "${command}" in
       _assume_environment_role $NHS_ENVIRONMENT
       dojo -c Dojofile-node "./tasks _rotate_user_keys"
       ;;
+  _get_value_metrics)
+      ./value-metrics/query-continuity-service-counts.sh $2
+      ;;
+  get_value_metrics)
+      check_env
+      _assume_environment_role $NHS_ENVIRONMENT
+      dojo "./tasks _get_value_metrics $2"
+      ;;
   *)
       echo "Invalid command: '${command}'"
       exit 1
