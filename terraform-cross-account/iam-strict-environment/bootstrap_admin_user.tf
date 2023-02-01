@@ -54,13 +54,13 @@ data "aws_iam_policy_document" "bootstrap_admin_permissions" {
       "ses:ListIdentities",
       "ses:ListVerifiedEmailAddresses",
       "ses:ListEmailIdentities",
-      "ses:DeleteIdentity",
       "ses:VerifyEmailAddress",
       "ses:VerifyEmailIdentity",
       "ses:GetAccount",
       "ses:ListConfigurationSets",
       "ses:CreateEmailIdentity",
-      "ses:TagResource"
+      "ses:TagResource",
+      "ses:DeleteEmailIdentity"
     ]
     resources = ["*"]
   }
