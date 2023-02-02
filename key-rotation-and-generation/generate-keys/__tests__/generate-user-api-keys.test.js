@@ -40,16 +40,16 @@ describe("generateUserApiKeys", () => {
     when(getParamsByPath)
       .calledWith("/repo/nhs-environment/user-input/api-keys/")
       .mockResolvedValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
       ]);
 
     when(h.convertUserListToUserListParamArray)
       .calledWith(usersAsArrayList)
       .mockReturnValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/al.pacino1",
       ]);
 
     await generateApiKeys(ssmPath, false);
@@ -62,13 +62,13 @@ describe("generateUserApiKeys", () => {
     );
 
     expect(generateApiKey).toHaveBeenCalledWith(
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1"
+      "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/al.pacino1"
     );
     expect(generateApiKey).toHaveBeenCalledTimes(1);
     expect(deleteApiKey).not.toHaveBeenCalled();
 
     expect(restartServices).toHaveBeenCalledWith([
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/al.pacino1",
+      "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/al.pacino1",
     ]);
   });
 
@@ -76,13 +76,13 @@ describe("generateUserApiKeys", () => {
     when(getParamsByPath)
       .calledWith("/repo/nhs-environment/user-input/api-keys/")
       .mockResolvedValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
       ]);
 
     when(h.convertUserListToUserListParamArray)
       .calledWith(usersAsArrayList)
       .mockReturnValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
       ]);
 
     await generateApiKeys(ssmPath, false);
@@ -98,20 +98,20 @@ describe("generateUserApiKeys", () => {
 
   it("should delete user-api-key ssm parameter for a key that does not exist as expected user", async () => {
     const unexpectedUser =
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user";
+      "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/unexpected-user";
     when(getParamsByPath)
       .calledWith("/repo/nhs-environment/user-input/api-keys/")
       .mockResolvedValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
         unexpectedUser,
       ]);
 
     when(h.convertUserListToUserListParamArray)
       .calledWith(usersAsArrayList)
       .mockReturnValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
       ]);
 
     await generateApiKeys(ssmPath, false);
@@ -133,23 +133,23 @@ describe("generateUserApiKeys", () => {
 
   it("should both delete and generate user-api-keys ", async () => {
     const unexpectedUser =
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user";
+      "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/unexpected-user";
     const expectedUser =
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user";
+      "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/expected-user";
 
     when(getParamsByPath)
       .calledWith("/repo/nhs-environment/user-input/api-keys/")
       .mockResolvedValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
         unexpectedUser,
       ]);
 
     when(h.convertUserListToUserListParamArray)
       .calledWith(usersAsArrayList)
       .mockReturnValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
         expectedUser,
       ]);
 
@@ -176,23 +176,23 @@ describe("generateUserApiKeys", () => {
 
   it("should not process service api keys", async () => {
     const serviceApiKey =
-      "/repo/nhs-environment/user-input/api-keys/repo-to-gp/service-api";
+      "/repo/nhs-environment/user-input/api-keys/service2/service-api";
 
     when(getParamsByPath)
       .calledWith("/repo/nhs-environment/user-input/api-keys/")
       .mockResolvedValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/unexpected-user",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/unexpected-user",
         serviceApiKey,
       ]);
 
     when(h.convertUserListToUserListParamArray)
       .calledWith(usersAsArrayList)
       .mockReturnValue([
-        "/repo/nhs-environment/user-input/api-keys/gp-to-repo/api-key-user/rob.deniro",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/joe.pesci",
-        "/repo/nhs-environment/user-input/api-keys/repo-to-gp/api-key-user/expected-user",
+        "/repo/nhs-environment/user-input/api-keys/service1/api-key-user/rob.deniro",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/joe.pesci",
+        "/repo/nhs-environment/user-input/api-keys/service2/api-key-user/expected-user",
       ]);
 
     await generateApiKeys(ssmPath, false);

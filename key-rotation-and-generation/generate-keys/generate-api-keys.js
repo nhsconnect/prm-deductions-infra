@@ -11,12 +11,12 @@ import {
 import { restartServices } from "../restart-services/restart-services";
 import { initializeConfig } from "../config";
 
-export const generateApiKeys = async (ssmPath, isService) => {
+export const generateApiKeys = async (sourceListSsmPath, isService) => {
   const { nhsEnvironment } = initializeConfig();
   console.log("Starting key generation and deletion process");
 
   try {
-    const expectedApiKeys = convertStringListToArray(await getParam(ssmPath));
+    const expectedApiKeys = convertStringListToArray(await getParam(sourceListSsmPath));
     const actualApiKeys = await getParamsByPath(
       `/repo/${nhsEnvironment}/user-input/api-keys/`
     );
