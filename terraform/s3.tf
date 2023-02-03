@@ -1,3 +1,7 @@
+locals {
+  cost_usage_access_logs_prefix = "access-logs/"
+}
+
 resource "aws_s3_bucket" "cost_and_usage_bucket" {
   bucket = "${var.environment}-cost-and-usage"
   acl    = "private"
@@ -11,8 +15,9 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
 
   logging {
     target_bucket = aws_s3_bucket.cost_and_usage_access_logs.id
-    target_prefix = "/"
+    target_prefix = local.cost_usage_access_logs_prefix
   }
+
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
@@ -65,7 +70,7 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_s3_to_write_access_logs_polic
           "Service": "logging.s3.amazonaws.com"
         },
         "Action": "s3:PutObject",
-        "Resource": "${aws_s3_bucket.cost_and_usage_access_logs.arn}/*",
+        "Resource": "${aws_s3_bucket.cost_and_usage_access_logs.arn}/${local.cost_usage_access_logs_prefix}*",
         Condition: {
           Bool: {
             "aws:SecureTransport": "false"
