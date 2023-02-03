@@ -174,6 +174,9 @@ variable "mhs_test_harness_public_subnets_inbound" {}
 variable "mhs_test_harness_private_subnets" {}
 variable "inbound_sig_ips" {}
 variable "grant_access_to_queues_through_vpn" {}
+variable "is_restricted_account" {
+  default = false
+}
 
 variable "alarm_lambda_zip" {
   type        = string
