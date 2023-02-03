@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "cost_and_usage" {
+resource "aws_s3_bucket" "cost_and_usage_bucket" {
   bucket = "${var.environment}-cost-and-usage"
   acl    = "private"
   server_side_encryption_configuration {

@@ -8,7 +8,7 @@ resource "aws_glue_crawler" "generate_cost_report_crawler" {
   role          = aws_iam_role.generate_cost_report_glue_role.arn
   schedule      = "cron(0 8 8 * ? *)"
   s3_target {
-    path = "s3://${aws_s3_bucket.cost_and_usage.bucket}/reports/aws-cost-report/aws-cost-report/"
+    path = "s3://${aws_s3_bucket.cost_and_usage_bucket.bucket}/reports/aws-cost-report/aws-cost-report/"
   }
 }
 
