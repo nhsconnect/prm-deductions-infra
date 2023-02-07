@@ -82,7 +82,7 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_s3_to_write_access_logs_polic
 }
 
 resource "aws_s3_bucket" "alb_access_logs" {
-  bucket = "${var.environment}-alb-access-logs"
+  bucket = "${var.environment}-load-balancer-access-logs"
 
   tags = {
     CreatedBy   = var.repo_name
