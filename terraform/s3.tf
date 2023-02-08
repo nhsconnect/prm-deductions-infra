@@ -90,6 +90,22 @@ resource "aws_s3_bucket" "alb_access_logs" {
   }
 }
 
+resource "aws_s3_bucket_policy" "alb_access_logs_policy" {
+  bucket = aws_s3_bucket.alb_access_logs.id
+  policy = data.aws_iam_policy_document.allow_load_balancers_to_publish_to_access_logs_s3_bucket.json
+}
+
+data "aws_iam_policy_document" "allow_load_balancers_to_publish_to_access_logs_s3_bucket" {
+  statement {
+    principals {
+      type = "AWS"
+      identifiers = ["arn:aws:iam::652711504416:root"]
+    }
+    actions = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.alb_access_logs.arn}/*"]
+  }
+}
+
 resource "aws_ssm_parameter" "alb_access_logs_s3_bucket_id" {
   value = aws_s3_bucket.alb_access_logs.id
   type = "String"
