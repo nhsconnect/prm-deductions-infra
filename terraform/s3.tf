@@ -24,6 +24,36 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
   }
 }
 
+resource "aws_s3_bucket_policy" "allow_access_from_billing_to_s3" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.id
+  policy = data.aws_iam_policy_document.allow_access_from_billing_to_s3.json
+}
+
+data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
+  statement {
+    principals {
+      type = "Service"
+      identifiers = ["billingreports.amazonaws.com"]
+    }
+    effect    = "Allow"
+    actions = ["s3:GetBucketAcl", "s3:GetBucketPolicy"]
+    resources = [aws_s3_bucket.cost_and_usage_bucket.arn]
+  }
+
+  statement {
+    sid = "Stmt1335892526596"
+    effect = "Allow"
+    principals {
+      identifiers = ["billingreports.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*"]
+  }
+
+}
+
+
 resource "aws_s3_bucket" "cost_and_usage_access_logs" {
   bucket = "${var.environment}-cost-and-usage-access-logs"
 
