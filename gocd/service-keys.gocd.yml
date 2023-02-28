@@ -1,7 +1,7 @@
 format_version: 4
 pipelines:
   "prm-deductions-service-api-keys":
-    group: deductions
+    group: shared-components
     label_template: "${git[:8]}"
     materials:
       git:
@@ -148,4 +148,3 @@ pipelines:
                     arguments:
                       - -c
                       - ./tasks rotate_service_keys
-

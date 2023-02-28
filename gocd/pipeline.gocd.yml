@@ -44,7 +44,7 @@ common:
 
 pipelines:
   "prm-deductions-infra-cross-account":
-    group: deductions
+    group: shared-components
     label_template: "${git[:8]}"
     materials:
       git:
@@ -183,7 +183,7 @@ pipelines:
                       - ./tasks tf_apply_cross_account
 
   "prm-deductions-infra":
-    group: deductions
+    group: shared-components
     label_template: "${git[:8]}"
     materials:
       git:

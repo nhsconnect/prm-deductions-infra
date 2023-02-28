@@ -1,7 +1,7 @@
 format_version: 4
 pipelines:
   "prm-deductions-user-api-keys":
-    group: deductions
+    group: shared-components
     label_template: "${git[:8]}"
     materials:
       git:

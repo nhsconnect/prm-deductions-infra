@@ -1,7 +1,7 @@
 format_version: 4
 pipelines:
   rename-service:
-    group: repository
+    group: shared-components
     label_template: "${git[:8]}"
     materials:
       git:

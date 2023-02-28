@@ -1,20 +1,20 @@
 format_version: 4
 common:
- tasks: &tasks
-  - exec:
-      command: /bin/bash
-      arguments:
-        - -c
-        - ./tasks tf_plan_dashboard create
-  - exec:
-      command: /bin/bash
-      arguments:
-        - -c
-        - ./tasks tf_apply_dashboard
+  tasks: &tasks
+    - exec:
+        command: /bin/bash
+        arguments:
+          - -c
+          - ./tasks tf_plan_dashboard create
+    - exec:
+        command: /bin/bash
+        arguments:
+          - -c
+          - ./tasks tf_apply_dashboard
 
 pipelines:
-  repo-infra-dashboard:
-    group: deductions
+  repo-team-dashboards:
+    group: shared-components
     label_template: "${COUNT}-${git[:8]}"
     materials:
       git:
