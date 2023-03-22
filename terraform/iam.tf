@@ -8,20 +8,21 @@ data "aws_ssm_parameter" "splunk_trusted_principal" {
   name = "/repo/user-input/external/splunk-trusted-principal"
 }
 
-data "aws_iam_policy_document" "splunk_trust_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "AWS"
-      identifiers = split(",", data.aws_ssm_parameter.splunk_trusted_principal.value)
-    }
-  }
-}
-
 resource "aws_iam_role" "splunk_sqs_forwarder" {
   name               = "SplunkSqsForwarder"
   description        = "Role to allow repo to integrate with splunk"
-  assume_role_policy = data.aws_iam_policy_document.splunk_trust_policy.json
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          AWS = split(",", data.aws_ssm_parameter.splunk_trusted_principal.value)
+        }
+      },
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "splunk_access_policy_attachment" {
