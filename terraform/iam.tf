@@ -137,8 +137,10 @@ data "aws_iam_policy_document" "generate_cost_report_lambda_policy_document" {
       "glue:GetPartitions",
       "glue:GetTable",
       "glue:GetPartition",
-      "glue:GetDatabase"
+      "glue:GetDatabase",
+      "glue:GetDatabases"
     ]
+
     resources = [
       "arn:aws:athena:${var.region}:${local.account_id}:workgroup/primary",
       "arn:aws:glue:${var.region}:${local.account_id}:table/${var.environment}-generate-cost-report-catalog-database/aws_cost_report",
