@@ -1,9 +1,11 @@
 fields CpuUtilized / CpuReserved * 100 as CpuUtilizedPercent,
   (AvailabilityZone like "eu-west-2a") as is_A,
-  (AvailabilityZone like "eu-west-2b") as is_B
+  (AvailabilityZone like "eu-west-2b") as is_B,
+    (AvailabilityZone like "eu-west-2c") as is_C
 | filter (Type = "Task")
 | stats
   max(CpuUtilizedPercent * is_A) as A,
-  max(CpuUtilizedPercent * is_B) as B
+  max(CpuUtilizedPercent * is_B) as B,
+  max(CpuUtilizedPercent * is_C) as C
   by bin(2m) as period
 | sort period desc
