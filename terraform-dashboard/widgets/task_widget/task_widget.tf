@@ -30,12 +30,14 @@ locals {
 fields
   ${title(var.metric_type)}Utilized / ${title(var.metric_type)}Reserved * 100 as Percent,
   (AvailabilityZone like "${var.region}a") as is_A,
-  (AvailabilityZone like "${var.region}b") as is_B
+  (AvailabilityZone like "${var.region}b") as is_B,
+  (AvailabilityZone like "${var.region}c") as is_C
 | filter
     (Type = "Task")
 | stats
     max(Percent * is_A) as A,
-    max(Percent * is_B) as B
+    max(Percent * is_B) as B,
+    max(Percent * is_C) as C
     by bin(2m) as period
 | sort
     period desc
