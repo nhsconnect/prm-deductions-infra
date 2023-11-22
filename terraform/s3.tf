@@ -32,22 +32,22 @@ resource "aws_s3_bucket_policy" "allow_access_from_billing_to_s3" {
 data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
   statement {
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["billingreports.amazonaws.com"]
     }
     effect    = "Allow"
-    actions = ["s3:GetBucketAcl", "s3:GetBucketPolicy"]
+    actions   = ["s3:GetBucketAcl", "s3:GetBucketPolicy"]
     resources = [aws_s3_bucket.cost_and_usage_bucket.arn]
   }
 
   statement {
-    sid = "Stmt1335892526596"
+    sid    = "Stmt1335892526596"
     effect = "Allow"
     principals {
       identifiers = ["billingreports.amazonaws.com"]
       type        = "Service"
     }
-    actions = ["s3:PutObject"]
+    actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*"]
   }
 
@@ -64,23 +64,23 @@ resource "aws_s3_bucket" "cost_and_usage_access_logs" {
 }
 
 resource "aws_s3_bucket_policy" "cost_usage_permit_developer_to_see_access_logs_policy" {
-  count = var.is_restricted_account ? 1 : 0
+  count  = var.is_restricted_account ? 1 : 0
   bucket = aws_s3_bucket.cost_and_usage_access_logs.id
   policy = jsonencode({
-    "Statement": [
+    "Statement" : [
       {
-        Effect: "Allow",
-        Principal:  {
-          "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/RepoDeveloper"
+        Effect : "Allow",
+        Principal : {
+          "AWS" : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/RepoDeveloper"
         },
-        Action: ["s3:Get*","s3:ListBucket"],
-        Resource: [
+        Action : ["s3:Get*", "s3:ListBucket"],
+        Resource : [
           "${aws_s3_bucket.cost_and_usage_access_logs.arn}",
           "${aws_s3_bucket.cost_and_usage_access_logs.arn}/*"
         ],
-        Condition: {
-          Bool: {
-            "aws:SecureTransport": "false"
+        Condition : {
+          Bool : {
+            "aws:SecureTransport" : "false"
           }
         }
       }
@@ -89,21 +89,21 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_developer_to_see_access_logs_
 }
 
 resource "aws_s3_bucket_policy" "cost_usage_permit_s3_to_write_access_logs_policy" {
-  bucket        = aws_s3_bucket.cost_and_usage_access_logs.id
+  bucket = aws_s3_bucket.cost_and_usage_access_logs.id
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "S3ServerAccessLogsPolicy",
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "logging.s3.amazonaws.com"
+        "Sid" : "S3ServerAccessLogsPolicy",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "logging.s3.amazonaws.com"
         },
-        "Action": "s3:PutObject",
-        "Resource": "${aws_s3_bucket.cost_and_usage_access_logs.arn}/${local.cost_usage_access_logs_prefix}*",
-        Condition: {
-          Bool: {
-            "aws:SecureTransport": "false"
+        "Action" : "s3:PutObject",
+        "Resource" : "${aws_s3_bucket.cost_and_usage_access_logs.arn}/${local.cost_usage_access_logs_prefix}*",
+        Condition : {
+          Bool : {
+            "aws:SecureTransport" : "false"
           }
         }
       }
@@ -138,17 +138,17 @@ resource "aws_s3_bucket_policy" "alb_access_logs_policy" {
 data "aws_iam_policy_document" "allow_load_balancers_to_publish_to_access_logs_s3_bucket" {
   statement {
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["arn:aws:iam::652711504416:root"]
     }
-    actions = ["s3:PutObject"]
+    actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.alb_access_logs.arn}/*"]
   }
 }
 
 resource "aws_ssm_parameter" "alb_access_logs_s3_bucket_id" {
-  value = aws_s3_bucket.alb_access_logs.id
-  type = "String"
+  value       = aws_s3_bucket.alb_access_logs.id
+  type        = "String"
   description = "Exported this bucket id so each alb in different git repos can configure logs"
-  name = "/repo/${var.environment}/output/${var.repo_name}/alb-access-logs-s3-bucket-id"
+  name        = "/repo/${var.environment}/output/${var.repo_name}/alb-access-logs-s3-bucket-id"
 }
