@@ -189,3 +189,8 @@ variable "generate_cost_report_lambda_zip" {
   description = "path to zip file containing lambda code to schedule cost report"
   default     = "../generate-cost-report-lambda/build/generate-cost-report-lambda.zip"
 }
+
+variable "s3_backup_enabled" {
+  type = bool
+  default = false
+}
