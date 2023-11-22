@@ -26,3 +26,5 @@ inbound_sig_ips = ["3.11.206.30/32", "3.8.223.81/32", "35.178.32.211/32","3.11.1
 
 grant_access_to_queues_through_vpn = true
 is_restricted_account = true
+
+s3_backup_enabled = true

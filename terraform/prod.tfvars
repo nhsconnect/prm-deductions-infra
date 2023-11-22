@@ -26,3 +26,5 @@ inbound_sig_ips = ["18.132.56.40/32", "3.11.193.200/32", "35.176.248.137/32","3.
 
 deploy_prod_route53_zone = true
 is_restricted_account = true
+
+s3_backup_enabled = true
