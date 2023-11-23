@@ -190,6 +190,8 @@ variable "generate_cost_report_lambda_zip" {
   default     = "../generate-cost-report-lambda/build/generate-cost-report-lambda.zip"
 }
 
+# Set to true if if the environment needs backing up e.g. in production.
+# This will result in versioning and object locking being enabled for select buckets containing critical live data.
 variable "s3_backup_enabled" {
   type    = bool
   default = false
