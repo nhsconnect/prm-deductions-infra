@@ -33,19 +33,19 @@ variable "deductions_private_vpn_client_subnet" {
 }
 
 variable "deductions_private_public_subnets" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_private_private_subnets" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_private_database_subnets" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_private_azs" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_core_cidr" {
@@ -53,21 +53,21 @@ variable "deductions_core_cidr" {
 }
 
 variable "deductions_core_private_subnets" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_core_database_subnets" {
-  type = list
+  type = list(any)
 }
 
 variable "deductions_core_azs" {
-  type = list
+  type = list(any)
 }
 
 variable "gocd_cidr" {}
 
 variable "gocd_environment" {
-  default     = "prod"
+  default = "prod"
 }
 
 # deductions-public mq variables
@@ -146,14 +146,14 @@ variable "state_db_engine_version" {}
 variable "state_db_instance_class" {}
 
 variable "mhs_vpc_cidr_block" {
-  type = string
+  type        = string
   description = "The CIDR block to use for the MHS VPC that is created. Should be a /16 block. Note that this cidr block must not overlap with the cidr blocks of the VPCs that the MHS VPC is to be peered with."
 }
 
 variable "mhs_vpc_additional_cidr_block" {
-  type = string
+  type        = string
   description = "The additional CIDR block to use for MHS VPC"
-  default = ""
+  default     = ""
 }
 
 variable "mhs_cidr_newbits" {
@@ -163,7 +163,7 @@ variable "test_harness_mhs_cluster_domain_name" { default = "" }
 variable "repo_mhs_cluster_domain_name" {}
 variable "common_account_id" {}
 variable "common_account_role" {}
-variable "deploy_cross_account_vpc_peering"{}
+variable "deploy_cross_account_vpc_peering" {}
 variable "deploy_mhs_test_harness" {}
 variable "deploy_prod_route53_zone" { default = false }
 variable "mhs_repo_public_subnets_outbound" {}
@@ -188,4 +188,10 @@ variable "generate_cost_report_lambda_zip" {
   type        = string
   description = "path to zip file containing lambda code to schedule cost report"
   default     = "../generate-cost-report-lambda/build/generate-cost-report-lambda.zip"
+}
+
+variable "s3_backup_enabled" {
+  type        = bool
+  default     = false
+  description = "Set to true if the environment needs backing up e.g. in production. This will result in versioning and object locking being enabled for select buckets containing critical live data."
 }
