@@ -205,7 +205,6 @@ function generate_vpn_server_crt {
   existing_crt="$(aws acm list-certificates | jq -r --arg crt_id "$crt_id" '.CertificateSummaryList[] | select(.DomainName==$crt_id)')"
 
   if [[ -z $existing_crt ]]; then
-    echo "No actively issued certificate found. Attempting to create and import new certificate."
     setup_vpn_ca
     ./easyrsa build-server-full $crt_id nopass
 
