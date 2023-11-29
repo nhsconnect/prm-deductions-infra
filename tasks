@@ -202,8 +202,8 @@ function generate_vpn_ca {
 function generate_vpn_server_crt {
   check_env
   crt_id="${NHS_ENVIRONMENT}.vpn.patient-deductions.nhs.uk"
-  cert_status="ISSUED"
-  existing_crt="$(aws acm list-certificates | jq -r --arg crt_id "$crt_id" --arg cert_status "$cert_status" '.CertificateSummaryList[] | select((.DomainName==$crt_id) and (.Status==$cert_status))')"
+  existing_crt="$(aws acm list-certificates | jq -r --arg crt_id "$crt_id" '.CertificateSummaryList[] | select(.DomainName==$crt_id)')"
+
   if [[ -z $existing_crt ]]; then
     echo "No actively issued certificate found. Attempting to create and import new certificate."
     setup_vpn_ca
