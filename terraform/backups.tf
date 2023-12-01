@@ -30,7 +30,7 @@ resource "aws_backup_selection" "s3_continuous" {
 
   resources = [
     aws_s3_bucket.alb_access_logs.arn,
-    data.aws_s3_bucket.ehr-repo-bucket.arn,
+    data.aws_s3_bucket.ehr_repo_bucket.arn,
     data.aws_s3_bucket.ehr_repo_access_logs.arn
   ]
 }
