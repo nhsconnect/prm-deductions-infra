@@ -5,7 +5,7 @@ resource "aws_backup_plan" "cross_account" {
 
   rule {
     rule_name         = "CrossAccount7amBackup"
-    target_vault_name = aws_backup_vault.backup_vault.name
+    target_vault_name = element(split(":", data.aws_ssm_parameter.target_backup_vault_arn[0].value), 6)
     schedule          = "cron(0 7 * * ? *)"
 
     copy_action {
@@ -73,7 +73,8 @@ resource "aws_iam_role" "cross_account_backup" {
   count = var.s3_backup_enabled ? 1 : 0
 
   name               = "${var.environment}_cross_account_backup"
-  assume_role_policy = data.aws_iam_policy_document.backup_assume_role.json
+
+  assume_role_policy = data.aws_iam_policy_document.backup_assume_role[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "cross_account_backup" {
