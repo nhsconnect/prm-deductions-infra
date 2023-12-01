@@ -73,6 +73,7 @@ resource "aws_iam_role" "cross_account_backup" {
   count = var.s3_backup_enabled ? 1 : 0
 
   name               = "${var.environment}_cross_account_backup"
+
   assume_role_policy = data.aws_iam_policy_document.backup_assume_role[0].json
 }
 
