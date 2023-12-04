@@ -5,7 +5,7 @@ resource "aws_backup_plan" "cross_account" {
 
   rule {
     rule_name         = "CrossAccount7amBackup"
-    target_vault_name = aws_backup_vault.s3.name
+    target_vault_name = aws_backup_vault.s3[0].name
     schedule          = "cron(0 7 * * ? *)"
 
     copy_action {
