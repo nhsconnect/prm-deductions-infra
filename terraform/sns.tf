@@ -1,6 +1,21 @@
 resource "aws_sns_topic" "alarm_notifications" {
   name = "${var.environment}-alarm-notifications-sns-topic"
   kms_master_key_id = aws_kms_key.alarm_notification.id
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Deny",
+        "Action": "sns:Publish",
+        "Resource": [aws_sns_topic.alarm_notifications.arn],
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "false"
+          }
+        }
+      }
+    ]
+  })
 
   tags = {
     Name = "${var.environment}-alarm-notifications-sns-topic"
