@@ -29,6 +29,15 @@ resource "aws_s3_bucket_policy" "allow_access_from_billing_to_s3" {
   policy = data.aws_iam_policy_document.allow_access_from_billing_to_s3.json
 }
 
+resource "aws_s3_bucket_public_access_block" "cost_and_usage_bucket" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
   statement {
     principals {
@@ -61,6 +70,15 @@ resource "aws_s3_bucket" "cost_and_usage_access_logs" {
     CreatedBy   = var.repo_name
     Environment = var.environment
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "cost_and_usage_access_logs" {
+  bucket = aws_s3_bucket.cost_and_usage_access_logs.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_policy" "cost_usage_permit_developer_to_see_access_logs_policy" {
@@ -133,6 +151,15 @@ resource "aws_s3_bucket_versioning" "alb_access_logs" {
 resource "aws_s3_bucket_policy" "alb_access_logs_policy" {
   bucket = aws_s3_bucket.alb_access_logs.id
   policy = data.aws_iam_policy_document.allow_load_balancers_to_publish_to_access_logs_s3_bucket.json
+}
+
+resource "aws_s3_bucket_public_access_block" "alb_access_logs" {
+  bucket = aws_s3_bucket.alb_access_logs.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 data "aws_iam_policy_document" "allow_load_balancers_to_publish_to_access_logs_s3_bucket" {
