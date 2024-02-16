@@ -211,15 +211,16 @@ resource "aws_s3_bucket_public_access_block" "access_logs" {
   restrict_public_buckets = true
 }
 
-#// TODO PRMT-4479 Work out with Danielle/Kris what we want our access log policy to be
+#// TODO PRMT-4479 Work out what we want our access log policy to be
 #resource "aws_s3_bucket_policy" "access_logs_policy" {
 #  bucket = aws_s3_bucket.access_logs.id
 ##  policy = data.aws_iam_policy_document.allow_load_balancers_to_publish_to_access_logs_s3_bucket.json
 #}
 
+#// TODO PRMT-4479 Work out what we want our read/write policies to be
+
 resource "aws_ssm_parameter" "access_logs_s3_bucket_id" {
   value       = aws_s3_bucket.access_logs.id
-resource "aws_s3_bucket_public_access_block" "alb_access_logs" {
   type        = "String"
   description = "Exported this bucket id so each S3 created in different git repos can store access logs centrally"
   name        = "/repo/${var.environment}/output/${var.repo_name}/access-logs-s3-bucket-id"
