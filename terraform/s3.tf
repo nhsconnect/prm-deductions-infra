@@ -4,23 +4,34 @@ locals {
 
 resource "aws_s3_bucket" "cost_and_usage_bucket" {
   bucket = "${var.environment}-cost-and-usage"
-  acl    = "private"
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
-  logging {
-    target_bucket = aws_s3_bucket.cost_and_usage_access_logs.id
-    target_prefix = local.cost_usage_access_logs_prefix
-  }
 
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [
+      logging,
+      server_side_encryption_configuration
+    ]
+  }
+}
+
+resource "aws_s3_bucket_logging" "cost_and_usage_bucket" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.id
+
+  target_bucket = aws_s3_bucket.cost_and_usage_access_logs.id
+  target_prefix = local.cost_usage_access_logs_prefix
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cost_and_usage_bucket" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 
@@ -59,9 +70,7 @@ data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*"]
   }
-
 }
-
 
 resource "aws_s3_bucket" "cost_and_usage_access_logs" {
   bucket = "${var.environment}-cost-and-usage-access-logs"
@@ -178,4 +187,69 @@ resource "aws_ssm_parameter" "alb_access_logs_s3_bucket_id" {
   type        = "String"
   description = "Exported this bucket id so each alb in different git repos can configure logs"
   name        = "/repo/${var.environment}/output/${var.repo_name}/alb-access-logs-s3-bucket-id"
+}
+
+resource "aws_s3_bucket" "access_logs" {
+  bucket = "${var.environment}-access_logs"
+
+  force_destroy = true
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [server_side_encryption_configuration]
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.bucket
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_policy" "access_logs_permit_s3_to_write_access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "S3ServerAccessLogsPolicy",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "logging.s3.amazonaws.com"
+        },
+        "Action" : "s3:PutObject",
+        "Resource" : "${aws_s3_bucket.access_logs.arn}/*",
+        Condition : {
+          Bool : {
+            "aws:SecureTransport" : "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_public_access_block" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
