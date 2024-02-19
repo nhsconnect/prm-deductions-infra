@@ -190,7 +190,7 @@ resource "aws_ssm_parameter" "alb_access_logs_s3_bucket_id" {
 }
 
 resource "aws_s3_bucket" "access_logs" {
-  bucket = "${var.environment}-access_logs"
+  bucket = "${var.environment}-access-logs"
 
   force_destroy = true
 
