@@ -59,7 +59,24 @@ data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*"]
   }
+}
 
+resource "aws_s3_bucket" "cost_and_usage_access_logs" {
+  bucket = "${var.environment}-cost-and-usage-access-logs"
+
+  tags = {
+    CreatedBy   = var.repo_name
+    Environment = var.environment
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "cost_and_usage_access_logs" {
+  bucket = aws_s3_bucket.cost_and_usage_access_logs.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_policy" "cost_usage_permit_developer_to_see_access_logs_policy" {
