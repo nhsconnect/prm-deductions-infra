@@ -4,23 +4,34 @@ locals {
 
 resource "aws_s3_bucket" "cost_and_usage_bucket" {
   bucket = "${var.environment}-cost-and-usage"
-  acl    = "private"
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
-  logging {
-    target_bucket = aws_s3_bucket.cost_and_usage_access_logs.id
-    target_prefix = local.cost_usage_access_logs_prefix
-  }
 
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [
+      logging,
+      server_side_encryption_configuration
+    ]
+  }
+}
+
+resource "aws_s3_bucket_logging" "cost_and_usage_bucket" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.id
+
+  target_bucket = aws_s3_bucket.cost_and_usage_access_logs.id
+  target_prefix = local.cost_usage_access_logs_prefix
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "cost_and_usage_bucket" {
+  bucket = aws_s3_bucket.cost_and_usage_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 
@@ -183,17 +194,23 @@ resource "aws_s3_bucket" "access_logs" {
 
   force_destroy = true
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
+  }
+
+  lifecycle {
+    ignore_changes = [server_side_encryption_configuration]
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 
