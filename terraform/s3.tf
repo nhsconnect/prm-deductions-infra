@@ -207,6 +207,29 @@ resource "aws_s3_bucket_versioning" "access_logs" {
   }
 }
 
+resource "aws_s3_bucket_policy" "access_logs_permit_s3_to_write_access_logs" {
+  bucket = aws_s3_bucket.access_logs.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "S3ServerAccessLogsPolicy",
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "logging.s3.amazonaws.com"
+        },
+        "Action" : "s3:PutObject",
+        "Resource" : "${aws_s3_bucket.access_logs.arn}/*",
+        Condition : {
+          Bool : {
+            "aws:SecureTransport" : "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket_public_access_block" "access_logs" {
   bucket = aws_s3_bucket.access_logs.bucket
 
@@ -214,9 +237,4 @@ resource "aws_s3_bucket_public_access_block" "access_logs" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_policy" "access_logs_policy" {
-  bucket = aws_s3_bucket.access_logs.id
-  policy = data.aws_iam_policy_document.allow_load_balancers_to_publish_to_access_logs_s3_bucket.json
 }
