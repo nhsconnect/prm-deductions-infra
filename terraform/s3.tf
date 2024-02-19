@@ -198,8 +198,6 @@ resource "aws_s3_bucket" "access_logs" {
 }
 
 resource "aws_s3_bucket_versioning" "access_logs" {
-  count = var.s3_backup_enabled ? 1 : 0
-
   bucket = aws_s3_bucket.access_logs.bucket
 
   versioning_configuration {
