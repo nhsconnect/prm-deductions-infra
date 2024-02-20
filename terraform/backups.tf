@@ -31,7 +31,10 @@ resource "aws_backup_selection" "s3_continuous" {
   resources = [
     aws_s3_bucket.alb_access_logs.arn,
     data.aws_s3_bucket.ehr_repo_bucket.arn,
-    data.aws_s3_bucket.ehr_repo_access_logs.arn
+    data.aws_s3_bucket.ehr_repo_access_logs.arn,
+    aws_s3_bucket.access_logs.arn,
+    data.aws_s3_bucket.terraform_state.arn,
+    data.aws_s3_bucket.terraform_state_store.arn
   ]
 }
 
