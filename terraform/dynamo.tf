@@ -40,8 +40,4 @@ module "ehr_transfer_tracker_dynamodb_table" {
   deletion_protection_enabled    = true
   point_in_time_recovery_enabled = true
   server_side_encryption_enabled = true
-
-  providers = {
-    aws = aws.latest
-  }
 }

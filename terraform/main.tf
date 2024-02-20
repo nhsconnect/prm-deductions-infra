@@ -12,17 +12,6 @@ provider "aws" {
   }
 }
 
-provider "aws" {
-  alias  = "latest"
-  region = var.region
-
-  default_tags {
-    Terraform   = "true"
-    CreatedBy   = var.repo_name
-    Environment = var.environment
-  }
-}
-
 terraform {
   backend "s3" {
     encrypt = true
