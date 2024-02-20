@@ -191,7 +191,31 @@ pipelines:
         blacklist:
           - key-rotation-and-generation/**/*.*
     stages:
+      - plan_dev:
+          clean_workspace: true
+          environment_variables:
+            NHS_ENVIRONMENT: dev
+          jobs:
+            plan:
+              resources:
+                - docker
+              artifacts:
+                - build:
+                    source: notification-lambda/build/alarm.zip
+                    destination: notification-lambda/build/
+                - build:
+                    source: generate-cost-report-lambda/build/generate-cost-report-lambda.zip
+                    destination: generate-cost-report-lambda/build/
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks tf_plan create
       - deploy_dev:
+          approval:
+            type: manual
+            allow_only_on_success: true
           clean_workspace: true
           environment_variables:
             NHS_ENVIRONMENT: dev
