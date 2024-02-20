@@ -65,7 +65,8 @@ resource "aws_backup_selection" "cross_account" {
     data.aws_dynamodb_table.repo_mhs_state.arn,
     data.aws_dynamodb_table.repo_mhs_sync_async_state.arn,
     data.aws_dynamodb_table.suspension_service_dynamodb.arn,
-    data.aws_dynamodb_table.prm_deductions_terraform_table.arn
+    data.aws_dynamodb_table.prm_deductions_terraform_table.arn,
+    module.ehr_transfer_tracker_dynamodb_table.dynamodb_table_arn
   ]
 }
 
