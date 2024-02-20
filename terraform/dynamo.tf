@@ -10,6 +10,11 @@ module "dynamodb-table" {
       name            = "NhsNumberSecondaryIndex"
       hash_key        = "NhsNumber"
       projection_type = "ALL"
+    },
+    {
+      name            = "OutboundConversationIdSecondaryIndex"
+      hash_key        = "OutboundConversationId"
+      projection_type = "ALL"
     }
   ]
 
@@ -24,6 +29,10 @@ module "dynamodb-table" {
     },
     {
       "name" : "NhsNumber",
+      "type" : "S"
+    },
+    {
+      "name" : "OutboundConversationId",
       "type" : "S"
     }
   ]
