@@ -22,6 +22,7 @@ resource "aws_ec2_client_vpn_endpoint" "vpn" {
   split_tunnel           = true
   dns_servers            = [cidrhost(var.cidr, 2)]
   security_group_ids     = [ aws_security_group.vpn.id ]
+  vpc_id                 = aws_security_group.vpn.vpc_id
 
   authentication_options {
     type                       = "certificate-authentication"
