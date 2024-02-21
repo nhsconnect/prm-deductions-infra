@@ -20,6 +20,14 @@ data "aws_s3_bucket" "ehr_repo_access_logs" {
   bucket = "${var.environment}-ehr-repo-access-logs"
 }
 
+data "aws_s3_bucket" "terraform_state" {
+  bucket = "prm-deductions-${var.environment}-terraform-state"
+}
+
+data "aws_s3_bucket" "terraform_state_store" {
+  bucket = "prm-deductions-${var.environment}-terraform-state-store"
+}
+
 data "aws_dynamodb_table" "ehr_transfer_service_transfer_tracker" {
   name = "${var.environment}-ehr-transfer-service-transfer-tracker"
 }
