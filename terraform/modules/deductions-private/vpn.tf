@@ -21,6 +21,8 @@ resource "aws_ec2_client_vpn_endpoint" "vpn" {
   client_cidr_block      = var.vpn_client_subnet
   split_tunnel           = true
   dns_servers            = [cidrhost(var.cidr, 2)]
+  security_group_ids     = [ aws_security_group.vpn.id ]
+  vpc_id                 = aws_security_group.vpn.vpc_id
 
   authentication_options {
     type                       = "certificate-authentication"
@@ -69,7 +71,6 @@ resource "aws_ssm_parameter" "vpn_sg_id" {
 resource "aws_ec2_client_vpn_network_association" "private_subnet" {
   client_vpn_endpoint_id = aws_ec2_client_vpn_endpoint.vpn.id
   subnet_id              = module.vpc.private_subnets[0]
-  security_group_ids     = [ aws_security_group.vpn.id ]
 }
 
 resource "aws_ec2_client_vpn_authorization_rule" "deductions_private" {
