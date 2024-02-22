@@ -41,6 +41,9 @@ module "ehr_transfer_tracker_dynamodb_table" {
   point_in_time_recovery_enabled = true
   server_side_encryption_enabled = true
 
+  ttl_attribute_name = "DeletedAt"
+  ttl_enabled        = true
+
   tags = {
     Terraform   = "true"
     CreatedBy   = var.repo_name
