@@ -1,6 +1,6 @@
 locals {
-  mhs_vpc_id = aws_vpc.mhs_vpc.id
-  mhs_vpc_cidr_block = aws_vpc.mhs_vpc.cidr_block
+  mhs_vpc_id             = aws_vpc.mhs_vpc.id
+  mhs_vpc_cidr_block     = aws_vpc.mhs_vpc.cidr_block
   mhs_vpc_route_table_id = aws_vpc.mhs_vpc.main_route_table_id
 }
 
@@ -8,13 +8,13 @@ locals {
 resource "aws_vpc" "mhs_vpc" {
   # Note that this cidr block must not overlap with the cidr blocks of the VPCs
   # that the MHS VPC is peered with.
-  cidr_block = var.mhs_vpc_cidr_block
+  cidr_block           = var.mhs_vpc_cidr_block
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${var.environment}-${var.cluster_name}-mhs-vpc"
+    Name        = "${var.environment}-${var.cluster_name}-mhs-vpc"
     Environment = var.environment
-    CreatedBy = var.repo_name
+    CreatedBy   = var.repo_name
   }
 }
 
@@ -27,21 +27,25 @@ resource "aws_default_network_acl" "default" {
   default_network_acl_id = aws_vpc.mhs_vpc.default_network_acl_id
 
   ingress {
-    action    = "allow"
-    protocol  = "tcp"
-    from_port = 0
-    to_port   = 65535
+    action     = "allow"
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 65535
     cidr_block = "0.0.0.0/0"
-    rule_no   = 100
+    rule_no    = 100
   }
 
   egress {
-    action    = "allow"
-    protocol  = "tcp"
-    from_port = 0
-    to_port   = 65535
+    action     = "allow"
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 65535
     cidr_block = "0.0.0.0/0"
-    rule_no   = 100
+    rule_no    = 100
+  }
+
+  lifecycle {
+    ignore_changes = [subnet_ids]
   }
 }
 
@@ -58,9 +62,9 @@ resource "aws_flow_log" "nhs_audit" {
   vpc_id               = aws_vpc.mhs_vpc.id
 
   tags = {
-    Name = "${var.environment}-${var.cluster_name}-mhs-vpc-audit-flow-logs"
+    Name        = "${var.environment}-${var.cluster_name}-mhs-vpc-audit-flow-logs"
     Environment = var.environment
-    CreatedBy = var.repo_name
+    CreatedBy   = var.repo_name
   }
 }
 
