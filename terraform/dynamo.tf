@@ -1,8 +1,12 @@
+locals {
+  ehr_transfer_tracker_db_name = "${var.environment}-ehr-transfer-tracker"
+}
+
 module "ehr_transfer_tracker_dynamodb_table" {
   source  = "terraform-aws-modules/dynamodb-table/aws"
   version = "4.0.0"
 
-  name      = "${var.environment}-ehr-transfer-tracker"
+  name      = local.ehr_transfer_tracker_db_name
   hash_key  = "InboundConversationId"
   range_key = "Layer"
   global_secondary_indexes = [
