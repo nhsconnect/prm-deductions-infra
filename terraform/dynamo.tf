@@ -49,7 +49,7 @@ module "ehr_transfer_tracker_dynamodb_table" {
   ttl_enabled        = true
 
   stream_enabled   = true
-  stream_view_type = OLD_IMAGE
+  stream_view_type = "OLD_IMAGE"
 
   tags = {
     Terraform   = "true"
