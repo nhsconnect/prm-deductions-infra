@@ -48,6 +48,9 @@ module "ehr_transfer_tracker_dynamodb_table" {
   ttl_attribute_name = "DeletedAt"
   ttl_enabled        = true
 
+  stream_enabled   = true
+  stream_view_type = OLD_IMAGE
+
   tags = {
     Terraform   = "true"
     CreatedBy   = var.repo_name
