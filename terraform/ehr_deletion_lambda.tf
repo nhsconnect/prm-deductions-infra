@@ -53,18 +53,18 @@ resource "aws_iam_role" "ehr_hard_deletion_lambda" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb_execution" {
-  role       = aws_iam_role.ehr_hard_deletion_lambda
+  role       = aws_iam_role.ehr_hard_deletion_lambda.name
   policy_arn = data.aws_iam_policy.lambda_dynamodb_execution_role.arn
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_s3_repo_object_deletion" {
-  role       = aws_iam_role.ehr_hard_deletion_lambda
+  role       = aws_iam_role.ehr_hard_deletion_lambda.name
   policy_arn = aws_iam_policy.lambda_s3_repo_object_deletion.arn
 }
 
 resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
   name        = "lambda-s3-repo-object-deletion-policy"
-  description = "Allows Lambda to delete objects in the ${data.aws_s3_bucket.ehr_repo_bucket}"
+  description = "Allows Lambda to delete objects in the ${data.aws_s3_bucket.ehr_repo_bucket.id}"
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -77,7 +77,7 @@ resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
           "s3:ListBucket",
         ],
         Resource = [
-          "arn:aws:s3:::${data.aws_s3_bucket.ehr_repo_bucket}/*",
+          "${data.aws_s3_bucket.ehr_repo_bucket.arn}/*",
         ],
       },
     ],
