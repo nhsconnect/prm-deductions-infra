@@ -1,25 +1,25 @@
 resource "aws_lambda_function" "ehr_hard_deletion" {
-  filename      = var.ehr_hard_deletion_lambda_zip
-  function_name = "${var.environment}-ehr-hard-deletion-lambda"
-  role          = aws_iam_role.ehr_hard_deletion_lambda_role.arn
-  handler       = "main.lambda_handler"
+  filename         = var.ehr_hard_deletion_lambda_zip
+  function_name    = "${var.environment}-ehr-hard-deletion-lambda"
+  role             = aws_iam_role.ehr_hard_deletion_lambda.arn
+  handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.ehr_hard_deletion_lambda_zip)
-  runtime = "python3.12"
-  timeout = 15
+  runtime          = "python3.12"
+  timeout          = 15
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name
-    Terraform = "True"
+    Terraform   = "True"
   }
   environment {
     variables = {
-      S3_REPO_BUCKET=data.aws_s3_bucket.ehr_repo_bucket.bucket
-#      S3_LARGE_MESSAGES_BUCKET=data.aws_s3_bucket.xxx.bucket
+      S3_REPO_BUCKET = data.aws_s3_bucket.ehr_repo_bucket.bucket
+      #S3_LARGE_MESSAGES_BUCKET=data.aws_s3_bucket.xxx.bucket
     }
   }
 }
 
-resource "aws_lambda_event_source_mapping" "hard_delete" {
+resource "aws_lambda_event_source_mapping" "ehr_transfer_tracker_dynamodb_to_hard_delete_lambda" {
   event_source_arn  = module.ehr_transfer_tracker_dynamodb_table.dynamodb_table_stream_arn
   function_name     = aws_lambda_function.ehr_hard_deletion.arn
   starting_position = "TRIM_HORIZON"
@@ -28,17 +28,17 @@ resource "aws_lambda_event_source_mapping" "hard_delete" {
     filter {
       pattern = jsonencode({
         "userIdentity" = {
-          "type": [
+          "type" : [
             "Service"
           ],
-          "principalId": [
+          "principalId" : [
             "dynamodb.amazonaws.com"
           ]
         },
-        "dynamodb": {
-          "Keys": {
-            "Layer": {
-              "S": [ "CONVERSATION" ]
+        "dynamodb" : {
+          "Keys" : {
+            "Layer" : {
+              "S" : ["CONVERSATION"]
             }
           }
         }
@@ -47,22 +47,22 @@ resource "aws_lambda_event_source_mapping" "hard_delete" {
   }
 }
 
-resource "aws_iam_role" "ehr_hard_deletion_lambda_role" {
+resource "aws_iam_role" "ehr_hard_deletion_lambda" {
   name               = "${var.environment}-ehr-hard-deletion-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb_execution_role" {
-  role       = aws_iam_role.ehr_hard_deletion_lambda_role
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_execution" {
+  role       = aws_iam_role.ehr_hard_deletion_lambda
   policy_arn = data.aws_iam_policy.lambda_dynamodb_execution_role.arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_s3_repo_object_deletion_policy" {
-  role       = aws_iam_role.ehr_hard_deletion_lambda_role
-  policy_arn = aws_iam_policy.lambda_s3_repo_object_deletion_policy.arn
+resource "aws_iam_role_policy_attachment" "lambda_s3_repo_object_deletion" {
+  role       = aws_iam_role.ehr_hard_deletion_lambda
+  policy_arn = aws_iam_policy.lambda_s3_repo_object_deletion.arn
 }
 
-resource "aws_iam_policy" "lambda_s3_repo_object_deletion_policy" {
+resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
   name        = "lambda-s3-repo-object-deletion-policy"
   description = "Allows Lambda to delete objects in the ${data.aws_s3_bucket.ehr_repo_bucket}"
 
@@ -70,8 +70,8 @@ resource "aws_iam_policy" "lambda_s3_repo_object_deletion_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "s3:DeleteObject",
           "s3:DeleteObjectVersion",
           "s3:ListBucket",
@@ -89,8 +89,8 @@ data "aws_iam_policy" "lambda_dynamodb_execution_role" {
 }
 
 data "archive_file" "ehr_hard_deletion_lambda" {
-  type        = "zip"
-  source_file = "modules/utils/scripts/EhrHardDeletion.py"
-  output_path = var.ehr_hard_deletion_lambda_zip
+  type             = "zip"
+  source_file      = "modules/utils/scripts/EhrHardDeletion.py"
+  output_path      = var.ehr_hard_deletion_lambda_zip
   output_file_mode = "0644"
 }
