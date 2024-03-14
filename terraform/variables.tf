@@ -184,6 +184,12 @@ variable "alarm_lambda_zip" {
   default     = "../notification-lambda/build/alarm.zip"
 }
 
+variable "ehr_hard_deletion_lambda_zip" {
+  type        = string
+  description = "path to zipfile containing lambda code for the ehr-hard-deletion-lambda"
+  default     = "../ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip"
+}
+
 variable "generate_cost_report_lambda_zip" {
   type        = string
   description = "path to zip file containing lambda code to schedule cost report"
