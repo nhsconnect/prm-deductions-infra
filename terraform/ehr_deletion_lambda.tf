@@ -5,7 +5,7 @@ resource "aws_lambda_function" "ehr_hard_deletion" {
   handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.ehr_hard_deletion_lambda_zip)
   runtime          = "python3.12"
-  timeout          = 15
+  timeout          = 300
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name
