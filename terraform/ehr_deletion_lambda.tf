@@ -80,6 +80,11 @@ resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
           "${data.aws_s3_bucket.ehr_repo_bucket.arn}/*",
         ],
       },
+      {
+        "Effect": "Allow",
+        "Action": "s3:ListBucket",
+        "Resource": data.aws_s3_bucket.ehr_repo_bucket.arn
+      }
     ],
   })
 }
