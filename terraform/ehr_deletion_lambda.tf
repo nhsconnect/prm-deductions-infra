@@ -2,10 +2,10 @@ resource "aws_lambda_function" "ehr_hard_deletion" {
   filename         = var.ehr_hard_deletion_lambda_zip
   function_name    = "${var.environment}-ehr-hard-deletion-lambda"
   role             = aws_iam_role.ehr_hard_deletion_lambda.arn
-  handler          = "main.lambda_handler"
+  handler          = "EhrHardDeletion.lambda_handler"
   source_code_hash = filebase64sha256(var.ehr_hard_deletion_lambda_zip)
   runtime          = "python3.12"
-  timeout          = 15
+  timeout          = 300
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name
@@ -79,6 +79,11 @@ resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
         Resource = [
           "${data.aws_s3_bucket.ehr_repo_bucket.arn}/*",
         ],
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "s3:ListBucket",
+        "Resource" : data.aws_s3_bucket.ehr_repo_bucket.arn
       },
     ],
   })
