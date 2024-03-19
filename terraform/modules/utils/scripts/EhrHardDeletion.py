@@ -30,7 +30,7 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
         try:
             print("Attempting to delete EHR in the S3 Bucket")
             repoBucket.objects.filter(Prefix=inboundConversationId + "/").delete()
-            if all(False for _ in repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
+            if not list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
                 print("EHR has been deleted from the S3 Bucket successfully!")
         except botocore.exceptions.ClientError as error:
             print(f"Failed to delete EHR in the S3 Bucket: {error}")
