@@ -4,7 +4,7 @@ import os
 import time
 from boto3.dynamodb.conditions import Key
 
-def lambda_handler(event, context):
+def lambda_handler(event):
     dynamodbTable, inboundConversationId = parse_event(event)
     delete_ehr_from_s3(inboundConversationId)
     verify_database_table_records_deleted(dynamodbTable, inboundConversationId)
