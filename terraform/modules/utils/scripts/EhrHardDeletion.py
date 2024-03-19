@@ -14,14 +14,14 @@ def deleteEhrFromS3(inboundConversationId):
     try:
         print("Retrieving S3_REPO_BUCKET environment variable")
         s3BucketName = os.environ["S3_REPO_BUCKET"]
-        print("S3_REPO_BUCKET=" + s3BucketName)
+        print(f"S3_REPO_BUCKET={s3BucketName}")
         print("Retrieving S3 Bucket")
         repoBucket = s3.Bucket(s3BucketName)
     except KeyError as error:
-        print("Failed to get S3_REPO_BUCKET environment variable: " + error)
+        print(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
         # Log to splunk for monitoring
     except Exception as error:
-        print("Failed to find the S3 Bucket: " + error)
+        print(f"Failed to find the S3 Bucket: {error}")
         # Log to splunk for monitoring
 
     if any(True for _ in repoBucket.objects.filter(Prefix=inboundConversationId + "/")): # Checks to see objects exist in the S3 Bucket for the given inboundConversationId
@@ -32,7 +32,7 @@ def deleteEhrFromS3(inboundConversationId):
             if all(False for _ in repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
                 print("EHR has been deleted from the S3 Bucket successfully!")
         except Exception as error:
-            print("Failed to delete EHR in the S3 Bucket: " + error)
+            print(f"Failed to delete EHR in the S3 Bucket: {error}")
             # Log to splunk for monitoring
     else:
         print("EHR could not be found in the S3 Bucket")
@@ -44,14 +44,10 @@ def parseEvent(event):
         deletedTableRecord = event["Records"][0]["dynamodb"]["OldImage"]
         inboundConversationId = event["Records"][0]["dynamodb"]["Keys"]["InboundConversationId"]["S"]
     except KeyError as error:
-        print("Could not find the relevant event key(s): " + error)
+        print(f"Could not find the relevant event key(s): {error}")
         # Log to splunk for monitoring
 
-    print(
-        "InboundConversationId: " + inboundConversationId +
-        ", DynamoDB Table: " + dynamodbTable +
-        ", Deleted Conversation: " + str(deletedTableRecord)
-    )
+    print(f"InboundConversationId: {inboundConversationId}, DynamoDB Table: {dynamodbTable}, Deleted Conversation: {str(deletedTableRecord)}")
     return dynamodbTable, inboundConversationId
 
 def verify_database_table_records_deleted(dynamodbTable: str, inboundConversationId: str) -> None:
@@ -64,6 +60,6 @@ def verify_database_table_records_deleted(dynamodbTable: str, inboundConversatio
     if queryResponse["Count"] == 0:
         print("All database records have been deleted")
     else:
-        print("Number of database records still existing: " + str(queryResponse["Count"]))
-        raise Exception("[WTF] - Database records still exist for InboundConversationId: " + inboundConversationId)
+        print(f"Number of database records still existing: {str(queryResponse['Count'])}")
+        raise Exception(f"[WTF] - Database records still exist for InboundConversationId: {inboundConversationId}")
         # Log to splunk for monitoring
