@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 import time
+import botocore.exceptions
 from boto3.dynamodb.conditions import Key
 
 def lambda_handler(event):
@@ -20,7 +21,7 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
     except KeyError as error:
         print(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
         # Log to splunk for monitoring
-    except Exception as error:
+    except botocore.exceptions.ClientError as error:
         print(f"Failed to find the S3 Bucket: {error}")
         # Log to splunk for monitoring
 
@@ -31,7 +32,7 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
             repoBucket.objects.filter(Prefix=inboundConversationId + "/").delete()
             if all(False for _ in repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
                 print("EHR has been deleted from the S3 Bucket successfully!")
-        except Exception as error:
+        except botocore.exceptions.ClientError as error:
             print(f"Failed to delete EHR in the S3 Bucket: {error}")
             # Log to splunk for monitoring
     else:
@@ -54,8 +55,12 @@ def verify_database_table_records_deleted(dynamodbTable: str, inboundConversatio
     dynamodb = boto3.resource('dynamodb')
     print("Retrieving DynamoDB table")
     ehrTrasferTrackerTable = dynamodb.Table(dynamodbTable)
+
     print("Verifying all database records have been deleted")
-    queryResponse = ehrTrasferTrackerTable.query(KeyConditionExpression=Key("InboundConversationId").eq(inboundConversationId))
+    try:
+        queryResponse = ehrTrasferTrackerTable.query(KeyConditionExpression=Key("InboundConversationId").eq(inboundConversationId))
+    except botocore.exceptions.ClientError as error:
+        print(f"Failed to query the dynamodb table: {error}")
 
     if queryResponse["Count"] == 0:
         print("All database records have been deleted")
