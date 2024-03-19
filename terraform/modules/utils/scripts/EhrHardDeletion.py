@@ -5,11 +5,11 @@ import time
 from boto3.dynamodb.conditions import Key
 
 def lambda_handler(event, context):
-    dynamodbTable, inboundConversationId = parseEvent(event)
-    deleteEhrFromS3(inboundConversationId)
+    dynamodbTable, inboundConversationId = parse_event(event)
+    delete_ehr_from_s3(inboundConversationId)
     verify_database_table_records_deleted(dynamodbTable, inboundConversationId)
 
-def deleteEhrFromS3(inboundConversationId):
+def delete_ehr_from_s3(inboundConversationId):
     s3 = boto3.resource('s3')
     try:
         print("Retrieving S3_REPO_BUCKET environment variable")
@@ -37,7 +37,7 @@ def deleteEhrFromS3(inboundConversationId):
     else:
         print("EHR could not be found in the S3 Bucket")
 
-def parseEvent(event):
+def parse_event(event):
     print("Parsing event")
     try:
         dynamodbTable = event["Records"][0]["eventSourceARN"].split('/')[1]
