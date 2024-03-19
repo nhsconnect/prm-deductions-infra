@@ -20,12 +20,12 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
         repoBucket = s3.Bucket(s3BucketName)
     except KeyError as error:
         print(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
-        # Log to splunk for monitoring
+        # TODO: Log to splunk for monitoring
     except botocore.exceptions.ClientError as error:
         print(f"Failed to find the S3 Bucket: {error}")
-        # Log to splunk for monitoring
+        # TODO: Log to splunk for monitoring
 
-    if list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")): # Checks to see objects exist in the S3 Bucket for the given inboundConversationId
+    if list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
         print('EHR found in the S3 Bucket')
         try:
             print("Attempting to delete EHR in the S3 Bucket")
@@ -34,7 +34,7 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
                 print("EHR has been deleted from the S3 Bucket successfully!")
         except botocore.exceptions.ClientError as error:
             print(f"Failed to delete EHR in the S3 Bucket: {error}")
-            # Log to splunk for monitoring
+            # TODO: Log to splunk for monitoring
     else:
         print("EHR could not be found in the S3 Bucket")
 
@@ -46,7 +46,7 @@ def parse_event(event):
         inboundConversationId = event["Records"][0]["dynamodb"]["Keys"]["InboundConversationId"]["S"]
     except KeyError as error:
         print(f"Could not find the relevant event key(s): {error}")
-        # Log to splunk for monitoring
+        # TODO: Log to splunk for monitoring
 
     print(f"InboundConversationId: {inboundConversationId}, DynamoDB Table: {dynamodbTable}, Deleted Conversation: {str(deletedTableRecord)}")
     return dynamodbTable, inboundConversationId
@@ -67,4 +67,4 @@ def verify_database_table_records_deleted(dynamodbTable: str, inboundConversatio
     else:
         print(f"Number of database records still existing: {str(queryResponse['Count'])}")
         raise Exception(f"[WTF] - Database records still exist for InboundConversationId: {inboundConversationId}")
-        # Log to splunk for monitoring
+        # TODO: Log to splunk for monitoring
