@@ -9,7 +9,7 @@ def lambda_handler(event):
     delete_ehr_from_s3(inboundConversationId)
     verify_database_table_records_deleted(dynamodbTable, inboundConversationId)
 
-def delete_ehr_from_s3(inboundConversationId):
+def delete_ehr_from_s3(inboundConversationId: str) -> None:
     s3 = boto3.resource('s3')
     try:
         print("Retrieving S3_REPO_BUCKET environment variable")
