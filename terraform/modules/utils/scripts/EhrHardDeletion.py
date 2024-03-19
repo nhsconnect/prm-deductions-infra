@@ -25,7 +25,7 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
         print(f"Failed to find the S3 Bucket: {error}")
         # Log to splunk for monitoring
 
-    if any(True for _ in repoBucket.objects.filter(Prefix=inboundConversationId + "/")): # Checks to see objects exist in the S3 Bucket for the given inboundConversationId
+    if list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")): # Checks to see objects exist in the S3 Bucket for the given inboundConversationId
         print('EHR found in the S3 Bucket')
         try:
             print("Attempting to delete EHR in the S3 Bucket")
