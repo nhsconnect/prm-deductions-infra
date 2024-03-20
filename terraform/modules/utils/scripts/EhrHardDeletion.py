@@ -1,8 +1,8 @@
-import json
 import boto3
-import os
-import time
 import botocore.exceptions
+import logging
+import os
+
 from boto3.dynamodb.conditions import Key
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ def parse_event(event) -> tuple[str, str]:
     return table_name, inbound_conversation_id
 
 
-def delete_ehr_from_s3(inboundConversationId: str) -> None:
+def delete_ehr_from_s3(inbound_conversation_id: str) -> None:
     s3 = boto3.resource('s3')
     try:
         s3_bucket_name = os.environ["S3_REPO_BUCKET"]
@@ -43,27 +43,28 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
         else:
             logger.error("EHR could not be found in the S3 Bucket")
     except KeyError as error:
-        print(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
+        logger.error(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
         # TODO: Log to splunk for monitoring
     except botocore.exceptions.ClientError as error:
-        print(f"Failed to find the S3 Bucket: {error}")
+        logger.error(f"Exception while interacting with S3: {error}")
         # TODO: Log to splunk for monitoring
 
 
-def verify_database_table_records_deleted(dynamodbTable: str, inboundConversationId: str) -> None:
-    dynamodb = boto3.resource('dynamodb')
-    print("Retrieving DynamoDB table")
-    ehrTrasferTrackerTable = dynamodb.Table(dynamodbTable)
+def verify_database_table_records_deleted(table_name: str, inbound_conversation_id: str) -> None:
+    dynamo_db = boto3.resource('dynamodb')
+    ehr_transfer_tracker_table = dynamo_db.Table(table_name)
 
-    print("Verifying all database records have been deleted")
     try:
-        queryResponse = ehrTrasferTrackerTable.query(KeyConditionExpression=Key("InboundConversationId").eq(inboundConversationId))
-    except botocore.exceptions.ClientError as error:
-        print(f"Failed to query the dynamodb table: {error}")
+        logger.info("Verifying all database records have been deleted")
+        key_condition_expression = Key("InboundConversationId").eq(inbound_conversation_id)
+        query_response = ehr_transfer_tracker_table.query(KeyConditionExpression=key_condition_expression)
 
-    if queryResponse["Count"] == 0:
-        print("All database records have been deleted")
-    else:
-        print(f"Number of database records still existing: {str(queryResponse['Count'])}")
-        raise Exception(f"[WTF] - Database records still exist for InboundConversationId: {inboundConversationId}")
+        if query_response["Count"] == 0:
+            logger.info("All database records have been deleted")
+        else:
+            logger.critical(
+                f"Database records still exist ({str(query_response['Count'])}) for InboundConversationId: {inbound_conversation_id}")
+            # TODO: Log to splunk for monitoring
+    except botocore.exceptions.ClientError as error:
+        logger.error(f"Failed to query the dynamodb table: {error}")
         # TODO: Log to splunk for monitoring
