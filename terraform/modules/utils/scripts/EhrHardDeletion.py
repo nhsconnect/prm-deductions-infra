@@ -24,7 +24,7 @@ def parse_event(event) -> tuple[str, str]:
         logger.error(f"Could not find the relevant event key(s): {error}")
         # TODO: Log to splunk for monitoring
 
-    print(f"InboundConversationId: {inbound_conversation_id}, DynamoDB Table: {table_name}, Deleted Conversation: {str(deleted_table_record)}")
+    logger.info(f"InboundConversationId: {inbound_conversation_id}, DynamoDB Table: {table_name}, Deleted Conversation: {str(deleted_table_record)}")
 
     return table_name, inbound_conversation_id
 
