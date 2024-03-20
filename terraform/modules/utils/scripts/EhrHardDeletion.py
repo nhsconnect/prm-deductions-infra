@@ -5,19 +5,43 @@ import time
 import botocore.exceptions
 from boto3.dynamodb.conditions import Key
 
+logger = logging.getLogger(__name__)
+
+
 def lambda_handler(event) -> None:
-    dynamodbTable, inboundConversationId = parse_event(event)
-    delete_ehr_from_s3(inboundConversationId)
-    verify_database_table_records_deleted(dynamodbTable, inboundConversationId)
+    table_name, inbound_conversation_id = parse_event(event)
+    delete_ehr_from_s3(inbound_conversation_id)
+    verify_database_table_records_deleted(table_name, inbound_conversation_id)
+
+
+def parse_event(event) -> tuple[str, str]:
+    logger.info("Parsing event")
+    try:
+        table_name = event["Records"][0]["eventSourceARN"].split('/')[1]
+        deleted_table_record = event["Records"][0]["dynamodb"]["OldImage"]
+        inbound_conversation_id = event["Records"][0]["dynamodb"]["Keys"]["InboundConversationId"]["S"]
+    except KeyError as error:
+        logger.error(f"Could not find the relevant event key(s): {error}")
+        # TODO: Log to splunk for monitoring
+
+    print(f"InboundConversationId: {inbound_conversation_id}, DynamoDB Table: {table_name}, Deleted Conversation: {str(deleted_table_record)}")
+
+    return table_name, inbound_conversation_id
+
 
 def delete_ehr_from_s3(inboundConversationId: str) -> None:
     s3 = boto3.resource('s3')
     try:
-        print("Retrieving S3_REPO_BUCKET environment variable")
-        s3BucketName = os.environ["S3_REPO_BUCKET"]
-        print(f"S3_REPO_BUCKET={s3BucketName}")
-        print("Retrieving S3 Bucket")
-        repoBucket = s3.Bucket(s3BucketName)
+        s3_bucket_name = os.environ["S3_REPO_BUCKET"]
+        repo_bucket = s3.Bucket(s3_bucket_name)
+
+        if list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
+            logger.info("Attempting to delete EHR in the S3 Bucket")
+            repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/").delete()
+            if not list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
+                logger.info("EHR has been deleted from the S3 Bucket successfully!")
+        else:
+            logger.error("EHR could not be found in the S3 Bucket")
     except KeyError as error:
         print(f"Failed to get S3_REPO_BUCKET environment variable: {error}")
         # TODO: Log to splunk for monitoring
@@ -25,31 +49,6 @@ def delete_ehr_from_s3(inboundConversationId: str) -> None:
         print(f"Failed to find the S3 Bucket: {error}")
         # TODO: Log to splunk for monitoring
 
-    if list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
-        print('EHR found in the S3 Bucket')
-        try:
-            print("Attempting to delete EHR in the S3 Bucket")
-            repoBucket.objects.filter(Prefix=inboundConversationId + "/").delete()
-            if not list(repoBucket.objects.filter(Prefix=inboundConversationId + "/")):
-                print("EHR has been deleted from the S3 Bucket successfully!")
-        except botocore.exceptions.ClientError as error:
-            print(f"Failed to delete EHR in the S3 Bucket: {error}")
-            # TODO: Log to splunk for monitoring
-    else:
-        print("EHR could not be found in the S3 Bucket")
-
-def parse_event(event):
-    print("Parsing event")
-    try:
-        dynamodbTable = event["Records"][0]["eventSourceARN"].split('/')[1]
-        deletedTableRecord = event["Records"][0]["dynamodb"]["OldImage"]
-        inboundConversationId = event["Records"][0]["dynamodb"]["Keys"]["InboundConversationId"]["S"]
-    except KeyError as error:
-        print(f"Could not find the relevant event key(s): {error}")
-        # TODO: Log to splunk for monitoring
-
-    print(f"InboundConversationId: {inboundConversationId}, DynamoDB Table: {dynamodbTable}, Deleted Conversation: {str(deletedTableRecord)}")
-    return dynamodbTable, inboundConversationId
 
 def verify_database_table_records_deleted(dynamodbTable: str, inboundConversationId: str) -> None:
     dynamodb = boto3.resource('dynamodb')
