@@ -17,6 +17,10 @@ resource "aws_lambda_function" "ehr_hard_deletion" {
       #S3_LARGE_MESSAGES_BUCKET=data.aws_s3_bucket.xxx.bucket
     }
   }
+
+  depends_on = [
+    data.archive_file.ehr_hard_deletion_lambda
+  ]
 }
 
 resource "aws_lambda_event_source_mapping" "ehr_transfer_tracker_dynamodb_to_hard_delete_lambda" {
