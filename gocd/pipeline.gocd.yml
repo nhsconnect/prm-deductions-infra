@@ -8,6 +8,9 @@ common:
       - build:
           source: generate-cost-report-lambda/build/generate-cost-report-lambda.zip
           destination: generate-cost-report-lambda/build/
+      - build:
+          source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
+          destination: ehr-hard-deletion-lambda/build/
     resources:
       - docker
     tasks:
@@ -206,6 +209,9 @@ pipelines:
                 - build:
                     source: generate-cost-report-lambda/build/generate-cost-report-lambda.zip
                     destination: generate-cost-report-lambda/build/
+                - build:
+                    source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
+                    destination: ehr-hard-deletion-lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -260,6 +266,9 @@ pipelines:
                 - build:
                     source: generate-cost-report-lambda/build/generate-cost-report-lambda.zip
                     destination: generate-cost-report-lambda/build/
+                - build:
+                    source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
+                    destination: ehr-hard-deletion-lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -316,6 +325,12 @@ pipelines:
                     job: plan
                     source: generate-cost-report-lambda/build/generate-cost-report-lambda.zip
                     destination: generate-cost-report-lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
+                    destination: ehr-hard-deletion-lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash

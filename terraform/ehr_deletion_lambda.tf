@@ -99,7 +99,7 @@ data "aws_iam_policy" "lambda_dynamodb_execution_role" {
 
 data "archive_file" "ehr_hard_deletion_lambda" {
   type             = "zip"
-  source_file      = "modules/utils/scripts/EhrHardDeletion.py"
+  source_file      = "../ehr-hard-deletion-lambda/EhrHardDeletion.py"
   output_path      = var.ehr_hard_deletion_lambda_zip
   output_file_mode = "0644"
 }
