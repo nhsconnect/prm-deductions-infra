@@ -17,6 +17,10 @@ resource "aws_lambda_function" "ehr_hard_deletion" {
       #S3_LARGE_MESSAGES_BUCKET=data.aws_s3_bucket.xxx.bucket
     }
   }
+
+  depends_on = [
+    data.archive_file.ehr_hard_deletion_lambda
+  ]
 }
 
 resource "aws_lambda_event_source_mapping" "ehr_transfer_tracker_dynamodb_to_hard_delete_lambda" {
@@ -119,7 +123,7 @@ data "aws_iam_policy" "lambda_dynamodb_execution_role" {
 
 data "archive_file" "ehr_hard_deletion_lambda" {
   type             = "zip"
-  source_file      = "modules/utils/scripts/EhrHardDeletion.py"
+  source_file      = "../ehr-hard-deletion-lambda/EhrHardDeletion.py"
   output_path      = var.ehr_hard_deletion_lambda_zip
   output_file_mode = "0644"
 }
