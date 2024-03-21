@@ -66,6 +66,11 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_repo_object_deletion" {
   policy_arn = aws_iam_policy.lambda_s3_repo_object_deletion.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_query" {
+  role       = aws_iam_role.ehr_hard_deletion_lambda.name
+  policy_arn = aws_iam_policy.lambda_dynamodb_query.arn
+}
+
 resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
   name        = "lambda-s3-repo-object-deletion-policy"
   description = "Allows Lambda to delete objects in the ${data.aws_s3_bucket.ehr_repo_bucket.id}"
@@ -89,6 +94,25 @@ resource "aws_iam_policy" "lambda_s3_repo_object_deletion" {
         "Action" : "s3:ListBucket",
         "Resource" : data.aws_s3_bucket.ehr_repo_bucket.arn
       },
+    ],
+  })
+}
+
+resource "aws_iam_policy" "lambda_dynamodb_query" {
+  name        = "lambda-dynamodb-query-policy"
+  description = "Allows Lambda to query data in the ${local.ehr_transfer_tracker_db_name}"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "EhrTransferTrackerQueryAccess",
+        Effect = "Allow",
+        Action = [
+          "dynamodb:Query",
+        ],
+        Resource = module.ehr_transfer_tracker_dynamodb_table.dynamodb_table_arn
+      }
     ],
   })
 }
