@@ -224,8 +224,31 @@ resource "aws_security_group" "rds-sg" {
   }
 }
 
+resource "aws_vpc_endpoint" "dynamodb_gateway_endpoint" {
+  vpc_id = module.vpc.vpc_id
+  service_name = "com.amazonaws.${var.region}.dynamodb"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids = module.vpc.private_route_table_ids
+
+  tags = {
+    Name = "${var.environment}-${var.component_name}-dynamo-endpoint"
+    CreatedBy = var.repo_name
+    Environment = var.environment
+  }
+}
+
+data "aws_prefix_list" "core_dynamodb" {
+  prefix_list_id = aws_vpc_endpoint.dynamodb_gateway_endpoint.prefix_list_id
+}
+
 data "aws_prefix_list" "s3" {
   prefix_list_id = aws_vpc_endpoint.s3.prefix_list_id
+}
+
+resource "aws_ssm_parameter" "dynamodb_prefix_list_id" {
+  name = "/repo/${var.environment}/output/${var.repo_name}/deductions-core/dynamodb_prefix_list_id"
+  type = "String"
+  value = data.aws_prefix_list.core_dynamodb.id
 }
 
 resource "aws_ssm_parameter" "s3_prefix_list_id" {
