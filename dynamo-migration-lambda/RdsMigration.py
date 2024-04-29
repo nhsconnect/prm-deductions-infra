@@ -1,3 +1,4 @@
+# TODO: PRMT-4648 - THIS IS A ONE-TIME MIGRATION SCRIPT LAMBDA. DELETE THIS .TF FILE AFTER USAGE!
 import boto3
 import logging
 import datetime
