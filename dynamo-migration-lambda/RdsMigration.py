@@ -109,6 +109,7 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
             'TransferStatus': {'S': 'INBOUND_COMPLETE'},
             'Layer': {'S': layer},
             'CreatedAt': {'S': created_at},
+            'ReceivedAt': {'S': created_at}, # Passed created_at as it's the same
             'UpdatedAt': {'S': updated_at},
             'ParentId': {'S': parent_id}
         }
