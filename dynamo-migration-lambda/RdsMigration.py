@@ -1,4 +1,6 @@
-# TODO: PRMT-4648 - THIS IS A ONE-TIME MIGRATION SCRIPT LAMBDA. DELETE THIS .TF FILE AFTER USAGE!
+# TODO: PRMT-4648 - THIS IS A ONE-TIME MIGRATION SCRIPT LAMBDA. DELETE THIS .PY FILE AFTER USAGE!
+import os
+
 import boto3
 import logging
 import datetime
@@ -10,7 +12,7 @@ from zoneinfo import ZoneInfo
 from dataclasses import dataclass
 
 AWS_REGION = 'eu-west-2'
-TARGET_ENVIRONMENT = 'test'
+TARGET_ENVIRONMENT = os.environ["ENVIRONMENT_NAME"]
 NEW_TABLE_NAME = f'{TARGET_ENVIRONMENT}-ehr-transfer-tracker'
 
 ssm_client = boto3.client("ssm")
@@ -51,12 +53,12 @@ def _fetch_ssm_parameter(name: str, decrypt: bool = False) -> str:
     return ssm_client.get_parameter(Name=name, WithDecryption=decrypt)['Parameter']['Value']
 
 
-def _get_rds_credentials(environment: str) -> DatabaseCredentials:
+def _get_rds_credentials() -> DatabaseCredentials:
     credentials = {
-        "host": _fetch_ssm_parameter(f'/repo/{environment}/output/prm-deductions-ehr-repository/db-host'),
-        "user": _fetch_ssm_parameter(f'/repo/{environment}/user-input/ehr-repo-db-username', True),
-        "password": _fetch_ssm_parameter(f'/repo/{environment}/user-input/ehr-repo-db-password', True),
-        "database": _fetch_ssm_parameter(f'/repo/{environment}/output/prm-deductions-ehr-repository/db-name', True)
+        "host": _fetch_ssm_parameter(f'/repo/{TARGET_ENVIRONMENT}/output/prm-deductions-ehr-repository/db-host'),
+        "user": _fetch_ssm_parameter(f'/repo/{TARGET_ENVIRONMENT}/user-input/ehr-repo-db-username', True),
+        "password": _fetch_ssm_parameter(f'/repo/{TARGET_ENVIRONMENT}/user-input/ehr-repo-db-password', True),
+        "database": _fetch_ssm_parameter(f'/repo/{TARGET_ENVIRONMENT}/output/prm-deductions-ehr-repository/db-name', True)
     }
 
     return DatabaseCredentials(**credentials)
@@ -128,8 +130,8 @@ def _persist_to_dynamo(items: list[dict]) -> None:
 
 
 def _migrate_rds():
-    logger.info(f"Beginning RDS migration for the {TARGET_ENVIRONMENT} environment.")
-    credentials = _get_rds_credentials(TARGET_ENVIRONMENT)
+    logger.info("Beginning RDS migration...")
+    credentials = _get_rds_credentials()
     rds_connection = psycopg2.connect(
         user=credentials.user,
         password=credentials.password,

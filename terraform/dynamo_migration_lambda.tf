@@ -17,6 +17,13 @@ resource "aws_lambda_function" "dynamo_migration" {
     subnet_ids         = module.deductions-private.deductions_private_private_subnets
     security_group_ids = [module.deductions-private.vpn_security_group, data.aws_security_group.ehr-transfer-service-ecs-task]
   }
+  environment {
+    variables = {
+      ENVIRONMENT_NAME = var.environment
+      OLD_TABLE_NAME = "${var.environment}-ehr-transfer-service-transfer-tracker"
+      NEW_TABLE_NAME = "${var.environment}-ehr-transfer-tracker"
+    }
+  }
 
   depends_on = [
     data.archive_file.dynamo_migration_lambda
