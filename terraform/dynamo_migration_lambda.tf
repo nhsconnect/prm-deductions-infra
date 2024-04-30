@@ -7,7 +7,7 @@ resource "aws_lambda_function" "dynamo_migration" {
   source_code_hash = filebase64sha256(var.dynamo_migration_lambda_zip)
   runtime          = "python3.10" // Required for psycopg2 lambda layer to work
   timeout          = 900
-  memory_size = 1024
+  memory_size      = 1024
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name
@@ -20,8 +20,8 @@ resource "aws_lambda_function" "dynamo_migration" {
   environment {
     variables = {
       ENVIRONMENT_NAME = var.environment
-      OLD_TABLE_NAME = "${var.environment}-ehr-transfer-service-transfer-tracker"
-      NEW_TABLE_NAME = "${var.environment}-ehr-transfer-tracker"
+      OLD_TABLE_NAME   = "${var.environment}-ehr-transfer-service-transfer-tracker"
+      NEW_TABLE_NAME   = "${var.environment}-ehr-transfer-tracker"
     }
   }
 
@@ -55,35 +55,35 @@ resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_and_kms_decrypt" {
   description = "Allows Lambda to scan and put for the ${local.ehr_transfer_tracker_db_name} as well as decrypting a KMS key"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "DynamoDBScan",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "DynamoDBScan",
+        "Effect" : "Allow",
+        "Action" : [
           "dynamodb:Scan"
         ],
-        "Resource": [
+        "Resource" : [
           "arn:aws:dynamodb:eu-west-2:005235525306:table/${var.environment}-ehr-transfer-service-transfer-tracker"
         ]
       },
       {
-        "Sid": "DynamoDBPut",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "DynamoDBPut",
+        "Effect" : "Allow",
+        "Action" : [
           "dynamodb:PutItem"
         ],
-        "Resource": [
+        "Resource" : [
           "arn:aws:dynamodb:eu-west-2:005235525306:table/${var.environment}-ehr-transfer-tracker"
         ]
       },
       {
-        "Sid": "KMS",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "KMS",
+        "Effect" : "Allow",
+        "Action" : [
           "kms:Decrypt"
         ],
-        "Resource": [
+        "Resource" : [
           "arn:aws:kms:eu-west-2:005235525306:key/7861e8bc-76c4-4cda-be2c-152e6bfd1e3d"
         ]
       }
@@ -96,12 +96,12 @@ resource "aws_iam_policy" "lambda_rds_migration_access" {
   description = "Allows Lambda to query data in RDS"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "VisualEditor0",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "VisualEditor0",
+        "Effect" : "Allow",
+        "Action" : [
           "rds:DescribeDBProxyTargetGroups",
           "ssm:ListCommands",
           "rds:DescribeDBRecommendations",
@@ -232,7 +232,7 @@ resource "aws_iam_policy" "lambda_rds_migration_access" {
           "rds:DescribeDBClusterParameterGroups",
           "ssm:DescribeAvailablePatches"
         ],
-        "Resource": "*"
+        "Resource" : "*"
       }
     ]
   })
@@ -240,7 +240,7 @@ resource "aws_iam_policy" "lambda_rds_migration_access" {
 
 data "archive_file" "dynamo_migration_lambda" {
   type             = "zip"
-  source_dir      = "../dynamo-migration-lambda"
+  source_dir       = "../dynamo-migration-lambda"
   output_path      = var.dynamo_migration_lambda_zip
   output_file_mode = "0644"
 }
