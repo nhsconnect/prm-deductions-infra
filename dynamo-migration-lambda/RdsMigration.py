@@ -71,16 +71,16 @@ def _get_core_and_fragments(connection) -> list[tuple]:
         statement = """
         SELECT
             conversation_id AS InboundConversationId,
-        	CASE
-        	  WHEN type = 'ehrExtract' THEN 'CORE'
-        	  ELSE concat('FRAGMENT#', message_id)
-        	END AS Layer,
-        message_id AS InboundMessageId,
-        created_at AS CreatedAt,
-        updated_at AS UpdatedAt,
-        deleted_at AS DeletedAt,
-        parent_id AS ParentId
-        FROM messages;
+        CASE
+          WHEN type = 'ehrExtract' THEN 'CORE'
+          ELSE concat('FRAGMENT#', message_id)
+        END AS Layer,
+            message_id AS InboundMessageId,
+            created_at AS CreatedAt,
+            updated_at AS UpdatedAt,
+            deleted_at AS DeletedAt,
+            parent_id AS ParentId
+            FROM messages;
         """
 
         cursor.execute(statement)
