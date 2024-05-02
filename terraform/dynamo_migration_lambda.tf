@@ -3,9 +3,10 @@ resource "aws_lambda_function" "dynamo_migration" {
   filename         = var.dynamo_migration_lambda_zip
   function_name    = "${var.environment}-dynamo-migration-lambda"
   role             = aws_iam_role.dynamo_migration_lambda.arn
-  handler          = "DynamoMigration.lambda_handler"
+  handler          = "app.DynamoMigration.lambda_handler"
+  layers           = [aws_lambda_layer_version.psycopg2.arn]
   source_code_hash = filebase64sha256(var.dynamo_migration_lambda_zip)
-  runtime          = "python3.10" // Required for psycopg2 lambda layer to work
+  runtime          = aws_lambda_layer_version.psycopg2.compatible_runtimes[0] // Required for psycopg2 lambda layer to work
   timeout          = 900
   memory_size      = 1024
   tags = {
@@ -253,4 +254,12 @@ variable "dynamo_migration_lambda_zip" {
   type        = string
   description = "path to zipfile containing lambda code for the dynamo-migration-lambda"
   default     = "../dynamo-migration-lambda/build/dynamo-migration-lambda.zip"
+}
+
+resource "aws_lambda_layer_version" "psycopg2" {
+  layer_name          = "psycopg2"
+  description         = "Contains the psycopg2 library to connect to PostgreSQL databases"
+  filename            = "../lambda-layer-psycopg2/psycopg2.zip"
+  source_code_hash    = filebase64sha256("../lambda-layer-psycopg2/psycopg2.zip")
+  compatible_runtimes = ["python3.10"]
 }

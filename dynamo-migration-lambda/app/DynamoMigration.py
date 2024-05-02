@@ -4,14 +4,19 @@ import re
 import os
 import boto3
 import botocore
+import logging
 
 from dateutil import parser
 from zoneinfo import ZoneInfo
 from typing import Optional
 from dataclasses import dataclass, asdict, field
+from RdsMigration import _migrate_rds
 
 OLD_TABLE_NAME = os.environ["OLD_TABLE"]
 NEW_TABLE_NAME = os.environ["NEW_TABLE"]
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 dynamo_client = boto3.client("dynamodb", region_name="eu-west-2")
 
@@ -31,7 +36,6 @@ class OldConversation:
     date_time: Optional[str] = field(default=None)
     created_at: Optional[str] = field(default=None)
     last_updated_at: Optional[str] = field(default=None)
-
 
 @dataclass
 class NewConversation:
@@ -148,22 +152,45 @@ def _persist_new_conversations(new_conversations: list[NewConversation]) -> None
         )
 
 
-def _migrate() -> dict:
+def _migrate() -> None:
     old_conversations = _get_old_conversations()
     new_conversations = _get_new_conversations(old_conversations)
     _persist_new_conversations(new_conversations)
 
-    print(new_conversations)
+    logger.info(new_conversations)
 
-    return {
-        "status": "success"
-    }
+def _mark_conversations_as_deleted(conversations_to_delete: dict) -> None:
+    logger.info(f"Found {len(conversations_to_delete)} conversations to delete...")
+    for inbound_conversation_id, deleted_at in conversations_to_delete.items():
+        dynamo_client.update_item(
+            TableName=NEW_TABLE_NAME,
+            Key={
+                'InboundConversationId': {'S': inbound_conversation_id},
+                'Layer': {'S': 'CONVERSATION'}
+            },
+            ExpressionAttributeNames={
+                '#DA': 'DeletedAt'
+            },
+            ExpressionAttributeValues={
+                ':t': {
+                    'N': deleted_at
+                }
+            },
+            UpdateExpression='SET #DA = :t',
+            ReturnValues='NONE',
+            ReturnConsumedCapacity='NONE'
+        )
 
+    logger.info("...Conversations have updated!")
 
 def lambda_handler(event, context) -> dict:
-    response = _migrate()
+    _migrate()
+    conversations_to_delete = _migrate_rds()
+    _mark_conversations_as_deleted(conversations_to_delete)
 
     return {
         "statusCode": 200,
-        "body": response
+        "body": {
+            "status": "success"
+        }
     }

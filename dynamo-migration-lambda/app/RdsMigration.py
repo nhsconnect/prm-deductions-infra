@@ -21,6 +21,7 @@ dynamo_client = boto3.client("dynamodb", region_name=AWS_REGION)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+conversations_to_delete = {}
 
 class MessageRowItem(Enum):
     INBOUND_CONVERSATION_ID = 0
@@ -100,7 +101,7 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
         layer = row[MessageRowItem.LAYER.value]
         created_at = _get_new_datetime(row[MessageRowItem.CREATED_AT.value])
         updated_at = _get_new_datetime(row[MessageRowItem.UPDATED_AT.value])
-        deleted_at = _get_new_datetime(row[MessageRowItem.DELETED_AT.value])
+        deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
         parent_id = row[MessageRowItem.PARENT_ID.value].upper()
 
         item = {
@@ -115,7 +116,10 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
         }
 
         if deleted_at is not None:
-            item['DeletedAt'] = {'S': deleted_at}
+            item['DeletedAt'] = {'N': deleted_at}
+
+            if layer == "CORE":
+                conversations_to_delete[inbound_conversation_id] = deleted_at
 
         dynamo_items.append(item)
 
@@ -130,7 +134,7 @@ def _persist_to_dynamo(items: list[dict]) -> None:
         )
 
 
-def _migrate_rds():
+def _migrate_rds() -> dict:
     logger.info("Beginning RDS migration...")
     credentials = _get_rds_credentials()
     rds_connection = psycopg2.connect(
@@ -145,7 +149,6 @@ def _migrate_rds():
         dynamo_items = _get_dynamo_items(result)
         result = None # To lower memory
         _persist_to_dynamo(dynamo_items)
+        dynamo_items = None # To lower memory
 
-
-def lambda_handler(event, context) -> None:
-    _migrate_rds()
+    return conversations_to_delete
