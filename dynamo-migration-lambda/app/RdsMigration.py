@@ -1,5 +1,6 @@
 # TODO: PRMT-4648 - THIS IS A ONE-TIME MIGRATION SCRIPT LAMBDA. DELETE THIS .PY FILE AFTER USAGE!
 import os
+from typing import Optional
 
 import boto3
 import logging
@@ -41,7 +42,7 @@ class DatabaseCredentials:
     database: str
 
 
-def _get_new_datetime(old_datetime: datetime) -> str:
+def _get_new_datetime(old_datetime: datetime) -> Optional[str]:
     if old_datetime is not None:
         target_timezone = ZoneInfo('Europe/London')
         formatted_datetime = str(old_datetime).split('.')[0]
@@ -98,7 +99,7 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
     for row in rds_result_set:
         inbound_conversation_id = row[MessageRowItem.INBOUND_CONVERSATION_ID.value].upper()
         inbound_message_id = row[MessageRowItem.INBOUND_MESSAGE_ID.value].upper()
-        layer = row[MessageRowItem.LAYER.value]
+        layer = row[MessageRowItem.LAYER.value].upper()
         created_at = _get_new_datetime(row[MessageRowItem.CREATED_AT.value])
         updated_at = _get_new_datetime(row[MessageRowItem.UPDATED_AT.value])
         deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
