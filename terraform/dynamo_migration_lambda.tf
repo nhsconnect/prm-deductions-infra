@@ -6,7 +6,7 @@ resource "aws_lambda_function" "dynamo_migration" {
   handler          = "app.DynamoMigration.lambda_handler"
   layers           = [aws_lambda_layer_version.psycopg2.arn]
   source_code_hash = filebase64sha256(var.dynamo_migration_lambda_zip)
-  runtime          = aws_lambda_layer_version.psycopg2.compatible_runtimes[0] // Required for psycopg2 lambda layer to work
+  runtime          = tolist(aws_lambda_layer_version.psycopg2.compatible_runtimes)[0] // Required for psycopg2 lambda layer to work
   timeout          = 900
   memory_size      = 1024
   tags = {
