@@ -3,6 +3,10 @@ output "deductions_private_private_subnets" {
   value = module.vpc.private_subnets
 }
 
+output "vpn_security_group" {
+  value = aws_security_group.vpn.id
+}
+
 output "vpc_id" {
   value = module.vpc.vpc_id
 }
