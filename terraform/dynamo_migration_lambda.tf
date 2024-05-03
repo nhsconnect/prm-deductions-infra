@@ -27,7 +27,8 @@ resource "aws_lambda_function" "dynamo_migration" {
   }
 
   depends_on = [
-    data.archive_file.dynamo_migration_lambda
+    data.archive_file.dynamo_migration_lambda,
+    aws_iam_role_policy_attachment.lambda_vpc_access_execution
   ]
 }
 
@@ -49,6 +50,11 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb_migration_scan_put_an
 resource "aws_iam_role_policy_attachment" "lambda_rds_migration_access" {
   role       = aws_iam_role.dynamo_migration_lambda.name
   policy_arn = aws_iam_policy.lambda_rds_migration_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_vpc_access_execution" {
+  role       = aws_iam_role.dynamo_migration_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_and_kms_decrypt" {
