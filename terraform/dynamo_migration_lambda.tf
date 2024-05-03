@@ -247,7 +247,7 @@ data "archive_file" "dynamo_migration_lambda" {
 }
 
 data "aws_security_group" "ehr-transfer-service-ecs-task" {
-  name = "ehr-transfer-service-ecs-task-sg"
+  name = "${var.environment}-ehr-transfer-service-ecs-task-sg"
 }
 
 variable "dynamo_migration_lambda_zip" {
