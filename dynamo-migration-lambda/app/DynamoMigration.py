@@ -154,10 +154,13 @@ def _persist_new_conversations(new_conversations: list[NewConversation]) -> None
 
 def _migrate() -> None:
     old_conversations = _get_old_conversations()
-    new_conversations = _get_new_conversations(old_conversations)
-    _persist_new_conversations(new_conversations)
+    logger.info(f"Found {len(old_conversations)} records in {OLD_TABLE_NAME}.")
 
-    logger.info(new_conversations)
+    new_conversations = _get_new_conversations(old_conversations)
+    old_conversations = None # To lower memory
+
+    _persist_new_conversations(new_conversations)
+    new_conversations = None # To lower memory
 
 def _mark_conversations_as_deleted(conversations_to_delete: dict) -> None:
     logger.info(f"Found {len(conversations_to_delete)} conversations to delete...")
