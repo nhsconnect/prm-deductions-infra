@@ -10,10 +10,10 @@ from dateutil import parser
 from zoneinfo import ZoneInfo
 from typing import Optional
 from dataclasses import dataclass, asdict, field
-from RdsMigration import _migrate_rds
+from app.RdsMigration import _migrate_rds
 
-OLD_TABLE_NAME = os.environ["OLD_TABLE"]
-NEW_TABLE_NAME = os.environ["NEW_TABLE"]
+OLD_TABLE_NAME = os.environ["OLD_TABLE_NAME"]
+NEW_TABLE_NAME = os.environ["NEW_TABLE_NAME"]
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
