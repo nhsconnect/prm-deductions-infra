@@ -102,7 +102,6 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
         layer = row[MessageRowItem.LAYER.value].upper()
         created_at = _get_new_datetime(row[MessageRowItem.CREATED_AT.value])
         updated_at = _get_new_datetime(row[MessageRowItem.UPDATED_AT.value])
-        deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
         parent_id = row[MessageRowItem.PARENT_ID.value].upper()
 
         item = {
@@ -116,7 +115,8 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
             'ParentId': {'S': parent_id}
         }
 
-        if deleted_at is not None:
+        if row[MessageRowItem.DELETED_AT.value] is not None:
+            deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
             item['DeletedAt'] = {'N': deleted_at}
 
             if layer == "CORE":
