@@ -72,16 +72,16 @@ def _get_core_and_fragments(connection) -> list[tuple]:
     with connection.cursor() as cursor:
         statement = """
         SELECT
-            conversation_id AS InboundConversationId,
+            upper(conversation_id) AS InboundConversationId,
             CASE
               WHEN type = 'ehrExtract' THEN 'CORE'
-              ELSE concat('FRAGMENT#', message_id)
+              ELSE concat('FRAGMENT#', upper(message_id))
             END AS Layer,
-            message_id AS InboundMessageId,
+            upper(message_id) AS InboundMessageId,
             created_at AS CreatedAt,
             updated_at AS UpdatedAt,
             deleted_at AS DeletedAt,
-            parent_id AS ParentId
+            upper(parent_id) AS ParentId
         FROM messages;
         """
 
@@ -97,12 +97,12 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
     dynamo_items = []
 
     for row in rds_result_set:
-        inbound_conversation_id = row[MessageRowItem.INBOUND_CONVERSATION_ID.value].upper()
-        inbound_message_id = row[MessageRowItem.INBOUND_MESSAGE_ID.value].upper()
-        layer = row[MessageRowItem.LAYER.value].upper()
+        inbound_conversation_id = row[MessageRowItem.INBOUND_CONVERSATION_ID.value]
+        inbound_message_id = row[MessageRowItem.INBOUND_MESSAGE_ID.value]
+        layer = row[MessageRowItem.LAYER.value]
         created_at = _get_new_datetime(row[MessageRowItem.CREATED_AT.value])
         updated_at = _get_new_datetime(row[MessageRowItem.UPDATED_AT.value])
-        parent_id = row[MessageRowItem.PARENT_ID.value].upper()
+        parent_id = row[MessageRowItem.PARENT_ID.value]
 
         item = {
             'InboundConversationId': {'S': inbound_conversation_id},
