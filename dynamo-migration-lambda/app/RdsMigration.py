@@ -114,7 +114,7 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
         }
 
         if row[MessageRowItem.DELETED_AT.value] is not None:
-            deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
+            deleted_at = str(int(row[MessageRowItem.DELETED_AT.value].timestamp()))
             item['DeletedAt'] = {'N': deleted_at}
 
             if layer == "CORE":
