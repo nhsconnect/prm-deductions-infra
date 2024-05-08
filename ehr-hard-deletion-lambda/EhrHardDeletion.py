@@ -6,7 +6,7 @@ import os
 from boto3.dynamodb.conditions import Key
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event) -> None:
     table_name, inbound_conversation_id = parse_event(event)
