@@ -71,7 +71,7 @@ resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_update_and_kms_dec
           "dynamodb:Scan"
         ],
         "Resource" : [
-          "arn:aws:dynamodb:eu-west-2:005235525306:table/${var.environment}-ehr-transfer-service-transfer-tracker"
+          "arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/${var.environment}-ehr-transfer-service-transfer-tracker"
         ]
       },
       {
@@ -82,7 +82,7 @@ resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_update_and_kms_dec
           "dynamodb:UpdateItem"
         ],
         "Resource" : [
-          "arn:aws:dynamodb:eu-west-2:005235525306:table/${var.environment}-ehr-transfer-tracker"
+          "arn:aws:dynamodb:eu-west-2:${data.aws_caller_identity.current.account_id}:table/${var.environment}-ehr-transfer-tracker"
         ]
       },
       {
@@ -92,11 +92,15 @@ resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_update_and_kms_dec
           "kms:Decrypt"
         ],
         "Resource" : [
-          "arn:aws:kms:eu-west-2:005235525306:key/7861e8bc-76c4-4cda-be2c-152e6bfd1e3d"
+          data.aws_kms_key.transfer_tracker_dynamodb.arn
         ]
       }
     ]
   })
+}
+
+data "aws_kms_key" "transfer_tracker_dynamodb" {
+  key_id = "alias/transfer-tracker-dynamodb-encryption-kms-key"
 }
 
 resource "aws_iam_policy" "lambda_rds_migration_access" {
