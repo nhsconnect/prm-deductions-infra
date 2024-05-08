@@ -42,9 +42,9 @@ resource "aws_iam_role_policy_attachment" "lambda_dynamodb_migration_execution" 
   policy_arn = data.aws_iam_policy.lambda_dynamodb_execution_role.arn
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb_migration_scan_put_and_kms_decrypt" {
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_migration_scan_put_update_and_kms_decrypt" {
   role       = aws_iam_role.dynamo_migration_lambda.name
-  policy_arn = aws_iam_policy.lambda_dynamodb_migration_scan_put_and_kms_decrypt.arn
+  policy_arn = aws_iam_policy.lambda_dynamodb_migration_scan_put_update_and_kms_decrypt.arn
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_rds_migration_access" {
