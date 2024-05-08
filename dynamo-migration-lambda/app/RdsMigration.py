@@ -72,16 +72,16 @@ def _get_core_and_fragments(connection) -> list[tuple]:
     with connection.cursor() as cursor:
         statement = """
         SELECT
-            conversation_id AS InboundConversationId,
+            upper(conversation_id::text) AS InboundConversationId,
             CASE
               WHEN type = 'ehrExtract' THEN 'CORE'
-              ELSE concat('FRAGMENT#', message_id)
+              ELSE concat('FRAGMENT#', upper(message_id::text))
             END AS Layer,
-            message_id AS InboundMessageId,
+            upper(message_id::text) AS InboundMessageId,
             created_at AS CreatedAt,
             updated_at AS UpdatedAt,
             deleted_at AS DeletedAt,
-            parent_id AS ParentId
+            upper(parent_id::text) AS ParentId
         FROM messages;
         """
 
@@ -97,13 +97,11 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
     dynamo_items = []
 
     for row in rds_result_set:
-        inbound_conversation_id = row[MessageRowItem.INBOUND_CONVERSATION_ID.value].upper()
-        inbound_message_id = row[MessageRowItem.INBOUND_MESSAGE_ID.value].upper()
-        layer = row[MessageRowItem.LAYER.value].upper()
+        inbound_conversation_id = row[MessageRowItem.INBOUND_CONVERSATION_ID.value]
+        inbound_message_id = row[MessageRowItem.INBOUND_MESSAGE_ID.value]
+        layer = row[MessageRowItem.LAYER.value]
         created_at = _get_new_datetime(row[MessageRowItem.CREATED_AT.value])
         updated_at = _get_new_datetime(row[MessageRowItem.UPDATED_AT.value])
-        deleted_at = int(row[MessageRowItem.DELETED_AT.value].timestamp())
-        parent_id = row[MessageRowItem.PARENT_ID.value].upper()
 
         item = {
             'InboundConversationId': {'S': inbound_conversation_id},
@@ -113,14 +111,17 @@ def _get_dynamo_items(rds_result_set: list[tuple]) -> list[dict]:
             'CreatedAt': {'S': created_at},
             'ReceivedAt': {'S': created_at}, # Passed created_at as it's the same
             'UpdatedAt': {'S': updated_at},
-            'ParentId': {'S': parent_id}
         }
 
-        if deleted_at is not None:
+        if row[MessageRowItem.DELETED_AT.value] is not None:
+            deleted_at = str(int(row[MessageRowItem.DELETED_AT.value].timestamp()))
             item['DeletedAt'] = {'N': deleted_at}
 
             if layer == "CORE":
                 conversations_to_delete[inbound_conversation_id] = deleted_at
+
+        if row[MessageRowItem.PARENT_ID.value] is not None:
+            item['ParentId'] = {'S': row[MessageRowItem.PARENT_ID.value]}
 
         dynamo_items.append(item)
 

@@ -10,16 +10,41 @@ from dateutil import parser
 from zoneinfo import ZoneInfo
 from typing import Optional
 from dataclasses import dataclass, asdict, field
-from RdsMigration import _migrate_rds
+from app.RdsMigration import _migrate_rds
 
-OLD_TABLE_NAME = os.environ["OLD_TABLE"]
-NEW_TABLE_NAME = os.environ["NEW_TABLE"]
+OLD_TABLE_NAME = os.environ["OLD_TABLE_NAME"]
+NEW_TABLE_NAME = os.environ["NEW_TABLE_NAME"]
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 dynamo_client = boto3.client("dynamodb", region_name="eu-west-2")
 
+status_code_to_reason = {
+    "06": "Patient not at surgery.",
+    "07": "GP2GP Messaging is not enabled on this system.",
+    "09": "EHR Extract received without corresponding request.",
+    "10": "Failed to successfully generate EHR Extract.",
+    "11": "Failed to successfully integrate EHR Extract.",
+    "12": "Duplicate EHR Extract received.",
+    "13": "The system’s configuration prevents it from processing this message.",
+    "14": "Message not sent because requesting practice is not Large Message compliant",
+    "15": "A-B-A EHR Extract Received and Stored As Suppressed Record",
+    "17": "A-B-A EHR Extract Received and rejected due to wrong record or wrong patient",
+    "18": "Request message not well-formed or not able to be processed",
+    "19": "Sender check indicates that Requester is not the patient’s current healthcare provider",
+    "20": "Spine system responded with an error",
+    "21": "EHR Extract message not well-formed or not able to be processed",
+    "23": "Message not sent because sending practice is not Large Message compliant",
+    "24": "SDS lookup provided zero or more than one result to the query for each interaction.",
+    "25": "Large messages rejected due to timeout duration reached of overall transfer",
+    "26": "Returning Patient EHR Extract Received and filed as an attachment",
+    "28": "Non A-B-A EHR Extract Received and rejected due to wrong record or wrong patient",
+    "29": "Large Message Re-assembly failure",
+    "30": "Large Message general failure",
+    "31": "The overall EHR Extract has been rejected because one or more attachments via Large Messages were not received.",
+    "99": "Unexpected condition."
+}
 
 @dataclass
 class OldConversation:
@@ -50,6 +75,7 @@ class NewConversation:
 
     # Fields which may be absent.
     failure_code: Optional[str] = field(default=None)
+    failure_reason: Optional[str] = field(default=None)
     nems_message_id: Optional[str] = field(default=None)
     created_at: Optional[str] = field(default=None)
     updated_at: Optional[str] = field(default=None)
@@ -69,6 +95,7 @@ def _get_new_conversations(old_conversations: list[OldConversation]) -> list[New
             source_gp=old_conversation.source_gp,
             transfer_status=_get_new_state(old_conversation.state),
             failure_code=_get_failure_code(old_conversation.state),
+            failure_reason=_get_failure_reason(old_conversation.state),
             nems_message_id=old_conversation.nems_message_id,
             created_at=_get_new_datetime(old_conversation.created_at),
             updated_at=_get_new_datetime(old_conversation.last_updated_at)
@@ -102,6 +129,10 @@ def _get_failure_code(old_state: str) -> str:
     if len(state_segments) > 2:
         return state_segments[2]
 
+def _get_failure_reason(old_state: str) -> str:
+    state_segments = old_state.split(':')
+    if len(state_segments) > 2:
+        return status_code_to_reason.get(state_segments[2], "<Code not in Specification>")
 
 def _get_new_datetime(old_datetime: str):
     if old_datetime is not None:
@@ -154,10 +185,13 @@ def _persist_new_conversations(new_conversations: list[NewConversation]) -> None
 
 def _migrate() -> None:
     old_conversations = _get_old_conversations()
-    new_conversations = _get_new_conversations(old_conversations)
-    _persist_new_conversations(new_conversations)
+    logger.info(f"Found {len(old_conversations)} records in {OLD_TABLE_NAME}.")
 
-    logger.info(new_conversations)
+    new_conversations = _get_new_conversations(old_conversations)
+    old_conversations = None # To lower memory
+
+    _persist_new_conversations(new_conversations)
+    new_conversations = None # To lower memory
 
 def _mark_conversations_as_deleted(conversations_to_delete: dict) -> None:
     logger.info(f"Found {len(conversations_to_delete)} conversations to delete...")
