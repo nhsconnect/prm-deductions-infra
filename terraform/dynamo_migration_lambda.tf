@@ -57,9 +57,9 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_and_kms_decrypt" {
-  name        = "lambda-dynamodb-scan-put-and-kms-decrypt-policy"
-  description = "Allows Lambda to scan and put for the ${local.ehr_transfer_tracker_db_name} as well as decrypting a KMS key"
+resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_update_and_kms_decrypt" {
+  name        = "lambda-dynamodb-scan-put-update-and-kms-decrypt-policy"
+  description = "Allows Lambda to scan, put and update for the ${local.ehr_transfer_tracker_db_name} as well as decrypting a KMS key"
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -75,10 +75,11 @@ resource "aws_iam_policy" "lambda_dynamodb_migration_scan_put_and_kms_decrypt" {
         ]
       },
       {
-        "Sid" : "DynamoDBPut",
+        "Sid" : "DynamoDBPutAndUpdate",
         "Effect" : "Allow",
         "Action" : [
-          "dynamodb:PutItem"
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem"
         ],
         "Resource" : [
           "arn:aws:dynamodb:eu-west-2:005235525306:table/${var.environment}-ehr-transfer-tracker"
