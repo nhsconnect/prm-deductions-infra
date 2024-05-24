@@ -8,7 +8,7 @@ from boto3.dynamodb.conditions import Key
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-def lambda_handler(event) -> None:
+def lambda_handler(event, context) -> None:
     table_name, inbound_conversation_id = parse_event(event)
     delete_ehr_from_s3(inbound_conversation_id)
     verify_database_table_records_deleted(table_name, inbound_conversation_id)
