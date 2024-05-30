@@ -36,9 +36,9 @@ def delete_ehr_from_s3(inbound_conversation_id: str) -> None:
         repo_bucket = s3.Bucket(s3_bucket_name)
 
         if list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
-            c = 0
-            for b in repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/"): c+=1
-            logger.info(f"Attempting to delete EHR in the S3 Bucket ({str(c)} file(s))")
+            count_of_files = 0
+            for unused_var in repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/"): count_of_files+=1
+            logger.info(f"Attempting to delete EHR in the S3 Bucket ({str(count_of_files)} file(s))")
             # https://docs.aws.amazon.com/AmazonS3/latest/userguide/DeletingObjectVersions.html
             repo_bucket.object_versions.filter(Prefix=inbound_conversation_id + "/").delete()
             if not list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
