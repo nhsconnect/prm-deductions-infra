@@ -10,8 +10,8 @@ logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context) -> None:
     table_name, inbound_conversation_id = parse_event(event)
-    delete_ehr_from_s3(inbound_conversation_id)
-    verify_database_table_records_deleted(table_name, inbound_conversation_id)
+    delete_ehr_from_s3(inbound_conversation_id.lower())
+    verify_database_table_records_deleted(table_name, inbound_conversation_id.upper())
 
 
 def parse_event(event) -> tuple[str, str]:
@@ -36,8 +36,10 @@ def delete_ehr_from_s3(inbound_conversation_id: str) -> None:
         repo_bucket = s3.Bucket(s3_bucket_name)
 
         if list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
-            logger.info("Attempting to delete EHR in the S3 Bucket")
-            repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/").delete()
+            c = 0
+            for b in repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/"): c+=1
+            logger.info(f"Attempting to delete EHR in the S3 Bucket ({str(c)} file(s))")
+            repo_bucket.object_versions.filter(Prefix=inbound_conversation_id + "/").delete()
             if not list(repo_bucket.objects.filter(Prefix=inbound_conversation_id + "/")):
                 logger.info("EHR has been deleted from the S3 Bucket successfully!")
         else:
