@@ -9,7 +9,7 @@ resource "aws_lambda_function" "alarm_notifications_lambda" {
   role          = aws_iam_role.alarm_notifications_lambda_role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.alarm_lambda_zip)
-  runtime = "python3.8"
+  runtime = "python3.12"
   timeout = 15
   tags = {
     Environment = var.environment

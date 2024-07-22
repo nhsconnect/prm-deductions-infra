@@ -4,7 +4,7 @@ resource "aws_lambda_function" "generate_cost_report_lambda" {
   role          = aws_iam_role.generate-cost-report-role.arn
   handler       = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.generate_cost_report_lambda_zip)
-  runtime       = "python3.8"
+  runtime       = "python3.12"
   timeout       = 15
   memory_size   = 448
   tags = {
