@@ -1,7 +1,7 @@
 locals {
   receiver_email_arns = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.receiver_cost_report_email_id.value))}")
-  support_email_arns = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.support_cost_report_email_id.value))}")
-  sender_email_arn = ["arn:aws:ses:${var.region}:${local.account_id}:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
+  support_email_arns  = split(",", "arn:aws:ses:${var.region}:${local.account_id}:identity/${join(",arn:aws:ses:${var.region}:${local.account_id}:identity/", split(",", data.aws_ssm_parameter.support_cost_report_email_id.value))}")
+  sender_email_arn    = ["arn:aws:ses:${var.region}:${local.account_id}:identity/${data.aws_ssm_parameter.sender_cost_report_email_id.value}"]
 }
 
 data "aws_ssm_parameter" "splunk_trusted_principal" {
@@ -9,8 +9,8 @@ data "aws_ssm_parameter" "splunk_trusted_principal" {
 }
 
 resource "aws_iam_role" "splunk_sqs_forwarder" {
-  name               = "SplunkSqsForwarder"
-  description        = "Role to allow repo to integrate with splunk"
+  name        = "SplunkSqsForwarder"
+  description = "Role to allow repo to integrate with splunk"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -49,15 +49,15 @@ data "aws_iam_policy_document" "splunk_access_policy_document" {
     resources = ["arn:aws:sqs:*:*:*-audit", "arn:aws:sqs:*:*:*-audit-uploader"]
   }
   statement {
-    effect = "Allow"
-    actions = ["kms:Decrypt"]
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
     resources = ["*"]
   }
 }
 
 resource "aws_iam_role" "generate-cost-report-role" {
-  name = "GenerateCostReportLambdaExecution"
-  description        = "Role to generate the cost report"
+  name        = "GenerateCostReportLambdaExecution"
+  description = "Role to generate the cost report"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

@@ -1,16 +1,16 @@
 locals {
   alarm_webhook_ssm_path = "/repo/${var.environment}/user-input/external/alarm-notifications-webhook-url"
-  account_id = data.aws_caller_identity.current.account_id
+  account_id             = data.aws_caller_identity.current.account_id
 }
 
 resource "aws_lambda_function" "alarm_notifications_lambda" {
-  filename      = var.alarm_lambda_zip
-  function_name = "${var.environment}-alarm-notifications-lambda"
-  role          = aws_iam_role.alarm_notifications_lambda_role.arn
-  handler       = "main.lambda_handler"
+  filename         = var.alarm_lambda_zip
+  function_name    = "${var.environment}-alarm-notifications-lambda"
+  role             = aws_iam_role.alarm_notifications_lambda_role.arn
+  handler          = "main.lambda_handler"
   source_code_hash = filebase64sha256(var.alarm_lambda_zip)
-  runtime = "python3.8"
-  timeout = 15
+  runtime          = "python3.12"
+  timeout          = 15
   tags = {
     Environment = var.environment
     CreatedBy   = var.repo_name

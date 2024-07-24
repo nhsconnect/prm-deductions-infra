@@ -13,7 +13,7 @@ resource "aws_glue_crawler" "generate_cost_report_crawler" {
 }
 
 resource "aws_iam_role" "generate_cost_report_glue_role" {
-  name = "${var.environment}-generate-cost-report-glue-role"
+  name               = "${var.environment}-generate-cost-report-glue-role"
   description        = "Glue Role to allow access to the billing reports"
   assume_role_policy = data.aws_iam_policy_document.generate_cost_report_glue_assume_role_policy.json
 }
