@@ -269,6 +269,9 @@ pipelines:
                 - build:
                     source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
                     destination: ehr-hard-deletion-lambda/build/
+                - build:
+                    source: dynamo-migration-lambda/build/dynamo-migration-lambda.zip
+                    destination: dynamo-migration-lambda/build/
               tasks:
                 - exec:
                     command: /bin/bash
@@ -331,6 +334,12 @@ pipelines:
                     job: plan
                     source: ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
                     destination: ehr-hard-deletion-lambda/build/
+                    is_file: yes
+                - fetch:
+                    stage: plan_prod
+                    job: plan
+                    source: dynamo-migration-lambda/build/dynamo-migration-lambda.zip
+                    destination: dynamo-migration-lambda/build/
                     is_file: yes
                 - exec:
                     command: /bin/bash
