@@ -101,7 +101,7 @@ variable "engine_type" {
 
 variable "engine_version" {
   type        = string
-  default     = "5.15.13"
+  default     = "5.18.0"
   description = "The version of the broker engine."
 }
 
