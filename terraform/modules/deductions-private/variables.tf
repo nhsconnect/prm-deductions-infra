@@ -61,7 +61,7 @@ variable "apply_immediately" {
 
 variable "auto_minor_version_upgrade" {
   type        = string
-  default     = "false"
+  default     = "true"
   description = "Enables automatic upgrades to new minor versions for brokers, as Apache releases the versions"
 }
 
@@ -83,7 +83,7 @@ variable "engine_type" {
 
 variable "engine_version" {
   type        = string
-  default     = "5.15.13"
+  default     = "5.18.4"
   description = "The version of the broker engine."
 }
 
