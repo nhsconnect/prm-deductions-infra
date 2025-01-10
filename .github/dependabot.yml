@@ -1,16 +1,49 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
-
 version: 2
 updates:
-  - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "/"
+- package-ecosystem: "terraform"
+    directory: "/terraform"
     schedule:
       interval: "weekly"
       timezone: "Europe/London"
       time: "09:00"
+    labels:
+      - "terraform"
+    open-pull-requests-limit: 100
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "terraform"
+    directory: "/terraform-backup"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/London"
+      time: "09:00"
+    labels:
+      - "terraform-backup"
+    open-pull-requests-limit: 100
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "terraform"
+    directory: "/terraform-cross-account"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/London"
+      time: "09:00"
+    labels:
+      - "terraform-cross-account"
+    open-pull-requests-limit: 100
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "terraform"
+    directory: "/terraform-dashboard"
+    schedule:
+      interval: "weekly"
+      timezone: "Europe/London"
+      time: "09:00"
+    labels:
+      - "terraform-dashboard"
     open-pull-requests-limit: 100
     ignore:
       - dependency-name: "*"
