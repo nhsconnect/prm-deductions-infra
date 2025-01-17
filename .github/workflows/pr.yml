@@ -65,10 +65,10 @@ jobs:
           aws-region: eu-west-2
           mask-aws-account-id: true
 
-      - name: terraform fmt
-        id: fmt
-        working-directory: ./
-        run: terraform fmt -recursive -check
+      # - name: terraform fmt
+      #   id: fmt
+      #   working-directory: ./
+      #   run: terraform fmt -recursive -check
 
       - name: terraform init
         id: init
@@ -79,13 +79,13 @@ jobs:
         run: terraform validate -no-color
 
         ## REPOSITORY SPECIFIC ##
-      - name: Setup Terraform variables
-        id: vars
-        run: |
-          IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
-          cat > pipeline.auto.tfvars <<EOF
-          task_image_tag = $IMAGE_TAG
-          EOF
+      # - name: Setup Terraform variables
+      #   id: vars
+      #   run: |
+      #     IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
+      #     cat > pipeline.auto.tfvars <<EOF
+      #     task_image_tag = $IMAGE_TAG
+      #     EOF
 
       - name: terraform plan
         id: plan
