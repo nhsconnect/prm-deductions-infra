@@ -79,13 +79,14 @@ jobs:
         run: terraform validate -no-color
 
         ## REPOSITORY SPECIFIC ##
-      # - name: Setup Terraform variables
-      #   id: vars
-      #   run: |
-      #     IMAGE_TAG=$(aws ecr describe-images --repository-name ${{ secrets.ECR_REPOSITORY_NAME }} --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageTags[0]')
-      #     cat > pipeline.auto.tfvars <<EOF
-      #     task_image_tag = $IMAGE_TAG
-      #     EOF
+      - name: Setup Terraform variables
+        id: vars
+        run: |
+          COMMON_ACCOUNT_ID=$(echo aws ssm get-parameter --name \"/repo/ci/user-input/external/aws-account-id\" --with-decryption)
+          cat > pipeline.auto.tfvars <<EOF
+          common_account_id=$COMMON_ACCOUNT_ID
+          common_account_role=CiReadOnly
+          EOF
 
       - name: terraform plan
         id: plan
