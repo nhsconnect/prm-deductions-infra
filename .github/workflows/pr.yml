@@ -82,7 +82,7 @@ jobs:
       - name: Setup Terraform variables
         id: vars
         run: |
-          COMMON_ACCOUNT_ID=$(echo aws ssm get-parameter --name \"/repo/ci/user-input/external/aws-account-id\" --with-decryption)
+          COMMON_ACCOUNT_ID=$(aws ssm get-parameter --name \"/repo/ci/user-input/external/aws-account-id\" --with-decryption)
           cat > pipeline.auto.tfvars <<EOF
           common_account_id=$COMMON_ACCOUNT_ID
           common_account_role=CiReadOnly
