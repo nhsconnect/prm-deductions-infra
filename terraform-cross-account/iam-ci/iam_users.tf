@@ -13,6 +13,10 @@ data "aws_iam_policy_document" "ci_read_only_trust_policy" {
         "arn:aws:iam::${data.aws_ssm_parameter.perf_account_id.value}:role/RepoAdmin",
         "arn:aws:iam::${data.aws_ssm_parameter.pre_prod_account_id.value}:role/BootstrapAdmin",     # pre-prod environment RepoDeveloper (in pre-prod account)
         "arn:aws:iam::${data.aws_ssm_parameter.prod_account_id.value}:role/BootstrapAdmin",
+        "arn:aws:sts::${data.aws_ssm_parameter.dev_account_id.value}:assumed-role/GitHub-Actions-ReadOnly/GitHubActions",      # dev environment
+        "arn:aws:sts::${data.aws_ssm_parameter.test_account_id.value}:assumed-role/GitHub-Actions-ReadOnly/GitHubActions",     # test environment
+        "arn:aws:sts::${data.aws_ssm_parameter.pre_prod_account_id.value}:assumed-role/GitHub-Actions-ReadOnly/GitHubActions", # pre-prod environment
+        "arn:aws:sts::${data.aws_ssm_parameter.prod_account_id.value}:assumed-role/GitHub-Actions-ReadOnly/GitHubActions",     # prod environment
         # more accounts will follow for other environments...
       ]
     }
