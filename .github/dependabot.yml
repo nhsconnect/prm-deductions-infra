@@ -9,9 +9,6 @@ updates:
     labels:
       - "terraform"
     open-pull-requests-limit: 100
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
   - package-ecosystem: "terraform"
     directory: "/terraform-backup"
     schedule:
@@ -21,9 +18,6 @@ updates:
     labels:
       - "terraform-backup"
     open-pull-requests-limit: 100
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
   - package-ecosystem: "terraform"
     directory: "/terraform-cross-account"
     schedule:
@@ -33,9 +27,6 @@ updates:
     labels:
       - "terraform-cross-account"
     open-pull-requests-limit: 100
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
   - package-ecosystem: "terraform"
     directory: "/terraform-dashboard"
     schedule:
@@ -45,6 +36,3 @@ updates:
     labels:
       - "terraform-dashboard"
     open-pull-requests-limit: 100
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
