@@ -94,6 +94,7 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_developer_to_see_access_logs_
   count  = var.is_restricted_account ? 1 : 0
   bucket = aws_s3_bucket.cost_and_usage_access_logs.id
   policy = jsonencode({
+    "Version" : "2008-10-17",
     "Statement" : [
       {
         Effect : "Allow",

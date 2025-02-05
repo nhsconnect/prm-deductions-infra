@@ -13,10 +13,13 @@ resource "aws_backup_plan" "s3_continuous" {
     enable_continuous_backup = true
     rule_name                = "S3BucketContinousBackups"
     target_vault_name        = aws_backup_vault.s3[0].name
+    recovery_point_tags      = {}
+    schedule                 = "cron(0 5 ? * * *)"
 
     lifecycle {
-      cold_storage_after = 0
-      delete_after       = 35
+      cold_storage_after                        = 0
+      delete_after                              = 35
+      opt_in_to_archive_for_supported_resources = false
     }
   }
 }

@@ -140,7 +140,6 @@ resource "aws_ec2_client_vpn_authorization_rule" "deductions_core_vpc" {
 resource "aws_ssm_parameter" "client_vpn_endpoint_id" {
   name = "/repo/${var.environment}/output/${var.repo_name}/client-vpn-endpoint-id"
   type = "String"
-  overwrite = true
   value = aws_ec2_client_vpn_endpoint.vpn.id
   tags = {
     CreatedBy   = var.repo_name
