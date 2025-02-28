@@ -158,7 +158,7 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_s3_to_write_access_logs_polic
         "Action" : "s3:*",
         "Resource" : [
           aws_s3_bucket.cost_and_usage_access_logs.arn,
-          "${aws_s3_bucket.cost_and_usage_access_logs}/*"
+          "${aws_s3_bucket.cost_and_usage_access_logs.arn}/*"
         ],
         "Condition" : {
           "Bool" : {
