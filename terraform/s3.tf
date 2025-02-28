@@ -70,6 +70,22 @@ data "aws_iam_policy_document" "allow_access_from_billing_to_s3" {
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*"]
   }
+
+  statement {
+    sid    = "S3EnforceHTTPSPolicy"
+    effect = "Deny"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions   = ["s3:*"]
+    resources = ["${aws_s3_bucket.cost_and_usage_bucket.arn}/*", aws_s3_bucket.cost_and_usage_bucket.arn]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
 }
 
 resource "aws_s3_bucket" "cost_and_usage_access_logs" {
@@ -134,6 +150,21 @@ resource "aws_s3_bucket_policy" "cost_usage_permit_s3_to_write_access_logs_polic
             "aws:SecureTransport" : "false"
           }
         }
+      },
+      {
+        "Sid" : "S3EnforceHTTPSPolicy",
+        "Effect" : "Deny",
+        "Principal" : "*",
+        "Action" : "s3:*",
+        "Resource" : [
+          aws_s3_bucket.cost_and_usage_access_logs.arn,
+          "${aws_s3_bucket.cost_and_usage_access_logs}/*"
+        ],
+        "Condition" : {
+          "Bool" : {
+            "aws:SecureTransport" : "false"
+          }
+        }
       }
     ]
   })
@@ -180,6 +211,23 @@ data "aws_iam_policy_document" "allow_load_balancers_to_publish_to_access_logs_s
     }
     actions   = ["s3:PutObject"]
     resources = ["${aws_s3_bucket.alb_access_logs.arn}/*"]
+  }
+  statement {
+    effect = "Deny"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.alb_access_logs.arn,
+      "${aws_s3_bucket.alb_access_logs.arn}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
   }
 }
 
@@ -238,6 +286,21 @@ resource "aws_s3_bucket_policy" "access_logs_permit_s3_to_write_access_logs" {
         "Resource" : "${aws_s3_bucket.access_logs.arn}/*",
         Condition : {
           Bool : {
+            "aws:SecureTransport" : "false"
+          }
+        }
+      },
+      {
+        "Sid" : "S3EnforceHTTPSPolicy",
+        "Effect" : "Deny",
+        "Principal" : "*",
+        "Action" : "s3:*",
+        "Resource" : [
+          aws_s3_bucket.access_logs.arn,
+          "${aws_s3_bucket.access_logs.arn}/*"
+        ],
+        "Condition" : {
+          "Bool" : {
             "aws:SecureTransport" : "false"
           }
         }
