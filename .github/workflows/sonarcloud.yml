@@ -11,6 +11,8 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    env:
+      SONAR_SCANNER_OPTS: "-Dsonar.scanner.provisioning.disable=true"
     steps:
       - uses: actions/checkout@v4
         with:
