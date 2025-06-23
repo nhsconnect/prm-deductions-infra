@@ -18,6 +18,13 @@ resource "aws_s3_bucket" "cost_and_usage_bucket" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "cost_and_usage_logs" {
+  bucket = "${var.environment}-cost-and-usage-access-logs"
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_logging" "cost_and_usage_bucket" {
   bucket = aws_s3_bucket.cost_and_usage_bucket.id
 
