@@ -11,8 +11,6 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    env:
-      SONAR_SCANNER_OPTS: "-Dsonar.scanner.provisioning.disable=true"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,5 +19,6 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
+          SONAR_SCANNER_OPTS: -Dsonar.scanner.provisioning.disable=true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
