@@ -16,9 +16,24 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download SonarScanner
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
+          unzip -q sonar-scanner.zip
+          echo "${PWD}/sonar-scanner-6.2.1.4610-linux-x64/bin" >> $GITHUB_PATH
+
+      - name: Run Sonar Scanner (No Provisioning)
         env:
-          SONAR_SCANNER_OPTS: -Dsonar.scanner.provisioning.disable=true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        run: |
+          sonar-scanner -Dsonar.scanner.provisioning.disable=true \
+                        -Dsonar.projectKey=prm-orphaned-record-continuity_prm-deductions-infra \
+                        -Dsonar.organization=prm-orphaned-record-continuity \
+                        -Dsonar.host.url=https://sonarcloud.io
