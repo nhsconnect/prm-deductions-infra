@@ -89,8 +89,8 @@ variable "engine_version" {
 
 variable "host_instance_type" {
   type        = string
-  default     = "mq.t2.micro"
-  description = "The broker's instance type. e.g. mq.t2.micro or mq.m4.large"
+  default     = "mq.t3.micro"
+  description = "The broker's instance type. e.g. mq.t3.micro or mq.m5.large"
 }
 
 variable "general_log" {

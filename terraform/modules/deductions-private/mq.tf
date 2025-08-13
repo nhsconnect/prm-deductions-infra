@@ -37,7 +37,7 @@ resource "aws_mq_broker" "deductor_mq_broker" {
     console_access = false
   }
   lifecycle {
-    ignore_changes = [engine_version]
+    ignore_changes = [engine_version, host_instance_type]
   }
 
   tags = {
@@ -168,6 +168,17 @@ resource "aws_security_group_rule" "vpn_to_mq_through_amqp" {
   from_port = "5671"
   to_port = "5671"
   description = "Allow traffic from VPN to MQ through AMQP"
+  security_group_id = aws_security_group.vpn_to_mq.id
+  source_security_group_id = aws_security_group.vpn.id
+}
+
+resource "aws_security_group_rule" "vpn_to_mq_web_console" {
+  count = var.grant_access_to_queues_through_vpn ? 1 : 0
+  type = "ingress"
+  protocol = "tcp"
+  from_port = "8162"
+  to_port = "8162"
+  description = "Allow traffic from VPN to MQ Web Console"
   security_group_id = aws_security_group.vpn_to_mq.id
   source_security_group_id = aws_security_group.vpn.id
 }
