@@ -4,7 +4,7 @@ locals {
 
 module "ehr_transfer_tracker_dynamodb_table" {
   source  = "terraform-aws-modules/dynamodb-table/aws"
-  version = "4.0.0"
+  version = "4.3.0"
 
   name      = local.ehr_transfer_tracker_db_name
   hash_key  = "InboundConversationId"
