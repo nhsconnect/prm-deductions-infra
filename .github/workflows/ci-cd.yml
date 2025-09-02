@@ -1,0 +1,21 @@
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**'
+     
+      
+name: CI/CD
+
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  automated-dev-deployment:
+      uses: ./.github/workflows/base-deployment.yml
+      with:
+        environment: dev
+        is_deployment: ${{ github.ref == 'refs/heads/main' }}
+      secrets: inherit
