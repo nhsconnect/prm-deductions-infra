@@ -10,10 +10,6 @@ on:
         description: "Do you want to run Terraform Apply"
         type: boolean
         default: false
-      build_id:
-        description: "Which docker image tag to use"
-        type: string
-        default: "2.0.1"
 
   workflow_dispatch:
     inputs:
@@ -29,13 +25,8 @@ on:
         description: "Do you want to run Terraform Apply"
         type: boolean
         default: false
-      build_id:
-        description: "Which docker image tag to use"
-        type: string
-        default: "2.0.1"
 
 name: Base Plan and Apply
-
 permissions:
   contents: read       
   id-token: write      
@@ -43,54 +34,57 @@ permissions:
 
 jobs:
   plan:
-    name: Terraform Plan and Apply
+    name: ${{ inputs.environment }} - Plan and Apply
     runs-on: ubuntu-latest
-    environment: ${{  inputs.environment == 'dev' && 'dev' || inputs.is_deployment && format('{0}-apply.tfvars', inputs.environment) || inputs.environment  }} 
+    environment: ${{ inputs.environment }}
     defaults:
       run:
         working-directory: ./terraform
     steps:
-    - name: Set up git repo
-      uses: actions/checkout@v4
+      - name: Set up git repo
+        uses: actions/checkout@v4
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v3
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ secrets.IAM_ROLE }}
-        aws-region: eu-west-2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE }}
+          aws-region: eu-west-2
+          mask-aws-account-id: true
 
-    - name: terraform fmt
-      id: fmt
-      working-directory: ./
-      run: terraform fmt -recursive -check
+      - name: terraform init
+        id: init
+        run: terraform init -no-color -upgrade -backend-config="bucket=${{ secrets.TF_BACKEND_BUCKET }}" -backend-config="key=${{ secrets.TF_BACKEND_KEY }}" -backend-config="dynamodb_table=${{ secrets.TF_BACKEND_DYNAMODB_TABLE }}"
 
-    - name: terraform init
-      id: init
-      run: terraform init -no-color -upgrade -backend-config="bucket=${{ secrets.TF_BACKEND_BUCKET }}" -backend-config="key=${{ secrets.TF_BACKEND_KEY }}" -backend-config="dynamodb_table=${{ secrets.TF_BACKEND_DYNAMODB_TABLE }}"
+      - name: terraform validate
+        id: validate
+        run: terraform validate -no-color
 
-    - name: terraform validate
-      id: validate
-      run: terraform validate -no-color
-      
-    ##Repo Specific##
-    - name: Setup Terraform variables
-      id: vars
-      run: |-
-        cat > pipeline.auto.tfvars <<EOF
-        build_id = "${{inputs.build_id}}"
-        EOF
+        ## REPOSITORY SPECIFIC ##
+      - name: Setup Terraform variables
+        id: vars
+        run: |
+          COMMON_ACCOUNT_ID=$(aws ssm get-parameter --name /repo/ci/user-input/external/aws-account-id --with-decryption | jq -r .Parameter.Value)
+          cat > pipeline.auto.tfvars <<EOF
+          common_account_id=$COMMON_ACCOUNT_ID
+          common_account_role="CiReadOnly"
+          EOF
 
-    - name: terraform plan
-      id: plan
-      run: |
-        terraform plan -var-file="${{ inputs.environment }}.tfvars" -no-color -out=${{ inputs.environment }}.tfplan
+          mkdir ../generate-cost-report-lambda/build
+          touch ../generate-cost-report-lambda/build/generate-cost-report-lambda.zip
+          mkdir ../notification-lambda/build
+          touch ../notification-lambda/build/alarm.zip
 
-    - name: terraform apply
-      if: ${{ inputs.is_deployment }}
-      id: apply
-      run: |
-       terraform apply -auto-approve -input=false ${{ inputs.environment }}.tfplan
-      working-directory: ./terraform
+      - name: terraform plan
+        id: plan
+        run: |
+          terraform plan -var-file="${{ inputs.environment }}.tfvars" -no-color -out=${{ inputs.environment }}.tfplan
+
+      - name: terraform apply
+        if: ${{ inputs.is_deployment }}
+        id: apply
+        run: |
+          terraform apply -auto-approve -input=false ${{ inputs.environment }}.tfplan
+          working-directory: ./terraform

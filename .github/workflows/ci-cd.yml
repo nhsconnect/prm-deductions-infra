@@ -13,10 +13,9 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  mhs-dev-deployment:
+  automated-dev-deployment:
       uses: ./.github/workflows/base-deployment.yml
       with:
         environment: dev
         is_deployment: ${{ github.ref == 'refs/heads/main' }}
-        build_id: "2.0.1"
       secrets: inherit
