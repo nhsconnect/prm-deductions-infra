@@ -92,6 +92,8 @@ jobs:
           touch ../generate-cost-report-lambda/build/generate-cost-report-lambda.zip
           mkdir ../notification-lambda/build
           touch ../notification-lambda/build/alarm.zip
+          mkdir ../ehr-hard-deletion-lambda/build
+          touch ../ehr-hard-deletion-lambda/build/ehr-hard-deletion-lambda.zip
 
       - name: terraform plan
         id: plan
