@@ -20,3 +20,7 @@ data "aws_ssm_parameter" "mq-app-username" {
 data "aws_ssm_parameter" "mq-app-password" {
   name = "/repo/${var.environment}/user-input/mq-app-password"
 }
+
+data "aws_ssm_parameter" "alb_access_logs_bucket" {
+  name = "/repo/${var.environment}/output/prm-deductions-infra/alb-access-logs-s3-bucket-id"
+}

@@ -5,6 +5,11 @@ resource "aws_alb" "mq-admin" {
   internal        = true
   drop_invalid_header_fields = true
 
+  access_logs {
+    bucket  = data.aws_ssm_parameter.alb_access_logs_bucket.value
+    enabled = true
+  }
+
   tags = {
     CreatedBy   = var.repo_name
     Environment = var.environment
