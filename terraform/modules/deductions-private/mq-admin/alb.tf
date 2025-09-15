@@ -1,3 +1,7 @@
+data "aws_ssm_parameter" "alb_access_logs_bucket" {
+  name = "/repo/${var.environment}/output/prm-deductions-infra/alb-access-logs-s3-bucket-id"
+}
+
 resource "aws_alb" "mq-admin" {
   name            = "${var.environment}-mq-admin-alb"
   subnets         = var.deductions_private_vpc_private_subnets
