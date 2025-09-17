@@ -44,7 +44,7 @@ jobs:
   plan:
     strategy:
       matrix:
-        environment: [dev, test, pre-prod, prod]
+        environment: [dev, pre-prod, prod]
     name: ${{ matrix.environment }}
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
@@ -62,13 +62,14 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.IAM_ROLE }}
+#          TODO set up a read-only role and read-write role for each env
           aws-region: eu-west-2
           mask-aws-account-id: true
 
-      # - name: terraform fmt
-      #   id: fmt
-      #   working-directory: ./
-      #   run: terraform fmt -recursive -check
+      - name: terraform fmt
+        id: fmt
+        working-directory: ./
+        run: terraform fmt -recursive -check
 
       - name: terraform init
         id: init

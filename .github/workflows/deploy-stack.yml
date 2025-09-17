@@ -1,0 +1,133 @@
+name: Deploy Infra Stack
+
+on:
+  workflow_dispatch:
+      inputs:
+        environment:
+          default: "dev"
+          description: "Which environment should this run against"
+          required: true
+          type: choice
+          options:
+            - dev
+            - pre-prod
+            - prod
+        stack:
+          description: "Which stack would you like to deploy"
+          required: true
+          type: choice
+          options:
+            - ehr-repository
+        is_deployment:
+          default: false
+          type: boolean
+          required: true
+          description: "Whether to deploy"
+
+  workflow_call:
+    inputs:
+      enviornment:
+        default: dev
+        description: "Environment to deploy to"
+        type: string
+      stack:
+        description: "Stack to deploy"
+        type: string
+      is_deployment:
+        default: false
+        type: boolean
+        required: true
+        description: "Whether to deploy"
+
+permissions:
+  pull-requests: write
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  deploy_stack:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./stacks/${{ inputs.stack }}/terraform
+
+    steps:
+    - name: Check out Repo
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ vars.AWS_REGION }}
+#        TODO set up these roles
+        role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
+        role-skip-session-tagging: true
+        mask-aws-account-id: true
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: latest
+
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt -check
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        terraform plan -no-color -input=false -var-file="${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
+        terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
+        echo "summary=$(grep -E 'Plan: [0-9]+ to add, [0-9]+ to change, [0-9]+ to destroy\.|No changes\. Your infrastructure matches the configuration\.' ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt | sed 's/.*No changes\. Your infrastructure matches the configuration/Plan: no changes/g' | sed 's/.*Plan: //g' | sed 's/\..*//g')" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Add PR comment
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && (success() || failure())
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // 1. Retrieve existing bot comments for the PR
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          const botComment = comments.find(comment => {
+            return comment.user.type === 'Bot' && comment.body.includes('Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}')
+          });
+            
+          // 2. Prepare format of the comment
+          const output = `### Report for ${{inputs.terraform_stack}} environment: ${{ inputs.environment }}
+            
+          #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            
+            
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            
+            
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            
+            
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            
+          Plan results: ${{ steps.plan.outputs.summary }}`;
+            
+          // 3. If we have a comment, update it, otherwise create a new one
+          if (botComment) {
+            github.rest.issues.deleteComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+            })
+          }
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          });
+
+    - name: Terraform Apply
+      if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && inputs.is_deployment && (env.GITHUB_ENV != 'prod-plan')
+      run: terraform apply -auto-approve -input=false ${{ vars.AWS_ENVIRONMENT }}.tfplan
