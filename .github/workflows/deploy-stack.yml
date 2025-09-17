@@ -46,6 +46,9 @@ permissions:
 
 jobs:
   deploy_stack:
+    environment: ${{ inputs.environment }}${{ (inputs.environment == 'prod' && !inputs.is_deployment) && '-plan' || '' }}
+    env:
+      GITHUB_ENV: ${{ inputs.environment }}${{ (inputs.environment == 'prod' && !inputs.is_deployment) && '-plan' || '' }}
     runs-on: ubuntu-latest
     defaults:
       run:
