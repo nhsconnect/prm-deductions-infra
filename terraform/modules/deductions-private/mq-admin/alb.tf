@@ -1,9 +1,18 @@
+data "aws_ssm_parameter" "alb_access_logs_bucket" {
+  name = "/repo/${var.environment}/output/prm-deductions-infra/alb-access-logs-s3-bucket-id"
+}
+
 resource "aws_alb" "mq-admin" {
   name            = "${var.environment}-mq-admin-alb"
   subnets         = var.deductions_private_vpc_private_subnets
   security_groups = [aws_security_group.vpn_to_mq_admin.id, aws_security_group.mq_ui_to_alb.id]
   internal        = true
   drop_invalid_header_fields = true
+
+  access_logs {
+    bucket  = data.aws_ssm_parameter.alb_access_logs_bucket.value
+    enabled = true
+  }
 
   tags = {
     CreatedBy   = var.repo_name
