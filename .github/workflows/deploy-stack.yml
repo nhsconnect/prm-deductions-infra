@@ -17,7 +17,7 @@ on:
           required: true
           type: choice
           options:
-            - ehr-repository
+            - ehr-repo
         is_deployment:
           default: false
           type: boolean
@@ -62,7 +62,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: ${{ vars.AWS_REGION }}
-#        TODO set up these roles
+#        TODO review and set up these roles if necessary
         role-to-assume:  ${{inputs.is_deployment && secrets.AWS_ASSUME_ROLE || secrets.AWS_ASSUME_ROLE_READ_ONLY}}
         role-skip-session-tagging: true
         mask-aws-account-id: true
@@ -76,8 +76,23 @@ jobs:
       id: fmt
       run: terraform fmt -check
 
+    - name: Terraform Init
+      id: init
+      run: |
+#        TODO check where the backend config is, what table and what bucket, ensure secrets for relevant github envs
+#             TODO how to handle case where stack and bucket pathing don't match?
+        terraform init -no-color -backend-config="${{ secrets.TF_BACKEND_KEY }}/${{ inputs.terraform_stack }}/terraform.tfstate" \
+        -backend-config="bucket=${{ secrets.TF_BACKEND_BUCKET }}" \
+        -backend-config="dynamodb_table=${{ secrets.TF_BACKEND_TABLE }}"
+      shell: bash
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
     - name: Terraform Plan
       id: plan
+#      TODO where is aws_env set, within actions vars or within workflow?
       run: |
         terraform plan -no-color -input=false -var-file="${{ vars.AWS_ENVIRONMENT }}.tfvars" -out "${{ vars.AWS_ENVIRONMENT }}.tfplan"
         terraform show -no-color ${{ vars.AWS_ENVIRONMENT }}.tfplan > ${{ vars.AWS_ENVIRONMENT }}.tfplan.txt
